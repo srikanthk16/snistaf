@@ -2912,7 +2912,10 @@ function addThread($userid,$forumid,$name){
 			//global $forum_db_table_prefix;
 			//use prefixes when modules changed, for now omitting
 			//global $forum_db_table_prefix;
-
+			if(!checkForumPermission($userid,$forumid)){
+				addAlert("danger", "Oops, You Dont have Permission.");
+				return false;
+			}
 			$db = pdoConnect();
 
 			$sqlVars = array();
@@ -3006,4 +3009,81 @@ function loadSubscriptions($userid){
 
 }
 
+function loadForumThreads($forumid){
+	try {
+			//use prefixes when modules changed, for now omitting
+			//global $forum_db_table_prefix;
+			$db = pdoConnect();
+			$sqlVars = array();
+			//error_log($userid);
+			$query = "SELECT id,name,added_by from fo_threads where forum_id = :forumid";
+			$stmt = $db->prepare($query);
+			$sqlVars[':forumid'] =intval($forumid);
+			if (!$stmt->execute($sqlVars)){
+					// Error
+					return false;
+			}
+			return $stmt->fetchall();
+	} catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+
+}
+function checkForumPermission($userid,$forumid){
+	$db=pdoConnect();
+	$type=forumtype($forumid);
+	error_log($type);
+	$ismod=isMod($userid,$forumid);
+	if($type=='1'){
+		if($ismod) return true;
+		else return false;
+	}
+	else return true;
+
+}
+function forumtype($forumid){
+	try{$db=pdoConnect();
+	$sqlVars=array();
+	$query="SELECT type from fo_forums where forum_id=:forumid";
+	$stmt=$db->prepare($query);
+	$sqlVars[':forumid']=$forumid;
+	if(!($ans=$stmt->execute($sqlVars))){
+		return false;
+	}
+	return $ans;}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function isMod($userid,$forumid){
+try{	$db=pdoConnect();
+$sqlVars=array();
+$query="SELECT fid from fo_mods where uid=:userid";
+$stmt=$db->prepare($query);
+$sqlVars[':userid']=$userid;
+if(!$stmt->execute($sqlVars)){
+	return false;
+}
+$ansArr=$stmt->fetchall();
+return in_array($forumid,$ansArr);
+}
+catch (PDOException $e) {
+	addAlert("danger", "Oops, looks like our database encountered an error.");
+	error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+	return false;
+} catch (ErrorException $e) {
+	addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+	return false;
+}
+}
 ?>

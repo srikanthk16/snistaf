@@ -38,7 +38,8 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
   <?php echo renderMenu	("Forum");?>
   <?php
   $fid=$_GET['id'];
-
+$resultarray=loadForumThreads($fid);
+print_r $resultarray;
 
 
   ?>
