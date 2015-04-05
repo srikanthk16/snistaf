@@ -61,11 +61,11 @@ if ($email_login == 1) {
       <div class="header">
         <ul class="nav nav-pills navbar pull-right">
         </ul>
-        <h3 class="text-muted">UserFrosting</h3>
+        <h3 class="text-muted">SNISTAF</h3>
       </div>
       <div class="jumbotron">
-        <h1>Welcome to UserFrosting!</h1>
-        <p class="lead">A secure, modern user management system based on UserCake, jQuery, and Bootstrap.</p>
+        <h1>Welcome to SNISTAF!</h1>
+        <p class="lead">Block headed forum and alumni system for SNIST</p>
 		<small>Please sign in here:</small>
 		<form class='form-horizontal' role='form' name='login' action='api/process_login.php' method='post'>
 		  <div class="row">
@@ -104,7 +104,6 @@ if ($email_login == 1) {
 		  });
 		  // Load jumbotron links
 		  $(".jumbotron-links").load("jumbotron_links.php");
-
 		  alertWidget('display-alerts');
 
 		  $("form[name='login']").submit(function(e){
@@ -122,6 +121,7 @@ if ($email_login == 1) {
 				var resultJSON = processJSONResult(result);
 				if (resultJSON['errors'] && resultJSON['errors'] > 0){
 				  alertWidget('display-alerts');
+
 				} else {
 				  window.location.replace("account");
 				}

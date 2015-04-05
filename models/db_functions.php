@@ -1,14 +1,13 @@
 <?php
 /*
 
+SNISTAF API DB Functions
+By Srikanth Kasukurthi
+Copyright (c) 2015 for SNIST
+
 UserFrosting Version: 0.2.2
 By Alex Weissman
 Copyright (c) 2014
-
-Based on the UserCake user management system, v2.0.2.
-Copyright (c) 2009-2012
-
-UserFrosting, like UserCake, is 100% free and open-source.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the 'Software'), to deal
@@ -2906,13 +2905,87 @@ function addSubscription($userid,$forumid){
 		return false;
 	}
 }
+
+
+function addThread($userid,$forumid,$name){
+	try {
+			//global $forum_db_table_prefix;
+			//use prefixes when modules changed, for now omitting
+			//global $forum_db_table_prefix;
+
+			$db = pdoConnect();
+
+			$sqlVars = array();
+
+			$query = "INSERT into fo_threads(forum_id,name,added_by)
+					VALUES(:forumid,:name,:userid)
+					";
+			$stmt = $db->prepare($query);
+			//error_log($forum_name);
+			//$forum_name = str_replace(PHP_EOL, '', $forum_name)
+			$sqlVars[':forumid'] = $forumid;
+			$sqlVars[':name']=$name;
+			$sqlVars[':userid']=$userid;
+			if (!$stmt->execute($sqlVars)){
+					// Error
+					return false;
+			}
+
+	} catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+return true;
+}
+
+
+function addPost($userid,$threadid,$content){
+	try {
+			//global $forum_db_table_prefix;
+			//use prefixes when modules changed, for now omitting
+			//global $forum_db_table_prefix;
+
+			$db = pdoConnect();
+
+			$sqlVars = array();
+
+			$query = "INSERT into fo_posts(thread_id,content,added_by)
+					VALUES(:threadid,:content,:userid)
+					";
+			$stmt = $db->prepare($query);
+			//error_log($forum_name);
+			//$forum_name = str_replace(PHP_EOL, '', $forum_name)
+			$sqlVars[':threadid'] = $threadid;
+			$sqlVars[':content']=$content;
+			$sqlVars[':userid']=$userid;
+			if (!$stmt->execute($sqlVars)){
+					// Error
+					return false;
+			}
+
+	} catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+return true;
+}
+
 function loadSubscriptions($userid){
 	try {
 			//use prefixes when modules changed, for now omitting
 			//global $forum_db_table_prefix;
 			$db = pdoConnect();
 			$sqlVars = array();
-			$query = "SELECT name,posts from fo_forums where id in (select fid from um_user_subscriptions
+			error_log($userid);
+			$query = "SELECT id,name,posts from fo_forums where id in (select fid from um_user_subscriptions
 					where uid=:userid)
 					";
 			$stmt = $db->prepare($query);

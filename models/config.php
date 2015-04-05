@@ -1,14 +1,13 @@
 <?php
 /*
 
+SNISTAF Public Code
+By Srikanth Kasukurthi
+Copyright (C) 2015
+
 UserFrosting Version: 0.2.2
 By Alex Weissman
 Copyright (c) 2014
-
-Based on the UserCake user management system, v2.0.2.
-Copyright (c) 2009-2012
-
-UserFrosting, like UserCake, is 100% free and open-source.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the 'Software'), to deal
@@ -33,7 +32,7 @@ THE SOFTWARE.
 function logAllErrors($errno, $errstr, $errfile, $errline, array $errcontext) {
 	ini_set("log_errors", 1);
 	ini_set("display_errors", 0);
-	
+
     error_log("Error ($errno): $errstr in $errfile on line $errline");
 	throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
 }
@@ -105,7 +104,7 @@ defined("SITE_ROOT")
 
 defined("ACCOUNT_ROOT")
     or define("ACCOUNT_ROOT", SITE_ROOT . "account/");
-		
+
 defined("LOCAL_ROOT")
 	or define ("LOCAL_ROOT", realpath(dirname(__FILE__)."/.."));
 
@@ -125,7 +124,7 @@ $page_include_paths = fetchFileList();
 
 // Other constants
 defined("ACCOUNT_HEAD_FILE")
-	or define("ACCOUNT_HEAD_FILE", "head-account.html");	
+	or define("ACCOUNT_HEAD_FILE", "head-account.html");
 
 // Set to true if you want authorization failures to be logged to the PHP error log.
 defined("LOG_AUTH_FAILURES")
@@ -137,7 +136,7 @@ defined("SESSION_NAME")
 defined("SITE_TITLE")
     or define("SITE_TITLE", $websiteName);
 
-	
+
 // This is the user id of the master (root) account.
 // The root user cannot be deleted, and automatically has permissions to everything regardless of group membership.
 $master_account = 1;
@@ -160,16 +159,16 @@ function getAbsoluteDocumentPath($localPath){
 function getRelativeDocumentPath($localPath){
 	// Replace backslashes in local path (if we're in a windows environment)
 	$localPath = str_replace('\\', '/', $localPath);
-	
+
 	// Get lowercase version of path
 	$localPathLower = strtolower($localPath);
 
 	// Replace backslashes in local root (if we're in a windows environment)
-	$localRoot = str_replace('\\', '/', LOCAL_ROOT);	
-	
+	$localRoot = str_replace('\\', '/', LOCAL_ROOT);
+
 	// Get lowercase version of path
 	$localRootLower = strtolower($localRoot) . "/";
-	
+
 	// Remove local root but preserve case
 	$pos = strpos($localPathLower, $localRootLower);
 	if ($pos !== false) {

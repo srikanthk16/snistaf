@@ -1,14 +1,9 @@
 <?php
 /*
 
-UserFrosting Version: 0.2.2
-By Alex Weissman
-Copyright (c) 2014
-
-Based on the UserCake user management system, v2.0.2.
-Copyright (c) 2009-2012
-
-UserFrosting, like UserCake, is 100% free and open-source.
+SNISTF API
+By Srikanth Kasukurthi
+Copyright (c) 2015 for SNIST
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the 'Software'), to deal
@@ -29,18 +24,37 @@ THE SOFTWARE.
 
 */
 
-require_once("../models/config.php");
+// Request method: GET
 
-// Always a publically accessible script
-if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-    addAlert($_POST['type'], $_POST['message']);
+require_once('../models/config.php');
+
+set_error_handler('logAllErrors');
+
+// Request method: GET
+$ajax = checkRequestMode("get");
+
+// User must be logged in
+checkLoggedInUser($ajax);
+
+
+$validator = new Validator();
+$user_id = $validator->optionalGetVar('userid');
+//$results='\0';
+// Add alerts for any failed input validation
+foreach ($validator->errors as $error){
+  addAlert("danger", $error);
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_SESSION["userAlerts"])){
-    echo json_encode($_SESSION["userAlerts"]);
-    
-    // Reset alerts after they have been delivered
-    $_SESSION["userAlerts"] = array();
+if (count($validator->errors) > 0){
+    apiReturnError($ajax, getReferralPage());
 }
 
+if ($user_id!="\0"){
+  if ($user_id == "0"){
+    $user_id = $loggedInUser->user_id;
+  }
+  $results=loadSubscriptions($user_id);
+  restore_error_handler();
+  echo json_encode($results);
+}
 ?>

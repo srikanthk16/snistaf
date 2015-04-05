@@ -1,14 +1,9 @@
 <?php
 /*
+SNISTAF API
+By Srikanth Kasukurthi
+Copyright (c) 2015 for SNIST
 
-UserFrosting Version: 0.2.2
-By Alex Weissman
-Copyright (c) 2014
-
-Based on the UserCake user management system, v2.0.2.
-Copyright (c) 2009-2012
-
-UserFrosting, like UserCake, is 100% free and open-source.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the 'Software'), to deal
@@ -29,18 +24,31 @@ THE SOFTWARE.
 
 */
 
+
+
 require_once("../models/config.php");
-
-// Always a publically accessible script
-if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-    addAlert($_POST['type'], $_POST['message']);
+//error_log(checkRequestMode("POST"));
+$ajax = checkRequestMode("get");
+//error_log($ajax);
+if(!isUserLoggedIn()) {
+	addAlert("warning", "Login to continue!");
+	apiReturnError($ajax, SITE_ROOT."login.php");
 }
-
-if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_SESSION["userAlerts"])){
-    echo json_encode($_SESSION["userAlerts"]);
-    
-    // Reset alerts after they have been delivered
-    $_SESSION["userAlerts"] = array();
+/*if (!securePage(__FILE__)){
+    apiReturnError($ajax);
 }
-
+*/
+setReferralPage(getAbsoluteDocumentPath(__FILE__));
+$user_id=$loggedInUser->user_id;
+//print $user_id;
+$validator = new Validator();
+$fid = $validator->requiredGetVar('fid');
+$name = $validator->optionalGetVar('name');
+//print $name;
+if(!addThread($user_id,$fid,$name)){
+  print "unknown error";
+  apiReturnError($ajax, SITE_ROOT);
+}
+apiReturnSuccess($ajax, getReferralPage());
+print "success";
 ?>
