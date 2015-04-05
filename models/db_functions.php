@@ -3034,6 +3034,33 @@ function loadForumThreads($forumid){
 	}
 
 }
+
+function loadThreadPosts($threadid){
+	try {
+			//use prefixes when modules changed, for now omitting
+			//global $forum_db_table_prefix;
+			$db = pdoConnect();
+			$sqlVars = array();
+			//error_log($userid);
+			$query = "SELECT id,content,added_by,timestamp from fo_posts where thread_id = :threadid ORDER BY timestamp";
+			$stmt = $db->prepare($query);
+			$sqlVars[':threadid'] =intval($threadid);
+			if (!$stmt->execute($sqlVars)){
+					// Error
+					return false;
+			}
+			return $stmt->fetchall();
+	} catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+
+}
+
 function checkForumPermission($userid,$forumid){
 	$db=pdoConnect();
 	$type=forumtype($forumid);

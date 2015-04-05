@@ -1,9 +1,8 @@
 <?php
 /*
-SNISTAF API
+SNISTAF Public Code
 By Srikanth Kasukurthi
 Copyright (c) 2015 for SNIST
-
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the 'Software'), to deal
@@ -23,37 +22,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 */
-
-
-
 require_once("../models/config.php");
-
-$ajax = checkRequestMode("get");
-//error_log($ajax);
 if(!isUserLoggedIn()) {
 	addAlert("warning", "Login to continue!");
 	apiReturnError($ajax, SITE_ROOT."login.php");
 }
-/*if (!securePage(__FILE__)){
-    apiReturnError($ajax);
-}
-*/
 setReferralPage(getAbsoluteDocumentPath(__FILE__));
-$user_id=$loggedInUser->user_id;
-//print $user_i
-$validator = new Validator();
-$tid = $validator->requiredGetVar('id');
-foreach ($validator->errors as $error){
-  addAlert("danger", $error);
-}
-
-if (count($validator->errors) > 0){
-    apiReturnError($ajax, getReferralPage());
-}
-  if(!$results=loadThreadPosts($tid)){
-		addAlert("warning", "DB ERROR!");
-		apiReturnError($ajax, getReferralPage());
-	}
-  restore_error_handler();
-  echo json_encode($results);
+ ?>
+<html>
+<?php
+echo renderTemplate("head.html", array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Subscriptions"))	;
+echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Subscriptions"));
 ?>
+<body>
+  <?php echo renderMenu	("Forum");?>
+  <?php
+  $tid=$_GET['id'];
+$resultarray=loadThreadPostss($tid);
+print_r($resultarray);
+
+
+  ?>
+</body>
+</html>

@@ -39,7 +39,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
   <?php
   $fid=$_GET['id'];
 $resultarray=loadForumThreads($fid);
-print_r $resultarray;
+print_r($resultarray);
 
 
   ?>
