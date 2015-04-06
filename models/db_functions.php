@@ -2933,6 +2933,13 @@ function addThread($userid,$forumid,$name){
 					// Error
 					return false;
 			}
+			$query="UPDATE fo_forums SET threads=threads+1 WHERE id=:forumid";
+			$sqlVars2=array();
+			$stmt=$db->prepare($query);
+			$sqlVars2[':forumid']=$forumid;
+			if(!$stmt->execute($sqlVars2)){
+				return false;
+			}
 
 	} catch (PDOException $e) {
 		addAlert("danger", "Oops, looks like our database encountered an error.");
@@ -2988,7 +2995,7 @@ function loadSubscriptions($userid){
 			$db = pdoConnect();
 			$sqlVars = array();
 			error_log($userid);
-			$query = "SELECT id,name,posts from fo_forums where id in (select fid from um_user_subscriptions
+			$query = "SELECT id,name,threads from fo_forums where id in (select fid from um_user_subscriptions
 					where uid=:userid)
 					";
 			$stmt = $db->prepare($query);

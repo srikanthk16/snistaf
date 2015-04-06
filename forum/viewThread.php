@@ -39,9 +39,64 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
   <?php
   $tid=$_GET['id'];
 $resultarray=loadThreadPosts($tid);
-print_r($resultarray);
+print_r($resultarray);?>
 
+<table border="1">
+	<thead>
+		<th>Forum</th>
+		<th>Posts</th>
+	</thead>
+	<tbody>
+<?php foreach ($resultarray as $row): array_map('htmlentities', $row); ?>
+    <tr>
+      <td><a href="viewForum.php?id=<?php echo intval($row[0]);?>" ><?php echo $row[1]; ?></a></td>
+			<td><?php echo $row[2];?></td>
+    </tr>
+<?php endforeach; ?>
+  <tbody>
+</table>
 
-  ?>
+	<form name="post" action="api/createPost.php" method="get">
+	<input type="hidden" name="tid" value="<?php echo $_GET['id'];?>">
+	<input type="text" name="content" >
+	<input type="submit" name="submit">
+	</form>
+	<script>
+				$(document).ready(function() {
+
+			// Load jumbotron links
+			$(".jumbotron-links").load("jumbotron_links.php");
+
+			alertWidget('display-alerts');
+
+			$("form[name='post']").submit(function(e){
+			var form = $(this);
+			var url = '../api/createPost.php';
+			$.ajax({
+				type: "GET",
+				url: url,
+				data: {
+				content:	form.find('input[name="content"]').val(),
+				tid:	form.find('input[name="tid"]').val(),
+				ajaxMode:	"true"
+				},
+				success: function(result) {
+				var resultJSON = processJSONResult(result);
+				if (resultJSON['errors'] && resultJSON['errors'] > 0){
+					alertWidget('display-alerts');
+				} else {
+					/*window.location.replace("");
+					alertWidget('success');*/
+					alert("success");
+					window.location.replace("");
+				}
+				}
+			});
+			// Prevent form from submitting twice
+			e.preventDefault();
+			});
+
+		});
+	</script>
 </body>
 </html>
