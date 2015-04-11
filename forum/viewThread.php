@@ -31,26 +31,32 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
  ?>
 <html>
 <?php
-echo renderTemplate("head.html", array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Subscriptions"))	;
-echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Subscriptions"));
+echo renderTemplate("head.html", array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Thread"))	;
+echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Thread"));
 ?>
 <body>
+	<div id="wrapper">
+		<?php echo renderMenu("Forum");
+		?>
+	<div id="pagewrapper" padding-left="60px" >
   <?php echo renderMenu	("Forum");?>
   <?php
   $tid=$_GET['id'];
 $resultarray=loadThreadPosts($tid);
-print_r($resultarray);?>
+//print_r($resultarray);?>
 
 <table border="1">
 	<thead>
-		<th>Forum</th>
-		<th>Posts</th>
+		<th>User</th>
+		<th>Post</th>
+		<th>added_on</th>
 	</thead>
 	<tbody>
 <?php foreach ($resultarray as $row): array_map('htmlentities', $row); ?>
     <tr>
-      <td><a href="viewForum.php?id=<?php echo intval($row[0]);?>" ><?php echo $row[1]; ?></a></td>
-			<td><?php echo $row[2];?></td>
+      <td><a href="../account/Profile.php?id=<?php echo intval($row['added_by']);?>" ><?php echo getNameById($row['added_by']); ?></a></td>
+				<td><?php echo $row['content']; ?></td>
+			<td>ON:<?php echo $row['timestamp'];?></td>
     </tr>
 <?php endforeach; ?>
   <tbody>
@@ -87,7 +93,7 @@ print_r($resultarray);?>
 				} else {
 					/*window.location.replace("");
 					alertWidget('success');*/
-					alert("success");
+					//alert("success");
 					window.location.replace("");
 				}
 				}
@@ -97,6 +103,6 @@ print_r($resultarray);?>
 			});
 
 		});
-	</script>
+	</script></div></div>
 </body>
 </html>

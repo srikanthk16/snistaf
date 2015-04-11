@@ -31,17 +31,33 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
  ?>
 <html>
 <?php
-echo renderTemplate("head.html", array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Subscriptions"))	;
-echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Subscriptions"));
+echo renderTemplate("head.html", array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Forum"))	;
+echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Forum"));
 ?>
 <body>
-  <?php echo renderMenu	("Forum");?>
+	<div id="wrapper">
+		<?php echo renderMenu("Forum");
+		?>
+	<div id="pagewrapper" padding-left="60px" >
   <?php
   $fid=$_GET['id'];
 $resultarray=loadForumThreads($fid);
-print_r($resultarray);
-
-
+//print_r($resultarray);
   ?>
+	<table border="1">
+		<thead>
+			<th>Thread</th>
+			<th>Added by</th>
+		</thead>
+		<tbody>
+	<?php foreach ($resultarray as $row): array_map('htmlentities', $row); ?>
+	    <tr>
+	      <td><a href="viewThread.php?id=<?php echo intval($row[0]);?>" ><?php echo $row[1]; ?></a></td>
+				<td><?php echo getNameById($row[2]);?></td>
+	    </tr>
+	<?php endforeach; ?>
+	  <tbody>
+	</table>
+	</div></div>
 </body>
 </html>

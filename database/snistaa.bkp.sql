@@ -3,11 +3,14 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 06, 2015 at 04:37 PM
+-- Generation Time: Apr 05, 2015 at 02:06 PM
 -- Server version: 5.6.21
 -- PHP Version: 5.6.3
 
+SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -26,6 +29,8 @@ USE `snistaa`;
 
 --
 -- Table structure for table `fb_alumni_curriculim`
+--
+-- Creation: Apr 05, 2015 at 11:57 AM
 --
 
 CREATE TABLE IF NOT EXISTS `fb_alumni_curriculim` (
@@ -53,10 +58,18 @@ CREATE TABLE IF NOT EXISTS `fb_alumni_curriculim` (
   `21` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
+--
+-- RELATIONS FOR TABLE `fb_alumni_curriculim`:
+--   `uid`
+--       `um_users` -> `id`
+--
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `fb_alumni_employability`
+--
+-- Creation: Apr 05, 2015 at 11:57 AM
 --
 
 CREATE TABLE IF NOT EXISTS `fb_alumni_employability` (
@@ -68,10 +81,18 @@ CREATE TABLE IF NOT EXISTS `fb_alumni_employability` (
   `5` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
+--
+-- RELATIONS FOR TABLE `fb_alumni_employability`:
+--   `uid`
+--       `um_users` -> `id`
+--
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `fb_alumni_impression`
+--
+-- Creation: Apr 05, 2015 at 11:57 AM
 --
 
 CREATE TABLE IF NOT EXISTS `fb_alumni_impression` (
@@ -89,10 +110,18 @@ CREATE TABLE IF NOT EXISTS `fb_alumni_impression` (
   `11` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
+--
+-- RELATIONS FOR TABLE `fb_alumni_impression`:
+--   `uid`
+--       `um_users` -> `id`
+--
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `fb_alumni_objectives`
+--
+-- Creation: Apr 05, 2015 at 11:58 AM
 --
 
 CREATE TABLE IF NOT EXISTS `fb_alumni_objectives` (
@@ -103,10 +132,18 @@ CREATE TABLE IF NOT EXISTS `fb_alumni_objectives` (
   `peod` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
+--
+-- RELATIONS FOR TABLE `fb_alumni_objectives`:
+--   `uid`
+--       `um_users` -> `id`
+--
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `fb_alumni_outcomes`
+--
+-- Creation: Apr 05, 2015 at 11:57 AM
 --
 
 CREATE TABLE IF NOT EXISTS `fb_alumni_outcomes` (
@@ -126,10 +163,18 @@ CREATE TABLE IF NOT EXISTS `fb_alumni_outcomes` (
   `m` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
+--
+-- RELATIONS FOR TABLE `fb_alumni_outcomes`:
+--   `uid`
+--       `um_users` -> `id`
+--
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `fb_employer_objectives`
+--
+-- Creation: Apr 05, 2015 at 11:46 AM
 --
 
 CREATE TABLE IF NOT EXISTS `fb_employer_objectives` (
@@ -140,10 +185,18 @@ CREATE TABLE IF NOT EXISTS `fb_employer_objectives` (
   `peod` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
+--
+-- RELATIONS FOR TABLE `fb_employer_objectives`:
+--   `uid`
+--       `um_users` -> `id`
+--
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `fb_employer_outcomes`
+--
+-- Creation: Apr 05, 2015 at 11:57 AM
 --
 
 CREATE TABLE IF NOT EXISTS `fb_employer_outcomes` (
@@ -163,10 +216,18 @@ CREATE TABLE IF NOT EXISTS `fb_employer_outcomes` (
   `m` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
+--
+-- RELATIONS FOR TABLE `fb_employer_outcomes`:
+--   `uid`
+--       `um_users` -> `id`
+--
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `fb_employer_skills`
+--
+-- Creation: Apr 05, 2015 at 11:57 AM
 --
 
 CREATE TABLE IF NOT EXISTS `fb_employer_skills` (
@@ -188,10 +249,18 @@ CREATE TABLE IF NOT EXISTS `fb_employer_skills` (
   `15` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
+--
+-- RELATIONS FOR TABLE `fb_employer_skills`:
+--   `uid`
+--       `um_users` -> `id`
+--
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `fb_parent_college`
+--
+-- Creation: Apr 05, 2015 at 11:57 AM
 --
 
 CREATE TABLE IF NOT EXISTS `fb_parent_college` (
@@ -206,10 +275,18 @@ CREATE TABLE IF NOT EXISTS `fb_parent_college` (
   `h` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
+--
+-- RELATIONS FOR TABLE `fb_parent_college`:
+--   `uid`
+--       `um_users` -> `id`
+--
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `fo_forums`
+--
+-- Creation: Apr 04, 2015 at 05:42 AM
 --
 
 CREATE TABLE IF NOT EXISTS `fo_forums` (
@@ -217,32 +294,21 @@ CREATE TABLE IF NOT EXISTS `fo_forums` (
   `name` varchar(255) COLLATE latin1_general_ci NOT NULL,
   `description` text COLLATE latin1_general_ci,
   `type` int(5) NOT NULL DEFAULT '1',
-  `threads` int(10) NOT NULL DEFAULT '0'
+  `posts` int(10) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
--- Dumping data for table `fo_forums`
+-- RELATIONS FOR TABLE `fo_forums`:
+--   `type`
+--       `fo_type` -> `id`
 --
-
-INSERT INTO `fo_forums` (`id`, `name`, `description`, `type`, `threads`) VALUES
-(17, 'beggarss', 'bigga', 3, 0),
-(18, '', NULL, 3, 0),
-(20, 'beggarssz', 'bigga', 3, 0),
-(22, 'beggarsszhkas', 'bigga', 3, 0),
-(24, 'babyegg', 'forum for dev', 3, 0),
-(25, 'beby', 'hdh', 3, 0),
-(26, 'nwo', 'new world order', 3, 0),
-(27, 'Dev', 'demo forum just for fun', 3, 0),
-(28, 'nsfw', 'not safe for work', 2, 0),
-(29, 'devForum', 'dev forum', 1, 0),
-(31, 'devthreads', 'dev', 1, 1),
-(32, 'devthreadsz', 'dev', 1, 10),
-(34, '111', '11', 1, 0);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `fo_mods`
+--
+-- Creation: Apr 05, 2015 at 08:04 AM
 --
 
 CREATE TABLE IF NOT EXISTS `fo_mods` (
@@ -251,21 +317,19 @@ CREATE TABLE IF NOT EXISTS `fo_mods` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
--- Dumping data for table `fo_mods`
+-- RELATIONS FOR TABLE `fo_mods`:
+--   `fid`
+--       `fo_forums` -> `id`
+--   `uid`
+--       `um_users` -> `id`
 --
-
-INSERT INTO `fo_mods` (`fid`, `uid`) VALUES
-(32, 2),
-(17, 1),
-(18, 1),
-(20, 1),
-(22, 1),
-(24, 1);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `fo_posts`
+--
+-- Creation: Mar 31, 2015 at 12:45 PM
 --
 
 CREATE TABLE IF NOT EXISTS `fo_posts` (
@@ -278,16 +342,19 @@ CREATE TABLE IF NOT EXISTS `fo_posts` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
--- Dumping data for table `fo_posts`
+-- RELATIONS FOR TABLE `fo_posts`:
+--   `thread_id`
+--       `fo_threads` -> `id`
+--   `added_by`
+--       `um_users` -> `id`
 --
-
-INSERT INTO `fo_posts` (`id`, `thread_id`, `content`, `added_by`, `timestamp`, `likes`) VALUES
-(1, 1, 'demoPost', 2, '2015-04-05 04:39:07', 0);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `fo_threads`
+--
+-- Creation: Mar 31, 2015 at 12:43 PM
 --
 
 CREATE TABLE IF NOT EXISTS `fo_threads` (
@@ -296,24 +363,22 @@ CREATE TABLE IF NOT EXISTS `fo_threads` (
   `name` text COLLATE latin1_general_ci NOT NULL,
   `added_by` int(10) NOT NULL,
   `time_Stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
--- Dumping data for table `fo_threads`
+-- RELATIONS FOR TABLE `fo_threads`:
+--   `forum_id`
+--       `fo_forums` -> `id`
+--   `added_by`
+--       `um_users` -> `id`
 --
-
-INSERT INTO `fo_threads` (`id`, `forum_id`, `name`, `added_by`, `time_Stamp`) VALUES
-(1, 32, 'demoThread', 2, '2015-04-05 04:35:15'),
-(2, 32, 'demoThread2', 2, '2015-04-05 08:21:38'),
-(3, 17, 'demoThread', 2, '2015-04-05 08:22:46'),
-(4, 31, 'demoThread', 2, '2015-04-05 08:24:02'),
-(5, 31, 'demoThread2', 2, '2015-04-05 08:25:18'),
-(6, 31, 'demoThread3', 1, '2015-04-06 14:29:39');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `fo_type`
+--
+-- Creation: Mar 31, 2015 at 12:38 PM
 --
 
 CREATE TABLE IF NOT EXISTS `fo_type` (
@@ -321,20 +386,12 @@ CREATE TABLE IF NOT EXISTS `fo_type` (
   `type` varchar(255) COLLATE latin1_general_ci NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
---
--- Dumping data for table `fo_type`
---
-
-INSERT INTO `fo_type` (`id`, `type`) VALUES
-(1, 'General'),
-(2, 'Announcements'),
-(3, 'Interactions'),
-(4, 'NULL');
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `um_configuration`
+--
+-- Creation: Mar 20, 2015 at 04:28 PM
 --
 
 CREATE TABLE IF NOT EXISTS `um_configuration` (
@@ -343,27 +400,12 @@ CREATE TABLE IF NOT EXISTS `um_configuration` (
   `value` varchar(150) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `um_configuration`
---
-
-INSERT INTO `um_configuration` (`id`, `name`, `value`) VALUES
-(1, 'website_name', 'SNISTAA'),
-(2, 'website_url', 'localhost/snistaa/'),
-(3, 'email', 'forums@sreenidhi.edu.in'),
-(4, 'activation', '0'),
-(5, 'resend_activation_threshold', '0'),
-(6, 'language', '../models/languages/en.php'),
-(8, 'can_register', '1'),
-(9, 'new_user_title', 'Potato'),
-(11, 'email_login', '1'),
-(12, 'token_timeout', '10800'),
-(13, 'version', '0.2.2');
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `um_department`
+--
+-- Creation: Mar 31, 2015 at 12:29 PM
 --
 
 CREATE TABLE IF NOT EXISTS `um_department` (
@@ -371,25 +413,12 @@ CREATE TABLE IF NOT EXISTS `um_department` (
   `name` varchar(255) COLLATE latin1_general_ci NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
---
--- Dumping data for table `um_department`
---
-
-INSERT INTO `um_department` (`id`, `name`) VALUES
-(1, 'Science and Humanities'),
-(2, 'Computer Science and Engineering'),
-(3, 'Information Technology'),
-(4, 'Mechanical Engineering'),
-(5, 'Biotech'),
-(6, 'Avionics'),
-(7, 'ECE'),
-(8, 'ECM'),
-(9, 'EEE');
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `um_filelist`
+--
+-- Creation: Mar 20, 2015 at 04:28 PM
 --
 
 CREATE TABLE IF NOT EXISTS `um_filelist` (
@@ -397,18 +426,12 @@ CREATE TABLE IF NOT EXISTS `um_filelist` (
   `path` varchar(150) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `um_filelist`
---
-
-INSERT INTO `um_filelist` (`id`, `path`) VALUES
-(1, 'account'),
-(2, 'forms');
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `um_groups`
+--
+-- Creation: Mar 20, 2015 at 04:28 PM
 --
 
 CREATE TABLE IF NOT EXISTS `um_groups` (
@@ -419,20 +442,12 @@ CREATE TABLE IF NOT EXISTS `um_groups` (
   `home_page_id` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `um_groups`
---
-
-INSERT INTO `um_groups` (`id`, `name`, `is_default`, `can_delete`, `home_page_id`) VALUES
-(1, 'User', 2, 0, 4),
-(2, 'Administrator', 0, 0, 5),
-(3, 'Faculty', 0, 1, 9),
-(4, 'Moderatiors', 0, 1, 0);
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `um_group_action_permits`
+--
+-- Creation: Mar 20, 2015 at 04:28 PM
 --
 
 CREATE TABLE IF NOT EXISTS `um_group_action_permits` (
@@ -442,76 +457,26 @@ CREATE TABLE IF NOT EXISTS `um_group_action_permits` (
   `permits` varchar(400) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `um_group_action_permits`
---
-
-INSERT INTO `um_group_action_permits` (`id`, `group_id`, `action`, `permits`) VALUES
-(1, 1, 'updateUserEmail', 'isLoggedInUser(user_id)'),
-(2, 1, 'updateUserPassword', 'isLoggedInUser(user_id)'),
-(3, 1, 'loadUser', 'isUserPrimaryGroup(user_id,''1'')'),
-(4, 1, 'loadUserGroups', 'isLoggedInUser(user_id)'),
-(5, 2, 'updateUserEmail', 'always()'),
-(6, 2, 'updateUserPassword', 'always()'),
-(7, 2, 'updateUser', 'always()'),
-(8, 2, 'updateUserDisplayName', 'always()'),
-(9, 2, 'updateUserTitle', 'always()'),
-(10, 2, 'updateUserEnabled', 'always()'),
-(11, 2, 'loadUser', 'always()'),
-(12, 2, 'loadUserGroups', 'always()'),
-(13, 2, 'loadUsers', 'always()'),
-(14, 2, 'deleteUser', 'always()'),
-(15, 2, 'activateUser', 'always()'),
-(16, 2, 'loadGroups', 'always()'),
-(17, 2, 'createForum', 'always()'),
-(18, 2, 'createUserActionPermit', 'always()');
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `um_group_page_matches`
+--
+-- Creation: Mar 20, 2015 at 04:28 PM
 --
 
 CREATE TABLE IF NOT EXISTS `um_group_page_matches` (
 `id` int(11) NOT NULL,
   `group_id` int(11) NOT NULL,
   `page_id` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `um_group_page_matches`
---
-
-INSERT INTO `um_group_page_matches` (`id`, `group_id`, `page_id`) VALUES
-(3, 2, 3),
-(4, 2, 4),
-(5, 2, 5),
-(6, 2, 6),
-(7, 2, 7),
-(8, 2, 8),
-(9, 2, 9),
-(10, 2, 10),
-(11, 2, 11),
-(12, 2, 12),
-(13, 2, 13),
-(14, 2, 14),
-(15, 2, 15),
-(16, 2, 16),
-(19, 1, 3),
-(20, 1, 4),
-(21, 1, 6),
-(22, 1, 13),
-(23, 1, 15),
-(24, 1, 17),
-(25, 2, 17),
-(26, 3, 17),
-(27, 4, 17),
-(28, 1, 10);
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `um_nav`
+--
+-- Creation: Mar 20, 2015 at 04:28 PM
 --
 
 CREATE TABLE IF NOT EXISTS `um_nav` (
@@ -525,28 +490,12 @@ CREATE TABLE IF NOT EXISTS `um_nav` (
   `parent_id` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `um_nav`
---
-
-INSERT INTO `um_nav` (`id`, `menu`, `page`, `name`, `position`, `class_name`, `icon`, `parent_id`) VALUES
-(1, 'left', 'account/dashboard_admin.php', 'Admin Dashboard', 1, 'dashboard-admin', 'fa fa-dashboard', 0),
-(2, 'left', 'account/users.php', 'Users', 2, 'users', 'fa fa-users', 0),
-(3, 'left', 'account/dashboard.php', 'Dashboard', 3, 'dashboard', 'fa fa-dashboard', 0),
-(4, 'left', 'account/account_settings.php', 'Account Settings', 4, 'settings', 'fa fa-gear', 0),
-(5, 'left-sub', '#', 'Site Settings', 5, '', 'fa fa-wrench', 0),
-(6, 'left-sub', 'account/site_settings.php', 'Site Configuration', 6, 'site-settings', 'fa fa-globe', 5),
-(7, 'left-sub', 'account/groups.php', 'Groups', 7, 'groups', 'fa fa-users', 5),
-(8, 'left-sub', 'account/site_authorization.php', 'Authorization', 8, 'site-pages', 'fa fa-key', 5),
-(9, 'top-main-sub', '#', '#USERNAME#', 1, 'site-settings', 'fa fa-user', 0),
-(10, 'top-main-sub', 'account/account_settings.php', 'Account Settings', 1, '', 'fa fa-gear', 9),
-(11, 'top-main-sub', 'account/logout.php', 'Log Out', 2, '', 'fa fa-power-off', 9),
-(12, 'left', 'forum/index.php', 'Forum', 3, '', 'fa fa-globe', 0);
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `um_nav_group_matches`
+--
+-- Creation: Mar 20, 2015 at 04:28 PM
 --
 
 CREATE TABLE IF NOT EXISTS `um_nav_group_matches` (
@@ -555,28 +504,12 @@ CREATE TABLE IF NOT EXISTS `um_nav_group_matches` (
   `group_id` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `um_nav_group_matches`
---
-
-INSERT INTO `um_nav_group_matches` (`id`, `menu_id`, `group_id`) VALUES
-(1, 3, 1),
-(2, 4, 1),
-(3, 9, 1),
-(4, 10, 1),
-(5, 11, 1),
-(6, 1, 2),
-(7, 2, 2),
-(8, 5, 2),
-(9, 6, 2),
-(10, 7, 2),
-(11, 8, 2),
-(12, 12, 1);
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `um_pages`
+--
+-- Creation: Mar 20, 2015 at 04:28 PM
 --
 
 CREATE TABLE IF NOT EXISTS `um_pages` (
@@ -585,32 +518,12 @@ CREATE TABLE IF NOT EXISTS `um_pages` (
   `private` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `um_pages`
---
-
-INSERT INTO `um_pages` (`id`, `page`, `private`) VALUES
-(1, 'forms/table_users.php', 1),
-(3, 'account/logout.php', 1),
-(4, 'account/dashboard.php', 1),
-(5, 'account/dashboard_admin.php', 1),
-(6, 'account/account_settings.php', 1),
-(7, 'account/site_authorization.php', 1),
-(8, 'account/site_settings.php', 1),
-(9, 'account/users.php', 1),
-(10, 'account/user_details.php', 1),
-(11, 'account/index.php', 0),
-(12, 'account/groups.php', 1),
-(13, 'forms/form_user.php', 1),
-(14, 'forms/form_group.php', 1),
-(15, 'forms/form_confirm_delete.php', 1),
-(16, 'forms/form_action_permits.php', 1),
-(17, 'account/404.php', 1);
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `um_plugin_configuration`
+--
+-- Creation: Mar 20, 2015 at 04:28 PM
 --
 
 CREATE TABLE IF NOT EXISTS `um_plugin_configuration` (
@@ -625,6 +538,8 @@ CREATE TABLE IF NOT EXISTS `um_plugin_configuration` (
 
 --
 -- Table structure for table `um_users`
+--
+-- Creation: Mar 20, 2015 at 04:28 PM
 --
 
 CREATE TABLE IF NOT EXISTS `um_users` (
@@ -645,18 +560,12 @@ CREATE TABLE IF NOT EXISTS `um_users` (
   `primary_group_id` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Specifies the primary group for the user.'
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `um_users`
---
-
-INSERT INTO `um_users` (`id`, `user_name`, `display_name`, `password`, `email`, `activation_token`, `last_activation_request`, `lost_password_request`, `lost_password_timestamp`, `active`, `title`, `sign_up_stamp`, `last_sign_in_stamp`, `enabled`, `primary_group_id`) VALUES
-(1, 'goku', 'Goku', '$2y$10$alYFtsgzj4q2zkrfoQU2.eOX2q/LiXDesu/lOdsyekD2HCxisRLo.', 'srikanthkasukurti@gmail.com', '2ea9269b4e0b275d109962db23c10824', 1426868943, 0, 1426868943, 1, 'Master Account', 1426868943, 1428329000, 1, 2),
-(2, 'demo', 'demouser', '$2y$10$Z56GefM9ke/Jt3EFRK2qCOodCkCdGjTPjtCJ9tWGK8UmfrTfp5RAa', 'demo@localhost.com', '312bd281cbd3f3bec2be3433967071da', 1428119642, 0, 1428119642, 1, 'Potato', 1428119642, 1428330728, 1, 1);
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `um_user_action_permits`
+--
+-- Creation: Mar 20, 2015 at 04:28 PM
 --
 
 CREATE TABLE IF NOT EXISTS `um_user_action_permits` (
@@ -671,6 +580,8 @@ CREATE TABLE IF NOT EXISTS `um_user_action_permits` (
 --
 -- Table structure for table `um_user_details`
 --
+-- Creation: Mar 31, 2015 at 12:33 PM
+--
 
 CREATE TABLE IF NOT EXISTS `um_user_details` (
   `id` int(11) NOT NULL,
@@ -684,16 +595,19 @@ CREATE TABLE IF NOT EXISTS `um_user_details` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='User details definition';
 
 --
--- Dumping data for table `um_user_details`
+-- RELATIONS FOR TABLE `um_user_details`:
+--   `id`
+--       `um_users` -> `id`
+--   `department`
+--       `um_department` -> `id`
 --
-
-INSERT INTO `um_user_details` (`id`, `full_name`, `roll_no`, `department`, `year_join`, `year_end`, `isAlumni`, `feedback_done`) VALUES
-(1, 'Son Goku', '1', 2, 0, 0, 0, 1);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `um_user_group_matches`
+--
+-- Creation: Mar 20, 2015 at 04:28 PM
 --
 
 CREATE TABLE IF NOT EXISTS `um_user_group_matches` (
@@ -702,20 +616,12 @@ CREATE TABLE IF NOT EXISTS `um_user_group_matches` (
   `group_id` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `um_user_group_matches`
---
-
-INSERT INTO `um_user_group_matches` (`id`, `user_id`, `group_id`) VALUES
-(1, 1, 1),
-(2, 1, 2),
-(3, 2, 1),
-(4, 2, 4);
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `um_user_subscriptions`
+--
+-- Creation: Apr 04, 2015 at 05:00 AM
 --
 
 CREATE TABLE IF NOT EXISTS `um_user_subscriptions` (
@@ -724,12 +630,12 @@ CREATE TABLE IF NOT EXISTS `um_user_subscriptions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
--- Dumping data for table `um_user_subscriptions`
+-- RELATIONS FOR TABLE `um_user_subscriptions`:
+--   `uid`
+--       `um_users` -> `id`
+--   `fid`
+--       `fo_forums` -> `id`
 --
-
-INSERT INTO `um_user_subscriptions` (`uid`, `fid`) VALUES
-(2, 32),
-(2, 34);
 
 --
 -- Indexes for dumped tables
@@ -927,7 +833,7 @@ MODIFY `id` int(10) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 -- AUTO_INCREMENT for table `fo_threads`
 --
 ALTER TABLE `fo_threads`
-MODIFY `id` int(10) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
+MODIFY `id` int(10) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `fo_type`
 --
@@ -962,7 +868,7 @@ MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=19;
 -- AUTO_INCREMENT for table `um_group_page_matches`
 --
 ALTER TABLE `um_group_page_matches`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=29;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=28;
 --
 -- AUTO_INCREMENT for table `um_nav`
 --
@@ -1101,6 +1007,8 @@ ADD CONSTRAINT `um_user_details_ibfk_2` FOREIGN KEY (`department`) REFERENCES `u
 ALTER TABLE `um_user_subscriptions`
 ADD CONSTRAINT `um_user_subscriptions_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`),
 ADD CONSTRAINT `um_user_subscriptions_ibfk_2` FOREIGN KEY (`fid`) REFERENCES `fo_forums` (`id`);
+SET FOREIGN_KEY_CHECKS=1;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

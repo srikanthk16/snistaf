@@ -3073,23 +3073,25 @@ function checkForumPermission($userid,$forumid){
 	$type=forumtype($forumid);
 	error_log($type);
 	$ismod=isMod($userid,$forumid);
-	if($type=='1'){
-		if($ismod) return true;
-		else return false;
+	error_log($ismod);
+	if($type==1){
+		if($ismod) return 1;
+		else return 0;
 	}
-	else return true;
+	else return 1;
 
 }
 function forumtype($forumid){
 	try{$db=pdoConnect();
 	$sqlVars=array();
-	$query="SELECT type from fo_forums where forum_id=:forumid";
+	$query="SELECT type from fo_forums where id=:forumid limit 1";
 	$stmt=$db->prepare($query);
 	$sqlVars[':forumid']=$forumid;
-	if(!($ans=$stmt->execute($sqlVars))){
+	if(!($stmt->execute($sqlVars))){
 		return false;
 	}
-	return $ans;}
+	$type=$stmt->fetch(PDO::FETCH_ASSOC);
+	return $type['type'];}
 	catch (PDOException $e) {
 		addAlert("danger", "Oops, looks like our database encountered an error.");
 		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
@@ -3108,8 +3110,15 @@ $sqlVars[':userid']=$userid;
 if(!$stmt->execute($sqlVars)){
 	return false;
 }
-$ansArr=$stmt->fetchall();
-return in_array($forumid,$ansArr);
+$ansArr=$stmt->fetchall(PDO::FETCH_COLUMN);
+////error_log($forumid);
+//error_log(implode(" ",$ansArr[0]));
+if(in_array($forumid,$ansArr))
+	$bool=1;
+else $bool=0;
+//error_log($bool);
+return $bool;
+//return in_array($forumid,$ansArr); this representation is waste when element is not in array, returns null
 }
 catch (PDOException $e) {
 	addAlert("danger", "Oops, looks like our database encountered an error.");
@@ -3119,5 +3128,27 @@ catch (PDOException $e) {
 	addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
 	return false;
 }
+}
+function getNameById($userid){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="SELECT user_name from um_users where id=:userid limit 1";
+	$stmt=$db->prepare($query);
+	$sqlVars[':userid']=$userid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+
+	return $ansArr['user_name'];
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
 }
 ?>
