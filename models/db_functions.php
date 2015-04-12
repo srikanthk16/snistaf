@@ -2875,11 +2875,41 @@ function addforum($userid,$forum_name,$description,$type){
 	}
 return true;
 }
+function isSubscribed($userid,$forumid){
+try{	$db=pdoConnect();
+$sqlVars=array();
+$query="SELECT fid from um_user_subscriptions where uid=:userid";
+$stmt=$db->prepare($query);
+$sqlVars[':userid']=$userid;
+if(!$stmt->execute($sqlVars)){
+	return false;
+}
+$ansArr=$stmt->fetchall(PDO::FETCH_COLUMN);
+////error_log($forumid);
+//error_log(implode(" ",$ansArr[0]));
+if(in_array($forumid,$ansArr))
+	$bool=1;
+else $bool=0;
+//error_log($bool);
+return $bool;
+//return in_array($forumid,$ansArr); this representation is waste when element is not in array, returns null
+}
+catch (PDOException $e) {
+	addAlert("danger", "Oops, looks like our database encountered an error.");
+	error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+	return false;
+} catch (ErrorException $e) {
+	addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+	return false;
+}
+}
 function addSubscription($userid,$forumid){
 	try {
 			//use prefixes when modules changed, for now omitting
 			//global $forum_db_table_prefix;
-
+			if(isSubscribed($userid,$forumid)){
+				return true;
+			}
 
 			$db = pdoConnect();
 
@@ -2933,11 +2963,20 @@ function addThread($userid,$forumid,$name){
 					// Error
 					return false;
 			}
+			$tid=$db->lastinsertid();
+
 			$query="UPDATE fo_forums SET threads=threads+1 WHERE id=:forumid";
 			$sqlVars2=array();
 			$stmt=$db->prepare($query);
 			$sqlVars2[':forumid']=$forumid;
 			if(!$stmt->execute($sqlVars2)){
+				return false;
+			}
+			$query="INSERT INTO fo_thread_stats(tid) VALUES(:tid)";
+			$sqlVars3=array();
+			$stmt=$db->prepare($query);
+			$sqlVars3[':tid']=$tid;
+			if(!$stmt->execute($sqlVars3)){
 				return false;
 			}
 
@@ -2976,7 +3015,7 @@ function addPost($userid,$threadid,$content){
 					// Error
 					return false;
 			}
-
+			addThreadStatsPosts($threadid);
 	} catch (PDOException $e) {
 		addAlert("danger", "Oops, looks like our database encountered an error.");
 		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
@@ -3151,4 +3190,45 @@ function getNameById($userid){
 		return false;
 	}
 }
+function addThreadStatsPosts($tid){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="UPDATE fo_thread_stats SET posts=posts+1,last_updated=NOW() where tid=:tid";
+	$stmt=$db->prepare($query);
+	$sqlVars[':tid']=$tid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	return true;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function addThreadStatsViews($tid){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="UPDATE fo_thread_stats SET views=views+1 where tid=:tid";
+	$stmt=$db->prepare($query);
+	$sqlVars[':tid']=$tid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	return true;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+
 ?>

@@ -42,6 +42,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
   <?php echo renderMenu	("Forum");?>
   <?php
   $tid=$_GET['id'];
+	addThreadStatsViews($tid);
 $resultarray=loadThreadPosts($tid);
 //print_r($resultarray);?>
 

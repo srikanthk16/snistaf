@@ -41,9 +41,105 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 	<div id="pagewrapper" padding-left="60px" >
   <?php
   $fid=$_GET['id'];
-$resultarray=loadForumThreads($fid);
+	$uid=$loggedInUser->user_id;
+	$resultarray=loadForumThreads($fid);
 //print_r($resultarray);
   ?>
+	<?php
+    if(!isSubscribed($uid,$fid)){
+			?>
+				<form name="forum" action="../api/createSubscription.php" method="get">
+				<input type="hidden" name="uid" id="uid" value="<?php echo $uid; ?>"></input>
+				<input type="hidden" name="fid" id="fid" value="<?php echo $fid; ?>"></input>
+				<input type="submit" name="submit" value="subscribe"></input>
+			</form>
+			<script>
+						$(document).ready(function() {
+
+					// Load jumbotron links
+					$(".jumbotron-links").load("jumbotron_links.php");
+
+					alertWidget('display-alerts');
+
+					$("form[name='forum']").submit(function(e){
+					var form = $(this);
+					var url = '../api/createSubscription.php';
+					$.ajax({
+						type: "GET",
+						url: url,
+						data: {
+						uid:	form.find('input[name="uid"]').val(),
+						fid:	form.find('input[name="fid"]').val(),
+						ajaxMode:	"true"
+						},
+						success: function(result) {
+						var resultJSON = processJSONResult(result);
+						if (resultJSON['errors'] && resultJSON['errors'] > 0){
+							alertWidget('display-alerts');
+						} else {
+							/*window.location.replace("");
+							alertWidget('success');*/
+							//alert("success");
+							window.location.replace("");
+						}
+						}
+					});
+					// Prevent form from submitting twice
+					e.preventDefault();
+					});
+
+				});
+			</script>
+			<?php
+		}
+		else{
+			?>
+			<form name="forum" action="../api/createSubscription.php" method="get">
+			<input type="hidden" name="fid" id="fid" value="<?php echo $fid; ?>"></input>
+			<input type="text" name="name" id="name"></input>
+			<input type="submit" name="submit" value="ThreadIT"></input>
+		</form>
+		<script>
+					$(document).ready(function() {
+
+				// Load jumbotron links
+				$(".jumbotron-links").load("jumbotron_links.php");
+
+				alertWidget('display-alerts');
+
+				$("form[name='forum']").submit(function(e){
+				var form = $(this);
+				var url = '../api/createThread.php';
+				$.ajax({
+					type: "GET",
+					url: url,
+					data: {
+					fid:	form.find('input[name="fid"]').val(),
+					name:	form.find('input[name="name"]').val(),
+					ajaxMode:	"true"
+					},
+					success: function(result) {
+					var resultJSON = processJSONResult(result);
+					if (resultJSON['errors'] && resultJSON['errors'] > 0){
+						alertWidget('display-alerts');
+					} else {
+						/*window.location.replace("");
+						alertWidget('success');*/
+						//alert("success");
+						window.location.replace("");
+					}
+					}
+				});
+				// Prevent form from submitting twice
+				e.preventDefault();
+				});
+
+			});
+		</script>
+			<?php
+		}
+	?>
+
 	<table border="1">
 		<thead>
 			<th>Thread</th>

@@ -33,6 +33,7 @@ require_once("models/config.php");
 setReferralPage(getAbsoluteDocumentPath(__FILE__));
 
 
+
 // If registration is disabled, send them back to the home page with an error message
 if (!$can_register){
 	addAlert("danger", lang("ACCOUNT_REGISTRATION_DISABLED"));
@@ -54,27 +55,27 @@ if(isUserLoggedIn()) {
 	echo renderTemplate("head.html", array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Register"));
 
     $fields = [
-        'user_name' => [
+        'full_name' => [
             'type' => 'text',
-            'label' => 'Username',
+            'label' => 'Full name',
             'icon' => 'fa fa-fw fa-edit',
             'validator' => [
                 'minLength' => 1,
-                'maxLength' => 25,
-                'label' => 'Username'
+                'maxLength' => 255,
+                'label' => 'Fullname'
             ],
-            'placeholder' => 'User name'
+            'placeholder' => 'Full name'
         ],
-        'display_name' => [
+        'roll_no' => [
             'type' => 'text',
-            'label' => 'Display Name',
+            'label' => 'Roll number',
             'icon' => 'fa fa-fw fa-edit',
             'validator' => [
                 'minLength' => 1,
-                'maxLength' => 50,
-                'label' => 'Display name'
+                'maxLength' => 12,
+                'label' => 'Roll Number'
             ],
-            'placeholder' => 'Display name'
+            'placeholder' => 'Roll number'
         ],
         'email' => [
             'type' => 'text',
@@ -136,12 +137,12 @@ if(isUserLoggedIn()) {
 		  </div>
 		  <div class='row'>
 			<div class='col-sm-12'>
-                {{user_name}}
+                {{full_name}}
             </div>
 		  </div>
 		  <div class='row'>
             <div class='col-sm-12'>
-                {{display_name}}
+                {{roll_no}}
             </div>
 		  </div>
 		  <div class='row'>
@@ -172,7 +173,7 @@ if(isUserLoggedIn()) {
 		  <br>
 		  <div class='form-group'>
 			<div class='col-sm-12'>
-			  <button type='submit' class='btn btn-success submit' value='Register'>Register</button>
+			  <button type='submit' class='btn btn-success submit' value='detAccept'>Give ma Details</button>
 			</div>
 		  </div>
           <div class='collapse'>
