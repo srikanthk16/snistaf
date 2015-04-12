@@ -77,29 +77,28 @@ if(isUserLoggedIn()) {
             ],
             'placeholder' => 'Roll number'
         ],
-        'email' => [
+        'yearJoin' => [
             'type' => 'text',
-            'label' => 'Email',
-            'icon' => 'fa fa-fw fa-envelope',
+            'label' => 'Year Joined',
+            'icon' => 'fa fa-fw fa-edit',
             'validator' => [
                 'minLength' => 1,
-                'maxLength' => 150,
+                'maxLength' => 4,
                 'email' => true,
-                'label' => 'Email'
+                'label' => 'YearJoin'
             ],
-            'placeholder' => 'Email address'
+            'placeholder' => 'Year Joined'
         ],
-        'password' => [
+        'YearEnd' => [
             'type' => 'password',
-            'label' => 'Password',
-            'icon' => 'fa fa-fw fa-key',
+            'label' => 'Year of completion',
+            'icon' => 'fa fa-fw fa-edit',
             'validator' => [
-                'minLength' => 8,
-                'maxLength' => 50,
-                'label' => 'Password',
-                'passwordMatch' => 'passwordc'
+                'minLength' => 1,
+                'maxLength' => 4,
+                'label' => 'Year of Completion',
             ],
-            'placeholder' => '8-50 characters'
+            'placeholder' => 'Optional'
         ],
         'passwordc' => [
             'type' => 'password',
