@@ -44,20 +44,26 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
   $tid=$_GET['id'];
 	addThreadStatsViews($tid);
 $resultarray=loadThreadPosts($tid);
+if(isset($_GET['page'])){
+$offset=$_GET['page'];}
+else
+$offset=0;
+$results=array_slice($resultarray,$offset*10,($offset*10)+10,true);
+//print_r($results);
 //print_r($resultarray);?>
 
-<table border="1">
+<table class="table table-responsive">
 	<thead>
-		<th>User</th>
-		<th>Post</th>
-		<th>added_on</th>
+		<th class="col-md-1">User</th>
+		<th class="col-md-6">Post</th>
+		<th class="col-md-1">added_on</th>
 	</thead>
 	<tbody>
-<?php foreach ($resultarray as $row): array_map('htmlentities', $row); ?>
+<?php foreach ($results as $row): array_map('htmlentities', $row); ?>
     <tr>
-      <td><a href="../account/Profile.php?id=<?php echo intval($row['added_by']);?>" ><?php echo getNameById($row['added_by']); ?></a></td>
-				<td><?php echo $row['content']; ?></td>
-			<td>ON:<?php echo $row['timestamp'];?></td>
+      <td class="col-md-1"><a href="../account/Profile.php?id=<?php echo intval($row['added_by']);?>" ><?php echo getNameById($row['added_by']); ?></a></td>
+				<td class="col-md-6"><?php echo $row['content']; ?></td>
+			<td class="col-md-1">ON:<?php echo $row['timestamp'];?></td>
     </tr>
 <?php endforeach; ?>
   <tbody>

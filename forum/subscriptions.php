@@ -44,6 +44,11 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 	<?php
 	$user_id=$loggedInUser->user_id;
 	$resultarray = loadSubscriptions($user_id);
+	if(isset($_GET['page'])){
+	$offset=$_GET['page'];}
+	else
+	$offset=0;
+	$results=array_slice($resultarray,$offset*10,($offset*10)+10,true);
 	//print_r($resultarray);
 	 ?>
 	<!--<script>
@@ -78,16 +83,16 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 
 	  });
 	</script>-->
-<table border="1">
+<table class="table">
 	<thead>
-		<th>Forum</th>
-		<th>Posts</th>
+		<th class="col-md-6">Your Subscribed Forums</th>
+		<th class="col-md-1">Posts</th>
 	</thead>
 	<tbody>
-<?php foreach ($resultarray as $row): array_map('htmlentities', $row); ?>
+<?php foreach ($results as $row): array_map('htmlentities', $row); ?>
     <tr>
-      <td><a href="viewForum.php?id=<?php echo intval($row[0]);?>" ><?php echo $row[1]; ?></a></td>
-			<td><?php echo $row[2];?></td>
+      <td class="col-md-6"><a href="viewForum.php?id=<?php echo intval($row[0]);?>" ><?php echo $row[1]; ?></a></td>
+			<td class="cold-md-1"><?php echo $row[2];?></td>
     </tr>
 <?php endforeach; ?>
   <tbody>

@@ -43,6 +43,11 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
   $fid=$_GET['id'];
 	$uid=$loggedInUser->user_id;
 	$resultarray=loadForumThreads($fid);
+	if(isset($_GET['page'])){
+	$offset=$_GET['page'];}
+	else
+	$offset=0;
+	$results=array_slice($resultarray,$offset*10,($offset*10)+10,true);
 //print_r($resultarray);
   ?>
 	<?php
@@ -140,16 +145,16 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 		}
 	?>
 
-	<table border="1">
+	<table class="table">
 		<thead>
-			<th>Thread</th>
-			<th>Added by</th>
+			<th class="col-md-6">Thread</th>
+			<th class="col-md-2">Added by</th>
 		</thead>
 		<tbody>
-	<?php foreach ($resultarray as $row): array_map('htmlentities', $row); ?>
+	<?php foreach ($results as $row): array_map('htmlentities', $row); ?>
 	    <tr>
-	      <td><a href="viewThread.php?id=<?php echo intval($row[0]);?>" ><?php echo $row[1]; ?></a></td>
-				<td><?php echo getNameById($row[2]);?></td>
+	      <td class="col-md-6"><a href="viewThread.php?id=<?php echo intval($row[0]);?>" ><?php echo $row[1]; ?></a></td>
+				<td class="col-md-2"><?php echo getNameById($row[2]);?></td>
 	    </tr>
 	<?php endforeach; ?>
 	  <tbody>
