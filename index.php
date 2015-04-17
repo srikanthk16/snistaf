@@ -29,6 +29,7 @@ if(isUserLoggedIn()) {
         </ul>
         <h3 class="text-muted">SNISTAF</h3>
       </div>
+			
       <div class="jumbotron">
         <h1>Welcome to SNISTAF!</h1>
         <p class="lead">Under Construction</p>

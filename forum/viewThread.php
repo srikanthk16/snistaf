@@ -48,6 +48,7 @@ if(isset($_GET['page'])){
 $offset=$_GET['page'];}
 else
 $offset=0;
+$arr_length=count($resultarray);
 $results=array_slice($resultarray,$offset*10,($offset*10)+10,true);
 //print_r($results);
 //print_r($resultarray);?>
@@ -68,12 +69,31 @@ $results=array_slice($resultarray,$offset*10,($offset*10)+10,true);
 <?php endforeach; ?>
   <tbody>
 </table>
-
-	<form name="post" action="api/createPost.php" method="get">
+<!-- Modal -->
+<div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Create Post</h4>
+      </div>
+      <div class="modal-body">
+	<form name="post" class="form-group" action="../api/createPost.php" method="get">
 	<input type="hidden" name="tid" value="<?php echo $_GET['id'];?>">
-	<input type="text" name="content" >
-	<input type="submit" name="submit">
-	</form>
+	<textarea class="form-control" form="post" rows="3" name="content"></textarea>
+</div>
+	<div class="modal-footer">
+		<input type="submit" name="submit" class="btn btn-default" >
+		</form>
+		</div>
+	</div>
+</div>
+</div>
+<button type="button" class="btn btn-primary btn-small" data-toggle="modal" data-target="#postModal">
+Post
+</button>
+	<a href="?id=<?php echo $tid;?>&page=<?php echo $offset==0?0:$offset-=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-left" aria-hidden="true" ></span></a>
+	<a href="?id=<?php echo $tid;?>&page=<?php echo $offset*10<$arr_length?$offset:$offset+=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-right" aria-hidden="true"></span></a>
+
 	<script>
 				$(document).ready(function() {
 
@@ -89,7 +109,7 @@ $results=array_slice($resultarray,$offset*10,($offset*10)+10,true);
 				type: "GET",
 				url: url,
 				data: {
-				content:	form.find('input[name="content"]').val(),
+				content:	form.find('textarea[name="content"]').val(),
 				tid:	form.find('input[name="tid"]').val(),
 				ajaxMode:	"true"
 				},

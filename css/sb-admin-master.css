@@ -1,8 +1,8 @@
-/* 
+/*
 Author: Start Bootstrap - http://startbootstrap.com
 'SB Admin' HTML Template by Start Bootstrap
 
-All Start Bootstrap themes are licensed under Apache 2.0. 
+All Start Bootstrap themes are licensed under Apache 2.0.
 For more info and more free Bootstrap 3 HTML themes, visit http://startbootstrap.com!
 */
 
@@ -122,7 +122,7 @@ table.tablesorter thead tr th:hover {
   }
 
   /* Bootstrap Default Overrides - Customized Dropdowns for the Side Nav */
-  
+
   .side-nav>li.dropdown>ul.dropdown-menu {
 	position: relative;
 	min-width: 200px;
@@ -139,7 +139,7 @@ table.tablesorter thead tr th:hover {
 	color: #ffffff;
 	padding: 15px 15px 15px 25px;
   }
-  
+
   .side-nav>li.dropdown>ul.dropdown-menu>li>a:hover,
   .side-nav>li.dropdown>ul.dropdown-menu>li.active>a,
   .side-nav>li.dropdown>ul.dropdown-menu>li>a:focus {
@@ -150,7 +150,7 @@ table.tablesorter thead tr th:hover {
   .side-nav>li>a {
 	width: 200px;
   }
-  
+
   /* Nav Messages */
 
   .messages-dropdown .dropdown-menu {

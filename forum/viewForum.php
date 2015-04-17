@@ -47,6 +47,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 	$offset=$_GET['page'];}
 	else
 	$offset=0;
+	$arr_length=count($resultarray);
 	$results=array_slice($resultarray,$offset*10,($offset*10)+10,true);
 //print_r($resultarray);
   ?>
@@ -56,8 +57,9 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 				<form name="forum" action="../api/createSubscription.php" method="get">
 				<input type="hidden" name="uid" id="uid" value="<?php echo $uid; ?>"></input>
 				<input type="hidden" name="fid" id="fid" value="<?php echo $fid; ?>"></input>
-				<input type="submit" name="submit" value="subscribe"></input>
+				<input type="submit" name="submit" class="btn btn-primary" value="subscribe"></input>
 			</form>
+
 			<script>
 						$(document).ready(function() {
 
@@ -99,11 +101,32 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 		}
 		else{
 			?>
-			<form name="forum" action="../api/createSubscription.php" method="get">
-			<input type="hidden" name="fid" id="fid" value="<?php echo $fid; ?>"></input>
-			<input type="text" name="name" id="name"></input>
-			<input type="submit" name="submit" value="ThreadIT"></input>
-		</form>
+
+		<!-- Modal -->
+		<div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Create Post</h4>
+		      </div>
+		      <div class="modal-body">
+			<form name="thread" action="../api/createThread.php" method="get">
+			<input type="hidden" name="fid" value="<?php echo $fid;?>">
+			<label for="name">Name:</label>
+			<textarea type="text" class="form-control" name="name" form="thread" rows="2"></textarea>
+			<label for="content">Post:</label>
+			<textarea type="text" class="form-control" name="content" form="thread" rows="5"></textarea>
+		</div>
+			<div class="modal-footer">
+				<input type="submit" name="submit" class="btn btn-default" >
+				</form>
+				</div>
+			</div>
+		</div>
+		</div>
+		<button type="button" class="btn btn-primary btn-small" data-toggle="modal" data-target="#postModal">
+		Create Thread
+		</button>
 		<script>
 					$(document).ready(function() {
 
@@ -112,7 +135,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 
 				alertWidget('display-alerts');
 
-				$("form[name='forum']").submit(function(e){
+				$("form[name='thread']").submit(function(e){
 				var form = $(this);
 				var url = '../api/createThread.php';
 				$.ajax({
@@ -120,7 +143,8 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 					url: url,
 					data: {
 					fid:	form.find('input[name="fid"]').val(),
-					name:	form.find('input[name="name"]').val(),
+					name:	form.find('textarea[name="name"]').val(),
+					content: form.find('textarea[name="content"]').val(),
 					ajaxMode:	"true"
 					},
 					success: function(result) {
@@ -149,16 +173,23 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 		<thead>
 			<th class="col-md-6">Thread</th>
 			<th class="col-md-2">Added by</th>
+			<th class="col-md-2">Posts</th>
+			<th class="col-md-2">Views</th>
 		</thead>
 		<tbody>
 	<?php foreach ($results as $row): array_map('htmlentities', $row); ?>
 	    <tr>
 	      <td class="col-md-6"><a href="viewThread.php?id=<?php echo intval($row[0]);?>" ><?php echo $row[1]; ?></a></td>
 				<td class="col-md-2"><?php echo getNameById($row[2]);?></td>
+				<td class="col-md-2"><?php echo getPostsNumber(intval($row[0]));?></td>
+				<td class="col-md-2"><?php echo getviewsNumber(intval($row[0]));?></td>
 	    </tr>
 	<?php endforeach; ?>
 	  <tbody>
 	</table>
+	<a href="?id=<?php echo $fid;?>&page=<?php echo $offset==0?0:$offset-=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-left" aria-hidden="true" ></span></a>
+	<a href="?id=<?php echo $fid;?>&page=<?php echo $offset*10<$arr_length?$offset:$offset+=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-right" aria-hidden="true"></span></a>
+
 	</div></div>
 </body>
 </html>

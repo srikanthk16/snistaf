@@ -31,7 +31,7 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
  ?>
 <html>
 <?php
-echo renderTemplate("head.html", array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Subscriptions"))	;
+//echo renderTemplate("head.html", array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Subscriptions"))	;
 echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Subscriptions"));
 ?>
 
@@ -48,6 +48,8 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 	$offset=$_GET['page'];}
 	else
 	$offset=0;
+	$arr_length=count($resultarray);
+	//print_r($arr_length);
 	$results=array_slice($resultarray,$offset*10,($offset*10)+10,true);
 	//print_r($resultarray);
 	 ?>
@@ -83,6 +85,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 
 	  });
 	</script>-->
+
 <table class="table">
 	<thead>
 		<th class="col-md-6">Your Subscribed Forums</th>
@@ -97,10 +100,13 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 <?php endforeach; ?>
   <tbody>
 </table>
+<a href="?page=<?php echo $offset==0?0:$offset-=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-left" aria-hidden="true" ></span></a>
+<a href="?page=<?php echo $offset*10<$arr_length?$offset:$offset+=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-right" aria-hidden="true"></span></a>
 
+	</div>
 
+	</div>
 
-	</div></div>
 
   <?php echo renderTemplate("footer.html"); ?>
 </body>

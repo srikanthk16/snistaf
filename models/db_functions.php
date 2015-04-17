@@ -2915,9 +2915,7 @@ function addSubscription($userid,$forumid){
 
 			$sqlVars = array();
 
-			$query = "INSERT into um_user_subscriptions(uid,fid)
-					VALUES(:userid,:forumid)
-					";
+			$query = "INSERT into um_user_subscriptions(uid,fid) VALUES(:userid,:forumid)";
 			$stmt = $db->prepare($query);
 			$sqlVars[':userid'] =intval($userid);
 			$sqlVars[':forumid']=intval($forumid);
@@ -2937,7 +2935,7 @@ function addSubscription($userid,$forumid){
 }
 
 
-function addThread($userid,$forumid,$name){
+function addThread($userid,$forumid,$name,$content){
 	try {
 			//global $forum_db_table_prefix;
 			//use prefixes when modules changed, for now omitting
@@ -2964,7 +2962,7 @@ function addThread($userid,$forumid,$name){
 					return false;
 			}
 			$tid=$db->lastinsertid();
-
+			addPost($userid,$tid,$content);
 			$query="UPDATE fo_forums SET threads=threads+1 WHERE id=:forumid";
 			$sqlVars2=array();
 			$stmt=$db->prepare($query);
@@ -3220,6 +3218,48 @@ function addThreadStatsViews($tid){
 		return false;
 	}
 	return true;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function getPostsNumber($tid){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="SELECT * from fo_thread_stats where tid=:tid";
+	$stmt=$db->prepare($query);
+	$sqlVars[':tid']=$tid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+	return $ansArr['posts'];
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function getViewsNumber($tid){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="SELECT * from fo_thread_stats where tid=:tid";
+	$stmt=$db->prepare($query);
+	$sqlVars[':tid']=$tid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+	return $ansArr['views'];
 	}
 	catch (PDOException $e) {
 		addAlert("danger", "Oops, looks like our database encountered an error.");

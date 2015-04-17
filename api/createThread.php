@@ -43,9 +43,10 @@ $user_id=$loggedInUser->user_id;
 //print $user_id;
 $validator = new Validator();
 $fid = $validator->requiredGetVar('fid');
-$name = $validator->optionalGetVar('name');
+$name = $validator->requiredGetVar('name');
+$content=$validator->optionalGetVar('content');
 //print $name;
-if(!addThread($user_id,$fid,$name)){
+if(!addThread($user_id,$fid,$name,$content)){
   print "unknown error";
   apiReturnError($ajax, SITE_ROOT);
 }
