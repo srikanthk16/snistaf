@@ -3268,6 +3268,61 @@ function getViewsNumber($tid){
 	} catch (ErrorException $e) {
 		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
 		return false;
+	}}
+
+function addAlumniFB1($uid,$answers){
+//error_log($uid);
+//error_log(implode(" ",$answers));
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="INSERT into fb_alumni_objectives values(:uid,:a,:b,:c,:d)";
+	$stmt=$db->prepare($query);
+	$sqlVars[':uid']=$uid;
+	$sqlVars[':a']=$answers[0];
+	$sqlVars[':b']=$answers[1];
+	$sqlVars[':c']=$answers[2];
+	$sqlVars[':d']=$answers[3];
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	//$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+	return true;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function addAlumniFB4($uid,$answers){
+//error_log($uid);
+//error_log(implode(" ",$answers));
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="INSERT into fb_alumni_employability values(:uid,:a,:b,:c,:d,:e)";
+	$stmt=$db->prepare($query);
+	$sqlVars[':uid']=$uid;
+	$sqlVars[':a']=$answers[0];
+	$sqlVars[':b']=$answers[1];
+	$sqlVars[':c']=$answers[2];
+	$sqlVars[':d']=$answers[3];
+	$sqlVars[':e']=$answers[4];
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	//$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+	return true;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
 	}
 }
 

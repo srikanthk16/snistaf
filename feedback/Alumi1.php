@@ -29,7 +29,7 @@ THE SOFTWARE.
 
 */
 
-require_once("models/config.php");
+require_once("../models/config.php");
 
 // Public page
 
@@ -78,7 +78,7 @@ Not So Satisfactory  :1
 
 
 
-<?php 
+<?php
 if($step==1){
 ?>
 <form name="al1" method="get" action="../api/alumniFB1.php">
@@ -98,6 +98,7 @@ if($step==1){
 to design, development of solutions and to arrive at an optimal solution using modern tools which help them to be
 
 employable.
+<input type="hidden" name="uid" value="<?php echo $userid;?>">
 </td>
 <td>
 <input type="text" class="inputwidth" name="a"></input>
@@ -139,22 +140,23 @@ society and the need for environmental protection and sustainable development
 <script>
         $(document).ready(function() {
 		  // Load navigation bar
-		  
+
 		  // Load jumbotron links
 		  $(".jumbotron-links").load("jumbotron_links.php");
 		  alertWidget('display-alerts');
 
-		  $("form[name='login']").submit(function(e){
+		  $("form[name='al1']").submit(function(e){
 			var form = $(this);
-			var url = 'api/alumniFB1.php';
+			var url = '../api/alumniFB1.php';
 			$.ajax({
-			  type: "POST",
+			  type: "GET",
 			  url: url,
 			  data: {
+				uid: form.find('input[name="uid"]').val(),
 				a:	form.find('input[name="a"]').val(),
 				b:	form.find('input[name="b"]').val(),
 				c:	form.find('input[name="c"]').val(),
-				d:	form.find('input[name="d"]').val(),				
+				d:	form.find('input[name="d"]').val(),
 				ajaxMode:	"true"
 			  },
 			  success: function(result) {
@@ -176,7 +178,86 @@ society and the need for environmental protection and sustainable development
 <?php }
 elseif($step==2){
 ?>
+<form method="get" name="al4" action="../api/alumniFB4.php">
+<table width="800px">
+<tr>
+<th colspan="2">Employability</th>
+</tr>
+<tr>
+<td>
+	<input type="hidden" value="<?php echo $loggedInUser->user_id;?>">
+1)Pl. rate provision of employability enhancement activity through curriculum itself [ LR, QA, Soft skills]
+</td>
+<td> <input type="text" class="inputwidth" name="a"></td>
+</tr>
+<tr>
+<td>
+2)Rate provision of employability enhancement activity through external experts [ CRT etc.]
+</td>
+<td> <input type="text" class="inputwidth" name="b"></td>
+</tr>
+<tr>
+<td>
+3)Rate the study/practice  material given to you for employability  enhancement
+</td>
+<td> <input type="text" class="inputwidth" name="c"></td>
+</tr>
+<tr>
+<td>
+4)Rate  the  Career Guidance  received through faculty and External Trainers
+</td>
+<td> <input type="text" name="d" class="inputwidth"></td>
+</tr>
+<tr>
+<td>
+5)Rate the Placement services ,  Placement intimation / off campus placement etc.
+</td>
+<td> <input type="text" class="inputwidth" name="e"></td>
+</tr>
 
+
+</table>
+<input type="submit" value="submit" >
+</form>
+<script>
+        $(document).ready(function() {
+		  // Load navigation bar
+
+		  // Load jumbotron links
+		  $(".jumbotron-links").load("jumbotron_links.php");
+		  alertWidget('display-alerts');
+
+		  $("form[name='al4']").submit(function(e){
+			var form = $(this);
+			var url = '../api/alumniFB4.php';
+			$.ajax({
+			  type: "GET",
+			  url: url,
+			  data: {
+				uid: form.find('input[name="uid"]').val(),
+				a:	form.find('input[name="a"]').val(),
+				b:	form.find('input[name="b"]').val(),
+				c:	form.find('input[name="c"]').val(),
+				d:	form.find('input[name="d"]').val(),
+				e: 	form.find('input[name="e"]').val(),
+				ajaxMode:	"true"
+			  },
+			  success: function(result) {
+				var resultJSON = processJSONResult(result);
+				if (resultJSON['errors'] && resultJSON['errors'] > 0){
+				  alertWidget('display-alerts');
+
+				} else {
+				  window.location.replace("?step=3");
+				}
+			  }
+			});
+			// Prevent form from submitting twice
+			e.preventDefault();
+		  });
+
+		});
+	</script>
 <?php }
 elseif($step==3){
 ?>
@@ -194,4 +275,3 @@ else{
 
 </body>
 </html>
-
