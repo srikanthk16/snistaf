@@ -158,7 +158,8 @@ function createUser($user_name, $display_name, $email,$fullname,$roll,$yearjoin,
         addAlert("danger", "year join is problem in count ");
         $error_count++;
     }
-    if(!($yearjoin<=date('Y')||$yearjoin>1997 )){
+    $curyear=date('Y');
+    if(!($yearjoin<=$curyear||$yearjoin>1997 )){
         addAlert("danger", "year join is problem in comparison");
         $error_count++;
     }
@@ -171,7 +172,8 @@ function createUser($user_name, $display_name, $email,$fullname,$roll,$yearjoin,
         addAlert("danger", "Year end is problem :P");
         $error_count++;
     }
-    if($yearend<date('y')){
+
+    if($yearend<$curyear){
       $alumni=1; //needs improvements
     }
     if(minMaxRange(1,150,$title)) {
