@@ -41,9 +41,17 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 		<?php echo renderMenu("Forum");
 		?>
 	<div id="pagewrapper" padding-left="60px" >
+		<ol class="breadcrumb">
+		<li><a href="#">Forums</a></li>
+		</ol>
 	<?php
 	$user_id=$loggedInUser->user_id;
 	$resultarray = loadSubscriptions($user_id);
+	if(empty($resultarray)){
+		echo "Goku is gathering energy for you";
+		autoSubscribe($user_id);
+		header("");//very bad usage. please use ajax in further development
+	}
 	if(isset($_GET['page'])){
 	$offset=$_GET['page'];}
 	else
@@ -51,6 +59,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 	$arr_length=count($resultarray);
 	//print_r($arr_length);
 	$results=array_slice($resultarray,$offset*10,($offset*10)+10,true);
+
 	//print_r($resultarray);
 	 ?>
 	<!--<script>
@@ -100,9 +109,10 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 <?php endforeach; ?>
   <tbody>
 </table>
-<a href="?page=<?php echo $offset==0?0:$offset-=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-left" aria-hidden="true" ></span></a>
-<a href="?page=<?php echo $offset*10<$arr_length?$offset:$offset+=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-right" aria-hidden="true"></span></a>
-
+<ul class="pager">
+<li><a href="?page=<?php echo $offset==0?0:$offset-=1;?>" ><span  aria-hidden="true" class="fa fa-angle-left" ></span></a>
+</li><li ><a href="?page=<?php echo $offset*10<$arr_length?$offset:$offset+=1;?>" ><span aria-hidden="true" class="fa fa-angle-right"></span></a>
+</li></ul>
 	</div>
 
 	</div>

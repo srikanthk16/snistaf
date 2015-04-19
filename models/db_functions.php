@@ -3007,7 +3007,7 @@ function addThread($userid,$forumid,$name,$content){
 			if(!$stmt->execute($sqlVars3)){
 				return false;
 			}
-
+			return true;
 	} catch (PDOException $e) {
 		addAlert("danger", "Oops, looks like our database encountered an error.");
 		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
@@ -3044,6 +3044,7 @@ function addPost($userid,$threadid,$content){
 					return false;
 			}
 			addThreadStatsPosts($threadid);
+			userLevel($userid);//some algorithm to prevent this call everytime
 	} catch (PDOException $e) {
 		addAlert("danger", "Oops, looks like our database encountered an error.");
 		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
@@ -3355,5 +3356,127 @@ function addAlumniFB4($uid,$answers){
 		return false;
 	}
 }
+function autocreate(){
+	try{
+		$db=pdoConnect();
+		$query="CALL fillBatches()";
+		$stmt=$db->prepare($query);
+		if(!$stmt->execute()){
+			return false;
+		}
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function userLevel($uid){
+	try{
+		$db=pdoConnect();
+		$query="CALL fillLevels(:uid)";
+		$stmt=$db->prepare($query);
+		$sqlVars[':uid']=$uid;
+		if(!$stmt->execute($sqlVars)){
+			return false;
+		}
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function getForumName($fid){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="SELECT name from fo_forums where id=:fid limit 1";
+	$stmt=$db->prepare($query);
+	$sqlVars[':fid']=$fid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
 
+	return $ansArr['name'];
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function getThreadName($tid){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="SELECT name from fo_threads where id=:tid limit 1";
+	$stmt=$db->prepare($query);
+	$sqlVars[':tid']=$tid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+
+	return $ansArr['name'];
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function getParentForum($tid){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="SELECT forum_id from fo_threads where id=:tid limit 1";
+	$stmt=$db->prepare($query);
+	$sqlVars[':tid']=$tid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+
+	return $ansArr['forum_id'];
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function autoSubscribe($uid){
+	try{
+		$db=pdoConnect();
+		$query="call autosubscribe(:uid);";
+		$stmt=$db->prepare($query);
+		$sqlVars[':uid']=$uid;
+		if(!$stmt->execute($sqlVars)){
+			return false;
+		}
+		return true;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
 ?>

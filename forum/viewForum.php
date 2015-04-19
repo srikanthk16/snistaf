@@ -37,10 +37,15 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 <body>
 	<div id="wrapper">
 		<?php echo renderMenu("Forum");
+		$fid=$_GET['id'];
 		?>
 	<div id="pagewrapper" padding-left="60px" >
+		<ol class="breadcrumb">
+		<li><a href="index.php">Home</a></li>
+		<li class="active"><a href="?id=<?php echo $fid;?>"><?php echo getForumName($fid);?></a></li>
+		</ol>
   <?php
-  $fid=$_GET['id'];
+
 	$uid=$loggedInUser->user_id;
 	$resultarray=loadForumThreads($fid);
 	if(isset($_GET['page'])){
@@ -124,7 +129,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 			</div>
 		</div>
 		</div>
-		<button type="button" class="btn btn-primary btn-small" data-toggle="modal" data-target="#postModal">
+		<button type="button" class="btn btn-primary btn-small pull-left" data-toggle="modal" data-target="#postModal">
 		Create Thread
 		</button>
 		<script>
@@ -187,9 +192,10 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 	<?php endforeach; ?>
 	  <tbody>
 	</table>
-	<a href="?id=<?php echo $fid;?>&page=<?php echo $offset==0?0:$offset-=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-left" aria-hidden="true" ></span></a>
-	<a href="?id=<?php echo $fid;?>&page=<?php echo $offset*10<$arr_length?$offset:$offset+=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-right" aria-hidden="true"></span></a>
-
+	<ul class="pager">
+<li>	<a href="?id=<?php echo $fid;?>&page=<?php echo $offset==0?0:$offset-=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-left" aria-hidden="true" ></span></a>
+</li><li>	<a href="?id=<?php echo $fid;?>&page=<?php echo $offset*10<$arr_length?$offset:$offset+=1;?>" ><span class="fa fa-angle-right" aria-hidden="true"></span></a>
+</li></ul>
 	</div></div>
 </body>
 </html>

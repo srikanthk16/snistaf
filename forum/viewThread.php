@@ -42,6 +42,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
   <?php echo renderMenu	("Forum");?>
   <?php
   $tid=$_GET['id'];
+	$fid=getParentForum($tid);
 	addThreadStatsViews($tid);
 $resultarray=loadThreadPosts($tid);
 if(isset($_GET['page'])){
@@ -52,7 +53,12 @@ $arr_length=count($resultarray);
 $results=array_slice($resultarray,$offset*10,($offset*10)+10,true);
 //print_r($results);
 //print_r($resultarray);?>
-
+<div id="pagewrapper" padding-left="60px" >
+	<ol class="breadcrumb">
+	<li><a href="index.php">Home</a></li>
+	<li ><a href="viewForum.php?id=<?php echo $fid;?>"><?php echo getForumName($fid);?></a></li>
+	<li class="active"><a href="?id=<?php echo $tid;?>"><?php echo getThreadName($tid);?></a></li>
+	</ol>
 <table class="table table-responsive">
 	<thead>
 		<th class="col-md-1">User</th>
@@ -88,12 +94,13 @@ $results=array_slice($resultarray,$offset*10,($offset*10)+10,true);
 	</div>
 </div>
 </div>
-<button type="button" class="btn btn-primary btn-small" data-toggle="modal" data-target="#postModal">
-Post
+<button type="button" class="btn btn-primary btn-small pull-left"  data-toggle="modal" data-target="#postModal">
+Post To Thread
 </button>
-	<a href="?id=<?php echo $tid;?>&page=<?php echo $offset==0?0:$offset-=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-left" aria-hidden="true" ></span></a>
-	<a href="?id=<?php echo $tid;?>&page=<?php echo $offset*10<$arr_length?$offset:$offset+=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-right" aria-hidden="true"></span></a>
-
+<ul class="pager">
+<li>	<a href="?id=<?php echo $tid;?>&page=<?php echo $offset==0?0:$offset-=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-left" aria-hidden="true" ></span></a>
+</li><li>	<a href="?id=<?php echo $tid;?>&page=<?php echo $offset*10<$arr_length?$offset:$offset+=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-right" aria-hidden="true"></span></a>
+</li></ul>
 	<script>
 				$(document).ready(function() {
 
