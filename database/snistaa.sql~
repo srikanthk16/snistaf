@@ -624,8 +624,7 @@ CREATE TABLE IF NOT EXISTS `um_plugin_configuration` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `
-`
+-- Table structure for table `um_users`
 --
 
 CREATE TABLE IF NOT EXISTS `um_users` (

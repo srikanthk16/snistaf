@@ -5,7 +5,7 @@ SNISTAF API DB Functions
 By Srikanth Kasukurthi
 Copyright (c) 2015 for SNIST
 
-UserFrosting Version: 0.2.2
+UserFrosting Version: 0.2.2i
 By Alex Weissman
 Copyright (c) 2014
 
@@ -913,7 +913,7 @@ function updatePasswordFromToken($password, $current_token) {
 
 /*****************  User create and delete functions *******************/
 
-function addUser($user_name, $display_name, $title, $password, $email, $active, $activation_token){
+function addUser($user_name, $display_name,$fullname,$roll,$yearjoin,$yearend,$dept,$alumni, $title, $password, $email, $active, $activation_token){
     try {
         global $db_table_prefix;
 
@@ -966,8 +966,38 @@ function addUser($user_name, $display_name, $title, $password, $email, $active, 
         }
 
         $inserted_id = $db->lastInsertId();
+				$stmt = null;
+				$query2 = "INSERT INTO ".$db_table_prefix."user_details
+						VALUES(
+						:user_id,
+						:full_name,
+						:rollno,
+						:dept,
+						:yj,
+						:ye,
+						:alumni,
+						'0'
+						)";
 
-        $stmt = null;
+				$sqlVars2 = array(
+						':user_id' => $inserted_id,
+						':full_name' => $fullname,
+						':rollno' => $roll,
+						':dept' => $dept,
+						':yj' => $yearjoin,
+						':ye' => $yearend,
+						':alumni' => $alumni
+				);
+
+				$stmt2 = $db->prepare($query2);
+
+				if (!$stmt2->execute($sqlVars2)){
+						// Error: column does not exist
+						return false;
+				}
+
+
+        $stmt2 = null;
 
         return $inserted_id;
 

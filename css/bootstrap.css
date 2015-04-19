@@ -3907,7 +3907,10 @@ input[type="button"].btn-block {
   line-height: 1.33;
   border-radius: 6px;
 }
-
+.selectWidth {
+	width: auto;
+  	margin: auto;
+  }
 select.input-group-lg > .form-control,
 select.input-group-lg > .input-group-addon,
 select.input-group-lg > .input-group-btn > .btn {

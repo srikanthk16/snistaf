@@ -48,37 +48,42 @@ $admin = $validator->optionalPostVar('admin');
 if ($admin == "true"){
     // Admin mode must be from a logged in user
     checkLoggedInUser($ajax);
-    
+
     $csrf_token = $validator->requiredPostVar('csrf_token');
-  
+
     // Validate csrf token
     checkCSRF($ajax, $csrf_token);
-  
+
 } else {
   global $can_register;
-  
+
   if (!userIdExists('1')){
 	  addAlert("danger", lang("MASTER_ACCOUNT_NOT_EXISTS"));
 	  apiReturnError($ajax, SITE_ROOT);
   }
-  
+
   // If registration is disabled, send them back to the home page with an error message
   if (!$can_register){
 	  addAlert("danger", lang("ACCOUNT_REGISTRATION_DISABLED"));
 	  apiReturnError($ajax, SITE_ROOT);
   }
-  
+
   //Prevent the user visiting the logged in page if he/she is already logged in
   if(isUserLoggedIn()) {
 	  addAlert("danger", "I'm sorry, you cannot register for an account while logged in.  Please log out first.");
 	  apiReturnError($ajax, ACCOUNT_ROOT);
   }
-    
+
 }
 
 $user_name = str_normalize($validator->requiredPostVar('user_name'));
 $display_name = trim($validator->requiredPostVar('display_name'));
 $email = str_normalize($validator->requiredPostVar('email'));
+$fullname=trim($validator->requiredPostVar('full_name'));
+$roll=trim($validator->requiredPostVar('roll_no'));
+$yearjoin=intval(trim($validator->requiredPostVar('yearJoin')));
+$yearend=intval(trim($validator->requiredPostVar('YearEnd')));
+$dept=intval(trim($validator->requiredPostVar('dept')));
 // If we're in admin mode, require title.  Otherwise, use the default title
 if ($admin == "true"){
   $title = trim($validator->requiredPostVar('title'));
@@ -111,13 +116,13 @@ if ($admin != "true"){
         addAlert("danger", lang("CAPTCHA_FAIL"));
         $error_count++;
     }
-  
+
     // Check the honeypot. 'spiderbro' is not a real field, it is hidden on the main page and must be submitted with its default value for this to be processed.
     if ($spiderbro != "http://"){
         error_log("Possible spam received:" . print_r($_POST, true));
         addAlert("danger", "Aww hellllls no!");
         $error_count++;
-    }     
+    }
 }
 
 if ($error_count == 0){
@@ -126,18 +131,18 @@ if ($error_count == 0){
 	// Use the global email activation setting unless we're told to skip it
 	if ($admin == "true" && $skip_activation == "true")
 	  $require_activation = false;
-	else  
+	else
 	  $require_activation = $emailActivation;
-	
+
 	// Try to create the new user
-	if ($new_user_id = createUser($user_name, $display_name, $email, $title, $password, $passwordc, $require_activation, $admin)){
+	if ($new_user_id = createUser($user_name, $display_name, $email,$fullname,$roll,$yearjoin,$yearend,$dept, $title, $password, $passwordc, $require_activation, $admin)){
 
 	} else {
 		apiReturnError($ajax, ($admin == "true") ? ACCOUNT_ROOT : SITE_ROOT);
 	}
-	
+
 	// If creation succeeds, try to add groups
-	
+
 	// If we're in admin mode and add_groups is specified, try to add those groups
 	if ($admin == "true" && $add_groups){
 	  // Convert string of comma-separated group_id's into array
@@ -146,7 +151,7 @@ if ($error_count == 0){
 	  foreach ($group_ids_arr as $group_id){
 		$addition_count += addUserToGroup($new_user_id, $group_id);
 	  }
-	  
+
 	  // Set primary group
 	  if(!empty($primary_group_id)){
 		  if (updateUserPrimaryGroup($new_user_id, $primary_group_id)){
@@ -156,7 +161,7 @@ if ($error_count == 0){
 		  } else {
 			  $error_count++;
 		  }
-	  }	  
+	  }
 	// Otherwise, add default groups and set primary group for new users
 	} else {
 	  if (dbAddUserToDefaultGroups($new_user_id)){
@@ -175,7 +180,7 @@ if ($error_count == 0){
 }
 
 restore_error_handler();
-  
+
 apiReturnSuccess($ajax, ($admin == "true") ? ACCOUNT_ROOT : SITE_ROOT);
 
 ?>

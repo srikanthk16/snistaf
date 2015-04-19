@@ -1,4 +1,4 @@
-<?php
+i<?php
 /*
 
 UserFrosting Version: 0.2.2
@@ -88,6 +88,50 @@ if(isUserLoggedIn()) {
             ],
             'placeholder' => 'Email address'
         ],
+				'full_name' => [
+            'type' => 'text',
+            'label' => 'Full name',
+            'icon' => 'fa fa-fw fa-edit',
+            'validator' => [
+                'minLength' => 1,
+                'maxLength' => 255,
+                'label' => 'Fullname'
+            ],
+            'placeholder' => 'Full name'
+        ],
+        'roll_no' => [
+            'type' => 'text',
+            'label' => 'Roll number',
+            'icon' => 'fa fa-fw fa-edit',
+            'validator' => [
+                'minLength' => 1,
+                'maxLength' => 12,
+                'label' => 'Roll Number'
+            ],
+            'placeholder' => 'Roll number'
+        ],
+        'yearJoin' => [
+            'type' => 'text',
+            'label' => 'Year Joined',
+            'icon' => 'fa fa-fw fa-calendar',
+            'validator' => [
+                'minLength' => 1,
+                'maxLength' => 4,
+                'label' => 'YearJoin'
+            ],
+            'placeholder' => 'Year Joined'
+        ],
+        'YearEnd' => [
+            'type' => 'text',
+            'label' => 'Da day u escape',
+            'icon' => 'fa fa-fw fa-calendar	',
+            'validator' => [
+                'minLength' => 1,
+                'maxLength' => 4,
+                'label' => 'YearEnd',
+            ],
+            'placeholder' => 'Year of Completion'
+        ],
         'password' => [
             'type' => 'password',
             'label' => 'Password',
@@ -149,6 +193,39 @@ if(isUserLoggedIn()) {
                 {{email}}
             </div>
 		  </div>
+			<div class='row'>
+			<div class='col-sm-12'>
+                {{full_name}}
+            </div>
+		  </div>
+		  <div class='row'>
+            <div class='col-sm-12'>
+                {{roll_no}}
+            </div>
+		  </div>
+		  <div class='row'>
+			<div class='col-sm-12'>
+                {{yearJoin}}
+            </div>
+		  </div>
+		  <div class='row'>
+            <div class='col-sm-12'>
+                {{YearEnd}}
+            </div>
+		  </div>
+		  <div class='row'>
+
+            <div class='col-sm-12'>
+						<label for='sel1' style='display:inline;'>Select Dept:</label>
+<select class='form-control selectWidth' id='sel1' name='dept'>
+<option value='2'>cse</option>
+<option value='3'>it</option>
+<option value='4'>ME</option>
+<option vaue='5'>Ece</option>
+</select>
+            </div>
+		  </div>
+
 		  <div class='row'>
             <div class='col-sm-12'>
                 {{password}}
@@ -248,7 +325,7 @@ if(isUserLoggedIn()) {
                             return;
                         });
                   } else {
-                    window.location.replace('regDetails.php');
+                    window.location.replace('login.php');
                   }
                 });
             }

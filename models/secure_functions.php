@@ -99,7 +99,7 @@ function loadUsersInGroup($group_id){
  * @param boolean $admin True if admin is creating user, False if not admin creating user.
  * @return int $inserted_id
  */
-function createUser($user_name, $display_name, $email, $title, $password, $passwordc, $require_activation, $admin) {
+function createUser($user_name, $display_name, $email,$fullname,$roll,$yearjoin,$yearend,$dept, $title, $password, $passwordc, $require_activation, $admin) {
     // if we're in admin mode, then the user must be logged in and have appropriate permissions
     if ($admin == "true"){
         // This block automatically checks this action against the permissions database before running.
@@ -110,7 +110,7 @@ function createUser($user_name, $display_name, $email, $title, $password, $passw
     }
 
     $error_count = 0;
-
+    $alumni=0;
     // Check values
     if(minMaxRange(1,25,$user_name))
     {
@@ -130,10 +130,49 @@ function createUser($user_name, $display_name, $email, $title, $password, $passw
         addAlert("danger", lang("ACCOUNT_DISPLAY_INVALID_CHARACTERS"));
         $error_count++;
     }
+    if(minMaxRange(1,255,$fullname))
+    {
+        addAlert("danger", lang("ACCOUNT_DISPLAY_CHAR_LIMIT",array(1,255)));
+        $error_count++;
+    }
+    if(!isValidName($fullname)){
+        addAlert("danger", lang("ACCOUNT_DISPLAY_INVALID_CHARACTERS"));
+        $error_count++;
+    }
+    if(minMaxRange(5,11,$roll))
+    {
+        addAlert("danger", "roll max range");
+        $error_count++;
+    }
+    if(!isValidName($roll)){
+        addAlert("danger", "roll is buggy");
+        $error_count++;
+    }
     if(!isValidEmail($email))
     {
         addAlert("danger", lang("ACCOUNT_INVALID_EMAIL"));
         $error_count++;
+    }
+    if(minMaxRange(4,4,$yearjoin))
+    {
+        addAlert("danger", "year join is problem in count ");
+        $error_count++;
+    }
+    if(!($yearjoin<=date('Y')||$yearjoin>1997 )){
+        addAlert("danger", "year join is problem in comparison");
+        $error_count++;
+    }
+    if(minMaxRange(4,4,$yearend))
+    {
+        addAlert("danger","year end is problem " );
+        $error_count++;
+    }
+    if(($yearend<=2000)){
+        addAlert("danger", "Year end is problem :P");
+        $error_count++;
+    }
+    if($yearend<date('y')){
+      $alumni=1; //needs improvements
     }
     if(minMaxRange(1,150,$title)) {
         addAlert("danger", lang("ACCOUNT_TITLE_CHAR_LIMIT",array(1,150)));
@@ -167,13 +206,13 @@ function createUser($user_name, $display_name, $email, $title, $password, $passw
     $password_hash = passwordHashUF($password);
     if ($password_hash === null){
         addAlert("danger", lang("PASSWORD_HASH_FAILED"));
-        $error_count++;        
+        $error_count++;
     }
-    
+
     // Exit on any invalid parameters
     if($error_count != 0)
         return false;
-    
+
 
     //Construct a unique activation token (even if activation is not required)
     $activation_token = generateActivationToken();
@@ -213,7 +252,7 @@ function createUser($user_name, $display_name, $email, $title, $password, $passw
     }
 
     // Insert the user into the database and return the new user's id
-    return addUser($user_name, $display_name, $title, $password_hash, $email, $active, $activation_token);
+    return addUser($user_name, $display_name,$fullname,$roll,$yearjoin,$yearend,$dept,$alumni, $title, $password_hash, $email, $active, $activation_token);
 }
 
 /**
@@ -357,7 +396,7 @@ function updateUserPassword($user_id, $password, $passwordc) {
         addAlert("danger", lang("PASSWORD_HASH_FAILED"));
         return false;
     }
-      
+
     if (updateUserField($user_id, 'password', $password_hash)){
         addAlert("success", lang("ACCOUNT_PASSWORD_UPDATED"));
         return $password_hash;
@@ -414,21 +453,21 @@ function updateUserPrimaryGroup($user_id, $group_id) {
         addAlert("danger", "Sorry, you do not have permission to access this resource.");
         return false;
     }
-    
+
     // Check that the group exists, and that the user is a member of it
     if (!groupIdExists($group_id)){
         addAlert("danger", "I'm sorry, the group id you specified is invalid!");
-        return false;    
+        return false;
     } else if (!userInGroup($user_id, $group_id)){
         addAlert("danger", "I'm sorry, the specified user is not a member of the specified group.");
-        return false;     
+        return false;
     } else {
         if (updateUserField($user_id, 'primary_group_id', $group_id)){
             addAlert("success", "Primary group for user updated.");
             return true;
         } else {
             return false;
-        }        
+        }
     }
 }
 
@@ -628,7 +667,7 @@ function createGroup($name, $home_page_id) {
 /**
  * Creates new action permit mapping for a group
  * @param string $group_id the id of the group for which to create a new permit.
- * @param string $action_name the name of the action function. 
+ * @param string $action_name the name of the action function.
  * @param string $permit the permit expression, a sequence of permission validator function calls joined by '&'.
  * @return boolean true for success, false if failed
  */
@@ -643,19 +682,19 @@ function createGroupActionPermit($group_id, $action_name, $permit){
     if(!groupIdExists($group_id)){
         addAlert("danger", "I'm sorry, the group id you specified is invalid!");
         return false;
-    }    
+    }
 
     //Check that secure function name exists
     $secure_funcs = fetchSecureFunctions();
     if (!isset($secure_funcs[$action_name])){
         addAlert("danger", "I'm sorry, the specified action does not exist.");
-        return false;        
+        return false;
     }
 
     // Check that permission validators exist
     if (!isValidPermitString($permit))
         return false;
-    
+
     // Attempt to create in DB
     if (!dbCreateActionPermit($group_id, $action_name, $permit, 'group')){
         return false;
@@ -668,7 +707,7 @@ function createGroupActionPermit($group_id, $action_name, $permit){
 /**
  * Creates new action permit mapping for a user
  * @param string $user_id the id of the user for which to create a new permit.
- * @param string $action_name the name of the action function. 
+ * @param string $action_name the name of the action function.
  * @param string $permit the permit expression, a sequence of permission validator function calls joined by '&'.
  * @return boolean true for success, false if failed
  */
@@ -683,19 +722,19 @@ function createUserActionPermit($user_id, $action_name, $permit){
     if(!userIdExists($user_id)){
         addAlert("danger", "I'm sorry, the user_id you specified is invalid!");
         return false;
-    }    
+    }
 
     //Check that secure function name exists
     $secure_funcs = fetchSecureFunctions();
     if (!isset($secure_funcs[$action_name])){
         addAlert("danger", "I'm sorry, the specified action does not exist.");
-        return false;        
+        return false;
     }
 
     // Check that permission validators exist
     if (!isValidPermitString($permit))
         return false;
-    
+
     // Attempt to create in DB
     if (!dbCreateActionPermit($user_id, $action_name, $permit, 'user')){
         return false;
@@ -739,8 +778,8 @@ function updateGroup($group_id, $name, $is_default, $home_page_id) {
             addAlert("danger", lang("ACCOUNT_PERMISSION_CHAR_LIMIT", array(1, 50)));
             return false;
         }
-    }  
-    
+    }
+
     if (dbUpdateGroup($group_id, $name, $is_default, $home_page_id)){
         addAlert("success", lang("GROUP_UPDATE", array($name)));
         return true;
@@ -768,12 +807,12 @@ function updateGroupActionPermit($action_id, $group_id, $permit){
     if(!$action_permit){
         addAlert("danger", "I'm sorry, the action_id you specified is invalid!");
         return false;
-    } 
+    }
 
     // Check that permission validators exist
     if (!isValidPermitString($permit))
         return false;
-    
+
     // Attempt to create in DB
     if (!dbUpdateActionPermit($action_id, $permit, 'group')){
         return false;
@@ -798,20 +837,20 @@ function updateUserActionPermit($action_id, $user_id, $permit){
     }
 
     // TODO: Check that user exists
-    
-    
-    
+
+
+
     //Check if selected action exists
     $action_permit = fetchActionPermit($action_id, 'user');
     if(!$action_permit){
         addAlert("danger", "I'm sorry, the action_id you specified is invalid!");
         return false;
-    } 
+    }
 
     // Check that permission validators exist
     if (!isValidPermitString($permit))
         return false;
-    
+
     // Attempt to create in DB
     if (!dbUpdateActionPermit($action_id, $permit, 'user')){
         return false;
