@@ -98,6 +98,7 @@ $passwordc = $validator->requiredPostVar('passwordc');
 $add_groups = $validator->optionalPostVar('add_groups');
 $skip_activation = $validator->optionalPostVar('skip_activation');
 $primary_group_id = $validator->optionalPostVar('primary_group_id');
+$im=$validator->optionalPostVar('image');
 
 // Required for non-admin mode
 $captcha = $validator->optionalPostVar('captcha');
@@ -140,7 +141,26 @@ if ($error_count == 0){
 	} else {
 		apiReturnError($ajax, ($admin == "true") ? ACCOUNT_ROOT : SITE_ROOT);
 	}
+  if($im){
+                      if(getimagesize($_FILES['image']['tmp_name']) == FALSE)
+                      {
+                      $image=NULL;
+                      }
+                      else
+                      {
+                      $image= addslashes($_FILES['image']['tmp_name']);
+                      $imagename= addslashes($_FILES['image']['name']);
+                      $image= file_get_contents($image);
+                      $image= base64_encode($image);
+                      if(addImage($new_user_id,$imagename,$image)){
 
+                      }
+                      else{
+                        apiReturnError($ajax,SITE_ROOT);
+                      }
+
+                  }
+  }
 	// If creation succeeds, try to add groups
 
 	// If we're in admin mode and add_groups is specified, try to add those groups

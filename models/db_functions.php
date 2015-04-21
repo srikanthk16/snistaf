@@ -3200,7 +3200,7 @@ catch (PDOException $e) {
 function getNameById($userid){
 	try{	$db=pdoConnect();
 	$sqlVars=array();
-	$query="SELECT user_name from um_users where id=:userid limit 1";
+	$query="SELECT full_name from um_user_details where id=:userid limit 1";
 	$stmt=$db->prepare($query);
 	$sqlVars[':userid']=$userid;
 	if(!$stmt->execute($sqlVars)){
@@ -3208,7 +3208,7 @@ function getNameById($userid){
 	}
 	$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
 
-	return $ansArr['user_name'];
+	return $ansArr['full_name'];
 	}
 	catch (PDOException $e) {
 		addAlert("danger", "Oops, looks like our database encountered an error.");
@@ -3469,6 +3469,138 @@ function autoSubscribe($uid){
 			return false;
 		}
 		return true;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function addImage($uid,$name,$image){
+	try{
+		$db=pdoConnect();
+		$query="insert into um_images (id,name,image) values (:uid,:name,:image)";
+		$stmt=$db->prepare($query);
+		$sqlVars[':uid']=$uid;
+		$sqlVars[':name']=$name;
+		$sqlVars[':image']=$image;
+		if(!$stmt->execute($sqlVars)){
+			return false;
+		}
+		return true;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function displayImage($uid){
+	try{
+		$db=pdoConnect();
+		$query="SELECT image from um_images where id=:uid";
+		$stmt=$db->prepare($query);
+		$sqlVars[':uid']=$uid;
+		if(!$stmt->execute($sqlVars)){
+			return false;
+		}
+		$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+
+		return $ansArr['image'];
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function getDisplayNameById($userid){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="SELECT display_name from um_users where id=:userid limit 1";
+	$stmt=$db->prepare($query);
+	$sqlVars[':userid']=$userid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+
+	return $ansArr['display_name'];
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function getTitleById($userid){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="SELECT title FROM um_users where id=:userid limit 1";
+	$stmt=$db->prepare($query);
+	$sqlVars[':userid']=$userid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+
+	return $ansArr['title'];
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function getThreadCountById($userid){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="SELECT count(id) from fo_threads where added_by=:userid";
+	$stmt=$db->prepare($query);
+	$sqlVars[':userid']=$userid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	$ansArr=$stmt->fetchall();
+
+	return $ansArr[0][0];
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function getPostCountById($userid){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="SELECT count(id) from fo_posts where added_by=:userid";
+	$stmt=$db->prepare($query);
+	$sqlVars[':userid']=$userid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	$ansArr=$stmt->fetchall();
+
+	return $ansArr[0][0];
 	}
 	catch (PDOException $e) {
 		addAlert("danger", "Oops, looks like our database encountered an error.");

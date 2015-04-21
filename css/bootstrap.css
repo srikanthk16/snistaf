@@ -7117,3 +7117,17 @@ td.visible-print {
     display: none !important;
   }
 }
+table.center{
+    margin-left:auto;
+    margin-right:auto;
+
+  }
+
+
+.well.custom-well-small { width: 900px; margin: 0 auto; }
+textarea {
+    resize: none;
+}
+#ranks {
+  .list-inline;
+}

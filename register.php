@@ -172,7 +172,7 @@ if(isUserLoggedIn()) {
     $captcha = generateCaptcha();
 
     $template = "
-        <form name='newUser' class='form-horizontal' id='newUser' role='form' action='api/create_user.php' method='post'>
+        <form name='newUser' class='form-horizontal' enctype='multipart/form-data' id='newUser' role='form' action='api/create_user.php' method='post'>
 		  <div class='row'>
 			<div id='display-alerts' class='col-lg-12'>
 
@@ -241,6 +241,11 @@ if(isUserLoggedIn()) {
                 {{captcha}}
             </div>
           </div>
+					<div class='row'>
+		            <div class='col-sm-12'>
+								<input type='file' name='image' />
+		            </div>
+		          </div>
           <div class='form-group'>
             <div class='col-sm-12'>
                 <img src='$captcha' id='captcha'>

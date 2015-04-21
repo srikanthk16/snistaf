@@ -95,7 +95,8 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 	  });
 	</script>-->
 
-<table class="table">
+
+<table class="table ">
 	<thead>
 		<th class="col-md-6">Your Subscribed Forums</th>
 		<th class="col-md-1">Posts</th>
