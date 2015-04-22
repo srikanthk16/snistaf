@@ -59,23 +59,29 @@ $results=array_slice($resultarray,$offset*10,($offset*10)+10,true);
 	<li ><a href="viewForum.php?id=<?php echo $fid;?>"><?php echo getForumName($fid);?></a></li>
 	<li class="active"><a href="?id=<?php echo $tid;?>"><?php echo getThreadName($tid);?></a></li>
 	</ol>
-<table class="table table-responsive">
-	<thead>
-		<th class="col-md-1">User</th>
-		<th class="col-md-6">Post</th>
-		<th class="col-md-1">added_on</th>
-	</thead>
-	<tbody>
-<?php foreach ($results as $row): array_map('htmlentities', $row); ?>
-    <tr>
-      <td class="col-md-1"><a href="../account/Profile.php?id=<?php echo intval($row['added_by']);?>" ><?php echo getNameById($row['added_by']); ?></a></td>
-				<td class="col-md-6"><?php echo $row['content']; ?></td>
-			<td class="col-md-1">ON:<?php echo $row['timestamp'];?></td>
-    </tr>
-<?php endforeach; ?>
-  <tbody>
-</table>
+
 <!-- Modal -->
+<table class="table table-responsice">
+	<tbody>
+<?php foreach($results as $row): array_map('htmlentities',$row); ?>
+
+
+    <tr >
+			<td class="col-md-1">
+
+
+        <img src="../account/image.php?id=<?php echo $row['added_by']; ?>" width="60px" height="60px" alt="DP" class="img-responsive">
+                <figcaption><?php echo getDisplayNameById($row['added_by']); ?>
+								</br><?php echo getTitleById($row['added_by']); ?></figcaption>
+
+      </td>
+<td class="col-md-12 ">
+
+
+        <p><?php echo $row['content']; ?></p>
+
+</td></tr>
+<?php endforeach; ?></tbody></table>
 <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">

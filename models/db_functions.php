@@ -3990,4 +3990,26 @@ function isAlumni($userid){
 		return false;
 	}
 }
+function sticky($threadid){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="update fo_threads set sticky=~sticky where id=:tid";
+	$stmt=$db->prepare($query);
+	$sqlVars[':tid']=$threadid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	//$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+
+	return true;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
 ?>

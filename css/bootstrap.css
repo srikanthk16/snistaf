@@ -322,7 +322,7 @@ textarea {
 }
 
 a {
-  color: #428bca;
+  color: #7f8c8d;
   text-decoration: none;
 }
 
@@ -331,6 +331,7 @@ a:focus {
   color: #2a6496;
   text-decoration: underline;
 }
+
 
 a:focus {
   outline: thin dotted #333;
@@ -4390,7 +4391,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
   border-top: 1px solid transparent;
   box-shadow: inset 0 1px 0 rgba(52, 152, 219, 0.1);
   -webkit-overflow-scrolling: touch;
-  background-color:#3A539B;
+  background-color:#2c3e50;
 }
 
 .navbar-collapse:before,
