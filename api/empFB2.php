@@ -28,16 +28,16 @@ require_once("../models/config.php");
 //error_log(checkRequestMode("POST"));
 $ajax = checkRequestMode("get");
 //error_log($ajax);
-if(!isUserLoggedIn()) {
+/*if(!isUserLoggedIn()) {
 	addAlert("warning", "Login to continue!");
 	apiReturnError($ajax, SITE_ROOT."login.php");
-}
+}*/
 /*if (!securePage(__FILE__)){
     apiReturnError($ajax);
 }
 */
 setReferralPage(getAbsoluteDocumentPath(__FILE__));
-$user_id=$loggedInUser->user_id;
+//$user_id=$loggedInUser->user_id;
 //print $user_id;
 $validator = new Validator();
 $uid = $validator->requiredGetVar('uid');
@@ -46,18 +46,17 @@ foreach ($_GET as $key => $val){
   if($val==$_GET['uid']){
     continue;
   }
-
-  array_push($ansarray,$val);}
-  /*$ansarray[0]=$validator->requiredGetVar('a');
+  array_push($ansarray,$val);
+/*  $ansarray[0]=$validator->requiredGetVar('a');
   $ansarray[1]=$validator->requiredGetVar('b');
   $ansarray[2]=$validator->requiredGetVar('c');
-  $ansarray[3]=$validator->requiredGetVar('d');
-  //error_log(implode(" ",$ansarray));*/
-//}
+  $ansarray[3]=$validator->requiredGetVar('d');*/
+  //error_log(implode(" ",$ansarray));
+}
 //$a = $validator->optionalGetVar('a');
 //print $name;
-if(!addAlumniFB1($user_id,$ansarray)){
-  print "unknown error";
+if(!addEMPFB2($uid,$ansarray)){
+  addAlert("warning", "Feedback Error!");
   apiReturnError($ajax, SITE_ROOT);
 }
 apiReturnSuccess($ajax, getReferralPage());

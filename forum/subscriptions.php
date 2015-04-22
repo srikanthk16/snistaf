@@ -40,10 +40,16 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 	<div id="wrapper">
 		<?php echo renderMenu("Forum");
 		?>
+
 	<div id="pagewrapper" padding-left="60px" >
 		<ol class="breadcrumb">
 		<li><a href="#">Forums</a></li>
 		</ol>
+		<div class="row">
+				<div id='display-alerts' class="col-lg-12">
+
+				</div>
+			</div>
 	<?php
 	$user_id=$loggedInUser->user_id;
 	$resultarray = loadSubscriptions($user_id);
@@ -117,7 +123,11 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 	</div>
 
 	</div>
-
+	<script>
+        $(document).ready(function() {
+          alertWidget('display-alerts');
+		});
+	</script>
 
   <?php echo renderTemplate("footer.html"); ?>
 </body>

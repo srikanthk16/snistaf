@@ -1,9 +1,8 @@
 <?php
 /*
-SNISTAF API
+SNISTAF Public Code
 By Srikanth Kasukurthi
 Copyright (c) 2015 for SNIST
-
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the 'Software'), to deal
@@ -23,43 +22,48 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 */
-
 require_once("../models/config.php");
-//error_log(checkRequestMode("POST"));
-$ajax = checkRequestMode("get");
-//error_log($ajax);
 if(!isUserLoggedIn()) {
 	addAlert("warning", "Login to continue!");
 	apiReturnError($ajax, SITE_ROOT."login.php");
 }
-/*if (!securePage(__FILE__)){
-    apiReturnError($ajax);
-}
-*/
 setReferralPage(getAbsoluteDocumentPath(__FILE__));
-$user_id=$loggedInUser->user_id;
-//print $user_id;
-$validator = new Validator();
-$uid = $validator->requiredGetVar('uid');
-$ansarray=array();
-foreach ($_GET as $key => $val){
-  if($val==$_GET['uid']){
-    continue;
-  }
-
-  array_push($ansarray,$val);}
-  /*$ansarray[0]=$validator->requiredGetVar('a');
-  $ansarray[1]=$validator->requiredGetVar('b');
-  $ansarray[2]=$validator->requiredGetVar('c');
-  $ansarray[3]=$validator->requiredGetVar('d');
-  //error_log(implode(" ",$ansarray));*/
-//}
-//$a = $validator->optionalGetVar('a');
-//print $name;
-if(!addAlumniFB1($user_id,$ansarray)){
-  print "unknown error";
-  apiReturnError($ajax, SITE_ROOT);
-}
-apiReturnSuccess($ajax, getReferralPage());
-print "success";
+ ?>
+<html>
+<?php
+echo renderTemplate("head.html", array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Forum"))	;
+echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Forum"));
 ?>
+<body>
+	<div id="wrapper">
+		<?php echo renderMenu("Forum");
+		$fid=$_GET['id'];
+		?>
+    <div id="wrapper">
+  		<?php echo renderMenu("Forum");
+  		$fid=$_GET['id'];
+  		?>
+  	<div id="pagewrapper" padding-left="60px" >
+  		<ol class="breadcrumb">
+  		<li><a href="index.php">Home</a></li>
+  		<li class="active"><a href="?id=<?php echo $fid;?>"><?php echo getForumName($fid);?></a></li>
+  		</ol>
+    <?php
+
+  	$uid=$loggedInUser->user_id;
+  	$resultarray=loadForumThreads($fid);
+  	if(isset($_GET['page'])){
+  	$offset=$_GET['page'];}
+  	else
+  	$offset=0;
+  	$arr_length=count($resultarray);
+  	$results=array_slice($resultarray,$offset*10,($offset*10)+10,true);
+  //print_r($resultarray);
+    ?>
+  	<?php
+      if(!isMod($uid,$fid)){
+       addAlert("warning","you dont have permission");
+        echo "You dont have permission";
+        die("<script>location.href = 'index.php'</script>");
+      }
+  			?>

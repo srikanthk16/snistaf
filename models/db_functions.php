@@ -3091,7 +3091,7 @@ function loadForumThreads($forumid){
 			$db = pdoConnect();
 			$sqlVars = array();
 			//error_log($userid);
-			$query = "SELECT id,name,added_by from fo_threads where forum_id = :forumid";
+			$query = "SELECT id,name,added_by,time_Stamp,sticky from fo_threads where forum_id = :forumid ORDER BY sticky DESC,time_Stamp DESC";
 			$stmt = $db->prepare($query);
 			$sqlVars[':forumid'] =intval($forumid);
 			if (!$stmt->execute($sqlVars)){
@@ -3186,7 +3186,7 @@ if(in_array($forumid,$ansArr))
 else $bool=0;
 //error_log($bool);
 return $bool;
-//return in_array($forumid,$ansArr); this representation is waste when element is not in array, returns null
+
 }
 catch (PDOException $e) {
 	addAlert("danger", "Oops, looks like our database encountered an error.");
@@ -3300,10 +3300,128 @@ function getViewsNumber($tid){
 		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
 		return false;
 	}}
+	function addEMPFB1($uid,$answers){
+	//error_log($uid);
+	//error_log(implode(" ",$answers));
+	/*
+	Feedback receptor function for first section of employer
+	*/
+		try{	$db=pdoConnect();
+		$sqlVars=array();
+		$query="INSERT into fb_employer_objectives values(:uid,:a,:b,:c,:d)";
+		$stmt=$db->prepare($query);
+		$sqlVars[':uid']=$uid;
+		$sqlVars[':a']=$answers[0];
+		$sqlVars[':b']=$answers[1];
+		$sqlVars[':c']=$answers[2];
+		$sqlVars[':d']=$answers[3];
+		if(!$stmt->execute($sqlVars)){
+			return false;
+		}
+		//$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+		return true;
+		}
+		catch (PDOException $e) {
+			addAlert("danger", "Oops, looks like our database encountered an error.");
+			error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+			return false;
+		} catch (ErrorException $e) {
+			addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+			return false;
+		}
+	}
+	function addEMPFB2($uid,$answers){
+	//error_log($uid);
+	//error_log(implode(" ",$answers));
+	/*
+	Feedback receptor function for second section of employer
 
+	improve this code, its needless and senseless the way am doing :P
+	hint: there is something called foreach
+	*/
+		try{	$db=pdoConnect();
+		$sqlVars=array();
+		$query="INSERT into fb_employer_outcomes values(:uid,:a,:b,:c,:d,:e,:f,:g,:h,:i,:j,:k,:l,:m)";
+		$stmt=$db->prepare($query);
+		$sqlVars[':uid']=$uid;
+		$sqlVars[':a']=$answers[0];
+		$sqlVars[':b']=$answers[1];
+		$sqlVars[':c']=$answers[2];
+		$sqlVars[':d']=$answers[3];
+		$sqlVars[':e']=$answers[4];
+		$sqlVars[':f']=$answers[5];
+		$sqlVars[':g']=$answers[6];
+		$sqlVars[':h']=$answers[7];
+		$sqlVars[':i']=$answers[8];
+		$sqlVars[':j']=$answers[9];
+		$sqlVars[':k']=$answers[10];
+		$sqlVars[':l']=$answers[11];
+		$sqlVars[':m']=$answers[12];
+		if(!$stmt->execute($sqlVars)){
+			return false;
+		}
+		//$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+		return true;
+		}
+		catch (PDOException $e) {
+			addAlert("danger", "Oops, looks like our database encountered an error.");
+			error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+			return false;
+		} catch (ErrorException $e) {
+			addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+			return false;
+		}
+	}
+	function addEMPFB3($uid,$answers){
+	//error_log($uid);
+	//error_log(implode(" ",$answers));
+	/*
+	Feedback receptor function for third section of employer
+
+	improve this code, its needless and senseless the way am doing :P
+	hint: there is something called foreach
+	*/
+		try{	$db=pdoConnect();
+		$sqlVars=array();
+		$query="INSERT into fb_employer_skills values(:uid,:a,:b,:c,:d,:e,:f,:g,:h,:i,:j,:k,:l,:m,:n,:o)";
+		$stmt=$db->prepare($query);
+		$sqlVars[':uid']=$uid;
+		$sqlVars[':a']=$answers[0];
+		$sqlVars[':b']=$answers[1];
+		$sqlVars[':c']=$answers[2];
+		$sqlVars[':d']=$answers[3];
+		$sqlVars[':e']=$answers[4];
+		$sqlVars[':f']=$answers[5];
+		$sqlVars[':g']=$answers[6];
+		$sqlVars[':h']=$answers[7];
+		$sqlVars[':i']=$answers[8];
+		$sqlVars[':j']=$answers[9];
+		$sqlVars[':k']=$answers[10];
+		$sqlVars[':l']=$answers[11];
+		$sqlVars[':m']=$answers[12];
+		$sqlVars[':n']=$answers[13];
+		$sqlVars[':o']=$answers[14];
+		if(!$stmt->execute($sqlVars)){
+			return false;
+		}
+		//$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+		return true;
+		}
+		catch (PDOException $e) {
+			addAlert("danger", "Oops, looks like our database encountered an error.");
+			error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+			return false;
+		} catch (ErrorException $e) {
+			addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+			return false;
+		}
+	}
 function addAlumniFB1($uid,$answers){
 //error_log($uid);
 //error_log(implode(" ",$answers));
+/*
+Feedback receptor function for first section of alumni
+*/
 	try{	$db=pdoConnect();
 	$sqlVars=array();
 	$query="INSERT into fb_alumni_objectives values(:uid,:a,:b,:c,:d)";
@@ -3328,7 +3446,140 @@ function addAlumniFB1($uid,$answers){
 		return false;
 	}
 }
+function addAlumniFB2($uid,$answers){
+//error_log($uid);
+//error_log(implode(" ",$answers));
+/*
+Feedback receptor function for second section of alumni
+
+improve this code, its needless and senseless the way am doing :P
+hint: there is something called foreach
+*/
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="INSERT into fb_alumni_outcomes values(:uid,:a,:b,:c,:d,:e,:f,:g,:h,:i,:j,:k,:l,:m)";
+	$stmt=$db->prepare($query);
+	$sqlVars[':uid']=$uid;
+	$sqlVars[':a']=$answers[0];
+	$sqlVars[':b']=$answers[1];
+	$sqlVars[':c']=$answers[2];
+	$sqlVars[':d']=$answers[3];
+	$sqlVars[':e']=$answers[4];
+	$sqlVars[':f']=$answers[5];
+	$sqlVars[':g']=$answers[6];
+	$sqlVars[':h']=$answers[7];
+	$sqlVars[':i']=$answers[8];
+	$sqlVars[':j']=$answers[9];
+	$sqlVars[':k']=$answers[10];
+	$sqlVars[':l']=$answers[11];
+	$sqlVars[':m']=$answers[12];
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	//$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+	return true;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function addAlumniFB3($uid,$answers){
+//error_log($uid);
+//error_log(implode(" ",$answers));
+/*
+Feedback receptor function for third section of alumni
+
+improve this code, its needless and senseless the way am doing :P
+hint: there is something called foreach
+*/
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="INSERT into fb_alumni_curriculim values(:uid,:a,:b,:c,:d,:e,:f,:g,:h,:i,:j,:k,:l,:m,:n,:o,:p,:q,:r,:s,:t,:u)";
+	$stmt=$db->prepare($query);
+	$sqlVars[':uid']=$uid;
+	$sqlVars[':a']=$answers[0];
+	$sqlVars[':b']=$answers[1];
+	$sqlVars[':c']=$answers[2];
+	$sqlVars[':d']=$answers[3];
+	$sqlVars[':e']=$answers[4];
+	$sqlVars[':f']=$answers[5];
+	$sqlVars[':g']=$answers[6];
+	$sqlVars[':h']=$answers[7];
+	$sqlVars[':i']=$answers[8];
+	$sqlVars[':j']=$answers[9];
+	$sqlVars[':k']=$answers[10];
+	$sqlVars[':l']=$answers[11];
+	$sqlVars[':m']=$answers[12];
+	$sqlVars[':n']=$answers[13];
+	$sqlVars[':o']=$answers[14];
+	$sqlVars[':p']=$answers[15];
+	$sqlVars[':q']=$answers[16];
+	$sqlVars[':r']=$answers[17];
+	$sqlVars[':s']=$answers[18];
+	$sqlVars[':t']=$answers[19];
+	$sqlVars[':u']=$answers[20];
+
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	//$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+	return true;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
 function addAlumniFB4($uid,$answers){
+//error_log($uid);
+//error_log(implode(" ",$answers));
+/*
+Feedback receptor function for fourth section of alumni
+
+improve this code, its needless and senseless the way am doing :P
+hint: there is something called foreach
+*/
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="INSERT into fb_alumni_impression values(:uid,:a,:b,:c,:d,:e,:f,:g,:h,:i,:j,:k)";
+	$stmt=$db->prepare($query);
+	$sqlVars[':uid']=$uid;
+	$sqlVars[':a']=$answers[0];
+	$sqlVars[':b']=$answers[1];
+	$sqlVars[':c']=$answers[2];
+	$sqlVars[':d']=$answers[3];
+	$sqlVars[':e']=$answers[4];
+	$sqlVars[':f']=$answers[5];
+	$sqlVars[':g']=$answers[6];
+	$sqlVars[':h']=$answers[7];
+	$sqlVars[':i']=$answers[8];
+	$sqlVars[':j']=$answers[9];
+	$sqlVars[':k']=$answers[10];
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	//$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+	return true;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function addAlumniFB5($uid,$answers){
 //error_log($uid);
 //error_log(implode(" ",$answers));
 	try{	$db=pdoConnect();
@@ -3341,6 +3592,77 @@ function addAlumniFB4($uid,$answers){
 	$sqlVars[':c']=$answers[2];
 	$sqlVars[':d']=$answers[3];
 	$sqlVars[':e']=$answers[4];
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	//$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+	return true;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function addAlumniFB6($uid,$answers){
+//error_log($uid);
+//error_log(implode(" ",$answers));
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="INSERT into fb_alumni_suggestion values(:uid,:a,:b,:c,:d)";
+	$stmt=$db->prepare($query);
+	$sqlVars[':uid']=$uid;
+	$sqlVars[':a']=$answers[0];
+	$sqlVars[':b']=$answers[1];
+	$sqlVars[':c']=$answers[2];
+	$sqlVars[':d']=$answers[3];
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	//$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+	$query2="UPDATE um_user_details SET feedback_done=1 where id=:uid";
+	$sqlVars2=array();
+	$stmt2=$db->prepare($query2);
+	$sqlVars2[':uid']=$uid;
+	if(!$stmt->execute($sqlVars2)){
+		return false;
+	}
+	return true;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function addParentFB($uid,$answers){
+//error_log($uid);
+//error_log(implode(" ",$answers));
+/*
+Feedback receptor function for fourth section of alumni
+
+improve this code, its needless and senseless the way am doing :P
+hint: there is something called foreach
+*/
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="INSERT into fb_parent_college values(:uid,:a,:b,:c,:d,:e,:f,:g,:h)";
+	$stmt=$db->prepare($query);
+	$sqlVars[':uid']=$uid;
+	$sqlVars[':a']=$answers[0];
+	$sqlVars[':b']=$answers[1];
+	$sqlVars[':c']=$answers[2];
+	$sqlVars[':d']=$answers[3];
+	$sqlVars[':e']=$answers[4];
+	$sqlVars[':f']=$answers[5];
+	$sqlVars[':g']=$answers[6];
+	$sqlVars[':h']=$answers[7];
 	if(!$stmt->execute($sqlVars)){
 		return false;
 	}
@@ -3374,6 +3696,7 @@ function autocreate(){
 		return false;
 	}
 }
+
 function userLevel($uid){
 	try{
 		$db=pdoConnect();
@@ -3568,6 +3891,9 @@ function getTitleById($userid){
 	}
 }
 function getThreadCountById($userid){
+	/*
+	getThreadCountById($userid) takes user id as parameter and returns number of Threads started by that user
+	*/
 	try{	$db=pdoConnect();
 	$sqlVars=array();
 	$query="SELECT count(id) from fo_threads where added_by=:userid";
@@ -3590,6 +3916,9 @@ function getThreadCountById($userid){
 	}
 }
 function getPostCountById($userid){
+	/*
+	getPostCountById($userid) takes user id as parameter and returns number of posts shared by that user
+	*/
 	try{	$db=pdoConnect();
 	$sqlVars=array();
 	$query="SELECT count(id) from fo_posts where added_by=:userid";
@@ -3601,6 +3930,56 @@ function getPostCountById($userid){
 	$ansArr=$stmt->fetchall();
 
 	return $ansArr[0][0];
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function isFeedbackDone($userid){
+	/*
+	isFeedbackDone call is made to verify is user already provided feedbacl
+	*/
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="SELECT feedback_done from um_user_details where id=:userid";
+	$stmt=$db->prepare($query);
+	$sqlVars[':userid']=$userid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+
+	return $ansArr['feedback_done'];
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function isAlumni($userid){
+	/*
+	isFeedbackDone call is made to verify is user already provided feedbacl
+	*/
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="SELECT isAlumni from um_user_details where id=:userid";
+	$stmt=$db->prepare($query);
+	$sqlVars[':userid']=$userid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+
+	return $ansArr['isAlumni'];
 	}
 	catch (PDOException $e) {
 		addAlert("danger", "Oops, looks like our database encountered an error.");

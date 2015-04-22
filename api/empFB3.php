@@ -28,16 +28,16 @@ require_once("../models/config.php");
 //error_log(checkRequestMode("POST"));
 $ajax = checkRequestMode("get");
 //error_log($ajax);
-if(!isUserLoggedIn()) {
+/*if(!isUserLoggedIn()) {
 	addAlert("warning", "Login to continue!");
 	apiReturnError($ajax, SITE_ROOT."login.php");
-}
+}*/
 /*if (!securePage(__FILE__)){
     apiReturnError($ajax);
 }
 */
 setReferralPage(getAbsoluteDocumentPath(__FILE__));
-$user_id=$loggedInUser->user_id;
+//$user_id=$loggedInUser->user_id;
 //print $user_id;
 $validator = new Validator();
 $uid = $validator->requiredGetVar('uid');
@@ -56,7 +56,7 @@ foreach ($_GET as $key => $val){
 //}
 //$a = $validator->optionalGetVar('a');
 //print $name;
-if(!addAlumniFB1($user_id,$ansarray)){
+if(!addEMPFB3($uid,$ansarray)){
   print "unknown error";
   apiReturnError($ajax, SITE_ROOT);
 }

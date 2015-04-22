@@ -46,20 +46,22 @@ foreach ($_GET as $key => $val){
   if($val==$_GET['uid']){
     continue;
   }
-
-  array_push($ansarray,$val);}
-  /*$ansarray[0]=$validator->requiredGetVar('a');
+  array_push($ansarray,$val);
+	//fix required get vars here, now it takes as many it sends :P
+/*  $ansarray[0]=$validator->requiredGetVar('a');
   $ansarray[1]=$validator->requiredGetVar('b');
   $ansarray[2]=$validator->requiredGetVar('c');
   $ansarray[3]=$validator->requiredGetVar('d');
-  //error_log(implode(" ",$ansarray));*/
-//}
+  $ansarray[4]=$validator->requiredGetVar('e');*/
+  //error_log(implode(" ",$ansarray));
+}
 //$a = $validator->optionalGetVar('a');
 //print $name;
-if(!addAlumniFB1($user_id,$ansarray)){
+if(!addAlumniFB6($user_id,$ansarray)){
   print "unknown error";
   apiReturnError($ajax, SITE_ROOT);
 }
+//add_alert("Success","feedbacked");
 apiReturnSuccess($ajax, getReferralPage());
-print "success";
+
 ?>
