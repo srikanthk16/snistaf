@@ -3091,7 +3091,7 @@ function loadForumThreads($forumid){
 			$db = pdoConnect();
 			$sqlVars = array();
 			//error_log($userid);
-			$query = "SELECT id,name,added_by from fo_threads where forum_id = :forumid";
+			$query = "SELECT id,name,added_by,time_Stamp,sticky from fo_threads where forum_id = :forumid ORDER BY sticky DESC,time_Stamp DESC";
 			$stmt = $db->prepare($query);
 			$sqlVars[':forumid'] =intval($forumid);
 			if (!$stmt->execute($sqlVars)){
@@ -3186,7 +3186,7 @@ if(in_array($forumid,$ansArr))
 else $bool=0;
 //error_log($bool);
 return $bool;
-//return in_array($forumid,$ansArr); this representation is waste when element is not in array, returns null
+
 }
 catch (PDOException $e) {
 	addAlert("danger", "Oops, looks like our database encountered an error.");

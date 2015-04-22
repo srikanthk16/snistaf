@@ -129,9 +129,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 			</div>
 		</div>
 		</div>
-		<button type="button" class="btn btn-primary btn-small pull-left" data-toggle="modal" data-target="#postModal">
-		Create Thread
-		</button>
+
 		<script>
 					$(document).ready(function() {
 
@@ -184,7 +182,8 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 		<tbody>
 	<?php foreach ($results as $row): array_map('htmlentities', $row); ?>
 	    <tr>
-	      <td class="col-md-6"><a href="viewThread.php?id=<?php echo intval($row[0]);?>" ><?php echo $row[1]; ?></a></td>
+	      <td class="col-md-6"><a href="viewThread.php?id=<?php echo intval($row[0]);?>" ><?php echo $row[1]; ?></a><?php if($row[4]){echo "-sticked";
+				} ?></td>
 				<td class="col-md-2"><?php echo getNameById($row[2]);?></td>
 				<td class="col-md-2"><?php echo getPostsNumber(intval($row[0]));?></td>
 				<td class="col-md-2"><?php echo getviewsNumber(intval($row[0]));?></td>
@@ -192,10 +191,19 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 	<?php endforeach; ?>
 	  <tbody>
 	</table>
-	<ul class="pager">
+	<div class="inline">
+	<button type="button" class="btn btn-primary btn-small pull-left" data-toggle="modal" data-target="#postModal">
+	Create Thread
+	</button>
+
+	<button type="button" class="btn btn-primary btn-small pull-right" data-toggle="modal" data-target="#postModal">
+	Create Thread
+</button>
+<ul class="pager">
 <li>	<a href="?id=<?php echo $fid;?>&page=<?php echo $offset==0?0:$offset-=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-left" aria-hidden="true" ></span></a>
 </li><li>	<a href="?id=<?php echo $fid;?>&page=<?php echo $offset*10<$arr_length?$offset:$offset+=1;?>" ><span class="fa fa-angle-right" aria-hidden="true"></span></a>
-</li></ul>
+</li></ul></div>
+
 	</div></div>
 </body>
 </html>
