@@ -42,18 +42,18 @@ $user_id=$loggedInUser->user_id;
 $validator = new Validator();
 $uid = $validator->requiredGetVar('uid');
 $ansarray=array();
-/*foreach ($_GET as $key => $val){
+foreach ($_GET as $key => $val){
   if($val==$_GET['uid']){
     continue;
   }
-  array_push($ansarray,$val);*/
-  $ansarray[0]=$validator->requiredGetVar('a');
+  array_push($ansarray,$val);
+/*  $ansarray[0]=$validator->requiredGetVar('a');
   $ansarray[1]=$validator->requiredGetVar('b');
   $ansarray[2]=$validator->requiredGetVar('c');
   $ansarray[3]=$validator->requiredGetVar('d');
-  $ansarray[4]=$validator->requiredGetVar('e');
+  $ansarray[4]=$validator->requiredGetVar('e');*/
   //error_log(implode(" ",$ansarray));
-//}
+}
 //$a = $validator->optionalGetVar('a');
 //print $name;
 if(!addAlumniFB4($user_id,$ansarray)){

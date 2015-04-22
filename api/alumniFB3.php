@@ -46,18 +46,17 @@ foreach ($_GET as $key => $val){
   if($val==$_GET['uid']){
     continue;
   }
-
-  array_push($ansarray,$val);}
-  /*$ansarray[0]=$validator->requiredGetVar('a');
+  array_push($ansarray,$val);
+/*  $ansarray[0]=$validator->requiredGetVar('a');
   $ansarray[1]=$validator->requiredGetVar('b');
   $ansarray[2]=$validator->requiredGetVar('c');
-  $ansarray[3]=$validator->requiredGetVar('d');
-  //error_log(implode(" ",$ansarray));*/
-//}
+  $ansarray[3]=$validator->requiredGetVar('d');*/
+  //error_log(implode(" ",$ansarray));
+}
 //$a = $validator->optionalGetVar('a');
 //print $name;
-if(!addAlumniFB1($user_id,$ansarray)){
-  print "unknown error";
+if(!addAlumniFB3($user_id,$ansarray)){
+  addAlert("warning", "Feedback Error!");
   apiReturnError($ajax, SITE_ROOT);
 }
 apiReturnSuccess($ajax, getReferralPage());

@@ -56,7 +56,7 @@ foreach ($_GET as $key => $val){
 //}
 //$a = $validator->optionalGetVar('a');
 //print $name;
-if(!addAlumniFB1($user_id,$ansarray)){
+if(!addParentFB($user_id,$ansarray)){
   print "unknown error";
   apiReturnError($ajax, SITE_ROOT);
 }
