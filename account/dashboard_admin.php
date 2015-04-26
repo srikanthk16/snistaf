@@ -50,7 +50,7 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
   	echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Admin Dashboard"));
   ?>
 
-  <body>    
+  <body>
     <div id="wrapper">
 
       <!-- Sidebar -->
@@ -64,25 +64,14 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
 
           </div>
         </div>
-        
+
         <div class="row">
           <div class="col-lg-12">
             <h1>Dashboard <small>Statistics Overview</small></h1>
             <ol class="breadcrumb">
               <li class="active"><i class="fa fa-dashboard"></i> Dashboard</li>
             </ol>
-            <div class="alert alert-success alert-dismissable">
-              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-              Welcome to UserFrosting!  The back end account management system is derived from <a class="alert-link" href="http://usercake.com">UserCake 2.0.2</a>, while the dashboard and admin account features are based on the SB Admin Template by <a class="alert-link" href="http://startbootstrap.com">Start Bootstrap</a>. Other key frameworks and plugins used in this system are:
-              <br><a class="alert-link" href='http://http://jquery.com/'>jQuery 1.10.2</a>
-              <br><a class="alert-link" href='http://getbootstrap.com/'>Twitter Bootstrap 3.0</a>
-              <br><a class="alert-link" href='http://fontawesome.io/'>Font Awesome</a>
-              <br><a class="alert-link" href='http://tablesorter.com/docs/'>Tablesorter 2.0</a>
-              <br>The <a class="alert-link" href='http://www.bootstrap-switch.org/'>Bootstrap Switch</a> component by Mattia Larentis,Peter Stein, and Emanuele Marchi
-              <br>All components are copyright of their respective creators.
-              
-              
-            </div>
+
           </div>
         </div><!-- /.row -->
 
@@ -350,20 +339,20 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
       </div><!-- /#page-wrapper -->
 
     </div><!-- /#wrapper -->
-    
+
     <script src="../js/raphael/2.1.0/raphael-min.js"></script>
     <script src="../js/morris/morris-0.4.3.js"></script>
     <script src="../js/morris/chart-data-morris.js"></script>
     <script>
-        $(document).ready(function() {          
+        $(document).ready(function() {
           alertWidget('display-alerts');
-          
+
           // Initialize the transactions tablesorter
           $('#transactions .table').tablesorter({
               debug: false
           });
-          
-        });      
+
+        });
     </script>
   </body>
 </html>

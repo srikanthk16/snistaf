@@ -31,10 +31,11 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
  ?>
 <html>
 <?php
-echo renderTemplate("head.html", array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Thread"))	;
+
 echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Thread"));
 ?>
 <body>
+
 	<div id="wrapper">
 		<?php echo renderMenu("Forum");
 		?>
@@ -49,8 +50,11 @@ if(isset($_GET['page'])){
 $offset=$_GET['page'];}
 else
 $offset=0;
+$next=$offset+1;
+$prev=$offset-1;
 $arr_length=count($resultarray);
-$results=array_slice($resultarray,$offset*10,($offset*10)+10,true);
+$results=array_slice($resultarray,$offset*10,10,true);
+//print_r($offset." ".$next);
 //print_r($results);
 //print_r($resultarray);?>
 <div id="pagewrapper" padding-left="60px" >
@@ -61,7 +65,7 @@ $results=array_slice($resultarray,$offset*10,($offset*10)+10,true);
 	</ol>
 
 <!-- Modal -->
-<table class="table table-responsice">
+<table class="table table-responsive">
 	<tbody>
 <?php foreach($results as $row): array_map('htmlentities',$row); ?>
 
@@ -89,9 +93,10 @@ $results=array_slice($resultarray,$offset*10,($offset*10)+10,true);
         <h4 class="modal-title" id="myModalLabel">Create Post</h4>
       </div>
       <div class="modal-body">
-	<form name="post" class="form-group" action="../api/createPost.php" method="get">
+	<form name="cpost" class="form-group" action=""  method="POST" >
 	<input type="hidden" name="tid" value="<?php echo $_GET['id'];?>">
-	<textarea class="form-control" form="post" rows="3" name="content"></textarea>
+	<textarea form="cpost" class="form-control" rows="3" name="content"></textarea>
+	<input type="file" name="userImage">
 </div>
 	<div class="modal-footer">
 		<input type="submit" name="submit" class="btn btn-default" >
@@ -100,49 +105,53 @@ $results=array_slice($resultarray,$offset*10,($offset*10)+10,true);
 	</div>
 </div>
 </div>
-<button type="button" class="btn btn-primary btn-small pull-left"  data-toggle="modal" data-target="#postModal">
+<button type="button" class="btn btn-primary btn-small pull-left" data-toggle="modal" data-target="#postModal">
 Post To Thread
 </button>
+
 <ul class="pager">
-<li>	<a href="?id=<?php echo $tid;?>&page=<?php echo $offset==0?0:$offset-=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-left" aria-hidden="true" ></span></a>
-</li><li>	<a href="?id=<?php echo $tid;?>&page=<?php echo $offset*10<$arr_length?$offset:$offset+=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-right" aria-hidden="true"></span></a>
+<li>	<a href="?id=<?php echo $tid;?>&page=<?php echo $offset==0?0:$prev;?>" class="btn btn-info" role="button"><span class="fa fa-angle-left" aria-hidden="true" ></span></a>
+</li><li>	<a href="?id=<?php echo $tid;?>&page=<?php echo $offset*10<$arr_length?$next:$offset;?>" class="btn btn-info" role="button"><span class="fa fa-angle-right" aria-hidden="true"></span></a>
 </li></ul>
-	<script>
-				$(document).ready(function() {
+<script>
+			$(document).ready(function() {
 
-			// Load jumbotron links
-			$(".jumbotron-links").load("jumbotron_links.php");
+		// Load jumbotron links
+		$(".jumbotron-links").load("jumbotron_links.php");
 
-			alertWidget('display-alerts');
+		alertWidget('display-alerts');
 
-			$("form[name='post']").submit(function(e){
-			var form = $(this);
-			var url = '../api/createPost.php';
-			$.ajax({
-				type: "GET",
-				url: url,
-				data: {
-				content:	form.find('textarea[name="content"]').val(),
+		$("form[name='cpost']").submit(function(e){
+		var form = $(this);
+		var serializedData = form.serialize();
+		serializedData += '&ajaxMode=true';
+		var url = '../api/createPost.php';
+		$.ajax({
+			type: "POST",
+			url: url,
+			data: {
 				tid:	form.find('input[name="tid"]').val(),
-				ajaxMode:	"true"
-				},
-				success: function(result) {
-				var resultJSON = processJSONResult(result);
-				if (resultJSON['errors'] && resultJSON['errors'] > 0){
-					alertWidget('display-alerts');
-				} else {
-					/*window.location.replace("");
-					alertWidget('success');*/
-					//alert("success");
-					window.location.replace("");
-				}
-				}
-			});
-			// Prevent form from submitting twice
-			e.preventDefault();
-			});
-
+				content: form.find('textarea[name="content"]').val(),
+				userImage: form.find('input[name="userImage"]').val(),
+				ajaxMode: "true"
+			},
+			success: function(result) {
+			var resultJSON = processJSONResult(result);
+			if (resultJSON['errors'] && resultJSON['errors'] > 0){
+				alertWidget('display-alerts');
+			} else {
+				/*window.location.replace("");
+				alertWidget('success');*/
+				//alert("success");
+				window.location.replace("");
+			}
+			}
 		});
-	</script></div></div>
+		// Prevent form from submitting twice
+		e.preventDefault();
+		});
+
+	});
+</script></div></div>
 </body>
 </html>

@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 require_once("../models/config.php");
 //error_log(checkRequestMode("POST"));
-$ajax = checkRequestMode("get");
+$ajax = checkRequestMode("POST");
 //error_log($ajax);
 if(!isUserLoggedIn()) {
 	addAlert("warning", "Login to continue!");
@@ -40,13 +40,33 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
 $user_id=$loggedInUser->user_id;
 //print $user_id;
 $validator = new Validator();
-$threadid = $validator->requiredGetVar('tid');
-$content = $validator->optionalGetVar('content');
-//print $name;
+$threadid = $validator->requiredPostVar('tid');
+$content = $validator->requiredPostVar('content');
+//$iid=$validator->optionalPostVar('iid');
+//$content.='<img height="100" width="100" src="image.php?id='.$iid.'"></img>';
+if(is_array($_FILES)) {
+if(is_uploaded_file($_FILES['userImage']['tmp_name'])) {
+
+$sourcePath = $_FILES['userImage']['tmp_name'];
+$image=file_get_contents(addslashes($sourcePath));
+$id=addPostImage($image);
+$targetPath = "../forum/images/".$_FILES['userImage']['name'];
+if($id) {
+//return $id;
+$content.='<img src="image.php?id='.$id.'" width="100px" height="100px" />';
+
+}
+
+}
+}
+//error_log($content);
+//$im=$validator->optionalPostVar('image');
+error_log($content);
 if(!addPost($user_id,$threadid,$content)){
   print "unknown error";
   apiReturnError($ajax, SITE_ROOT);
 }
+
 apiReturnSuccess($ajax, getReferralPage());
 print "success";
 ?>

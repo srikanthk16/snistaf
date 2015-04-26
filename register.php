@@ -101,14 +101,14 @@ if(isUserLoggedIn()) {
         ],
         'roll_no' => [
             'type' => 'text',
-            'label' => 'Roll number',
+            'label' => 'Roll no/Emp No',
             'icon' => 'fa fa-fw fa-edit',
             'validator' => [
                 'minLength' => 1,
                 'maxLength' => 12,
-                'label' => 'Roll Number'
+                'label' => 'Roll No/Emp No'
             ],
-            'placeholder' => 'Roll number'
+            'placeholder' => 'ID number'
         ],
         'yearJoin' => [
             'type' => 'text',
@@ -123,14 +123,14 @@ if(isUserLoggedIn()) {
         ],
         'YearEnd' => [
             'type' => 'text',
-            'label' => 'Da day u escape',
+            'label' => 'Year of completion',
             'icon' => 'fa fa-fw fa-calendar	',
             'validator' => [
                 'minLength' => 1,
                 'maxLength' => 4,
                 'label' => 'YearEnd',
             ],
-            'placeholder' => 'Year of Completion'
+            'placeholder' => 'optional'
         ],
         'password' => [
             'type' => 'password',
@@ -216,12 +216,12 @@ if(isUserLoggedIn()) {
 		  <div class='row'>
 
             <div class='col-sm-12'>
-						<label for='sel1' style='display:inline;'>Select Dept:</label>
-<select class='form-control selectWidth' id='sel1' name='dept'>
-<option value='2'>cse</option>
-<option value='3'>it</option>
-<option value='4'>ME</option>
-<option vaue='5'>Ece</option>
+						<label for='dept' style='display:inline;'>Select Dept:</label>
+<select class='form-control selectWidth' id='dept' name='dept'>
+<option value='CSE'>cse</option>
+<option value='IT'>it</option>
+<option value='ME'>ME</option>
+<option vaue='ECE'>Ece</option>
 </select>
             </div>
 		  </div>
@@ -241,17 +241,18 @@ if(isUserLoggedIn()) {
                 {{captcha}}
             </div>
           </div>
-					<div class='row'>
+					<!--<div class='row'>
 		            <div class='col-sm-12'>
 								<input type='file' name='image' />
 		            </div>
-		          </div>
+		          </div>-->
           <div class='form-group'>
             <div class='col-sm-12'>
                 <img src='$captcha' id='captcha'>
             </div>
 		  </div>
 		  <br>
+
 		  <div class='form-group'>
 			<div class='col-sm-12'>
 			  <button type='submit' class='btn btn-success submit' value='Register'>Register</button>
@@ -261,7 +262,9 @@ if(isUserLoggedIn()) {
             <label>Spiderbro: Don't change me bro, I'm tryin'a catch some flies!</label>
             <input name='spiderbro' id='spiderbro' value='http://'/>
           </div>
-		</form>";
+
+		</form>
+		<button type='button' class='btn btn-link btn-xs' data-toggle='modal' data-target='.bs-example-modal-lg'>TOS</button>";
 
     $fb = new FormBuilder($template, $fields, [], [], true);
 
@@ -278,7 +281,22 @@ if(isUserLoggedIn()) {
         <h1>Let's get started!</h1>
         <p class="lead">Registration is fast and simple.</p>
         <?php echo $fb->render(); ?>
-
+				<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="tos" aria-hidden="true">
+<div class="modal-dialog modal-lg">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title">Terms and conditions</h4>
+		</div>
+<div class="modal-body">
+		1. No one is fucking responsible for what you do<br>
+		2. we are not liable for the usage of this software<br>
+		3. troll to a limit<br>
+		4. behave yourself noob<br>
+		5. some parts here are heavily moderated, dont do shit to get yourself banned
+	</div></div>
+</div>
+</div>
 	  </div>
       <?php echo renderTemplate("footer.html"); ?>
 
