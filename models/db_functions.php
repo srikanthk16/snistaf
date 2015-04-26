@@ -998,7 +998,9 @@ function addUser($user_name, $display_name,$fullname,$roll,$yearjoin,$yearend,$d
 
 
         $stmt2 = null;
-
+				if($alumni==1){
+					dbAddUserToGroups($inserted_id,5);
+				}
         return $inserted_id;
 
     } catch (PDOException $e) {
@@ -3118,7 +3120,7 @@ function loadThreadPosts($threadid){
 			$db = pdoConnect();
 			$sqlVars = array();
 			//error_log($userid);
-			$query = "SELECT id,content,added_by,timestamp from fo_posts where thread_id = :threadid ORDER BY timestamp";
+			$query = "SELECT id,content,added_by,timestamp,likes from fo_posts where thread_id = :threadid ORDER BY timestamp";
 			$stmt = $db->prepare($query);
 			$sqlVars[':threadid'] =intval($threadid);
 			if (!$stmt->execute($sqlVars)){
@@ -4154,7 +4156,53 @@ function getAlumniFB(){
 	}
 	$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
 
-	return $ansArr['name'];
+	return $ansArr;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function incLike($pid,$userid){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	if(liked($pid,$userid)){
+		return true;
+	}
+	$query="UPDATE fo_posts SET likes=likes+1 where id=:pid";
+	$stmt=$db->prepare($query);
+	$sqlVars[':pid']=$pid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+		return true;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function liked($pid,$uid){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="SELECT 1 from fo_post_likes where pid=:pid and uid=:uid";
+	$stmt=$db->prepare($query);
+	$sqlVars[':pid']=$pid;
+	$sqlVars[':uid']=$uid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+	if($ansArr['1']==1){return true;}
+		return false;
 	}
 	catch (PDOException $e) {
 		addAlert("danger", "Oops, looks like our database encountered an error.");

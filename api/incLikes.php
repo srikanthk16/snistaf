@@ -1,6 +1,6 @@
 <?php
 /*
-SNISTAF Public Code
+SNISTAF API
 By Srikanth Kasukurthi
 Copyright (c) 2015 for SNIST
 
@@ -23,47 +23,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 */
+
+
+
 require_once("../models/config.php");
+//error_log(checkRequestMode("POST"));
+$ajax = checkRequestMode("get");
+$userid=$loggedInUser->user_id;
+$validator = new Validator();
+$pid = intval(trim($validator->requiredGetVar('pid')));
 
-// Public page
-
-setReferralPage(getAbsoluteDocumentPath(__FILE__));
- ?>
-<html>
-<?php
-echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Analytics"));
+if(!incLike($pid,$userid)){
+  print "unknown error";
+  apiReturnError($ajax, SITE_ROOT);
+}
+  apiReturnSuccess($ajax, getReferralPage());
+//print "success";
 ?>
-<body>
-  <script>
-	      $(document).ready(function() {
-
-	    // Load jumbotron links
-	    $(".jumbotron-links").load("jumbotron_links.php");
-
-	    alertWidget('display-alerts');
-	    var form = $(this);
-	    var url = '../api/loadAlumniFBBasic.php';
-	    $.ajax({
-	      type: "GET",
-	      url: url,
-	      data: {
-	      ajaxMode:	"true"
-	      },
-	      success: function(result) {
-	      var resultJSON = processJSONResult(result);
-	      if (resultJSON['errors'] && resultJSON['errors'] > 0){
-	        alertWidget('display-alerts');
-	      } else {
-	        var str=JSON.stringify(resultJSON,' ');
-	        /*window.location.replace("");
-	        alertWidget('success');*/
-	        alert(str);
-	        //window.location.replace("subscriptions.php");
-	      }
-	      }
-	    });
-
-	  });
-	</script>
-</body>
-</html>

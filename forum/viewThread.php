@@ -69,7 +69,6 @@ $results=array_slice($resultarray,$offset*10,10,true);
 	<tbody>
 <?php foreach($results as $row): array_map('htmlentities',$row); ?>
 
-
     <tr >
 			<td class="col-md-1">
 
@@ -82,9 +81,15 @@ $results=array_slice($resultarray,$offset*10,10,true);
 <td class="col-md-12 ">
 
 
-        <p><?php echo $row['content']; ?></p>
+      <pre>  <p><?php echo $row['content']; ?></p></pre>
 
-</td></tr>
+</td></tr><tr>
+<td colspan="2" class="col-md-6 inline">
+	<p class="pull-left">Likes:<span><?php echo $row['likes']; ?></span></p>
+	<button class="btn btn-default pull-right" id="like"  value="<?php echo $row['id'];?>">Like</button>
+	<button class="btn btn-default pull-right" id="reply"  value="<?php echo $row['content'];?>">Reply</button>
+</td>
+</tr>
 <?php endforeach; ?></tbody></table>
 <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -93,9 +98,9 @@ $results=array_slice($resultarray,$offset*10,10,true);
         <h4 class="modal-title" id="myModalLabel">Create Post</h4>
       </div>
       <div class="modal-body">
-	<form name="cpost" class="form-group" action=""  method="POST" >
+	<form name="cpost" class="form-group" action="" method="POST" >
 	<input type="hidden" name="tid" value="<?php echo $_GET['id'];?>">
-	<textarea form="cpost" class="form-control" rows="3" name="content"></textarea>
+	<textarea form="cpost" id="content" class="form-control" rows="3" name="content"></textarea>
 	<input type="file" name="userImage">
 </div>
 	<div class="modal-footer">
@@ -151,6 +156,37 @@ Post To Thread
 		e.preventDefault();
 		});
 
+	});
+	$(document).ready(function(){
+		$('#like').click(function() {
+	        var text = $(this).attr('value');
+
+		$.ajax({
+			type: "GET",
+			url: "../api/incLikes.php",
+			data: {
+				pid:	$(this).attr("value"),
+				ajaxMode: "true"
+			},
+			success: function(result) {
+			var resultJSON = processJSONResult(result);
+			if (resultJSON['errors'] && resultJSON['errors'] > 0){
+				alertWidget('display-alerts');
+			} else {
+					window.location.replace("");
+			}
+			}
+		});
+	});
+	$('#reply').click(function() {
+			var text="\"";
+				var text2 = $(this).attr('value');
+				 text=text.concat(text2);
+				text=	text.concat("\"");
+				document.getElementById("content").value=text;
+				$('#postModal').modal({show: true});
+
+});
 	});
 </script></div></div>
 </body>

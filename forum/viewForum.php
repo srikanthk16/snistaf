@@ -120,7 +120,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 			<label for="name">Name:</label>
 			<textarea type="text" class="form-control" name="name" form="thread" rows="2"></textarea>
 			<label for="content">Post:</label>
-			<textarea type="text" class="form-control" name="content" form="thread" rows="5"></textarea>
+			<pre><textarea type="text" class="form-control" name="content" form="thread" rows="5"></textarea></pre>
 		</div>
 			<div class="modal-footer">
 				<input type="submit" name="submit" class="btn btn-default" >
