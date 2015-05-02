@@ -7,7 +7,7 @@ Copyright (c) 2015 for SNIST
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the 'Software'), to deal
-in the Software without restriction, including without limitation the rights
+in athe Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
@@ -24,20 +24,47 @@ THE SOFTWARE.
 
 */
 
-
-
 require_once("../models/config.php");
 //error_log(checkRequestMode("POST"));
 $ajax = checkRequestMode("get");
-$userid=$loggedInUser->user_id;
-$validator = new Validator();
-$pid = intval(trim($validator->requiredGetVar('pid')));
-
-if(!incLike($pid,$userid)){
-  print "unknown error";
-  apiReturnError($ajax, SITE_ROOT);
+//error_log($ajax);
+if(!isUserLoggedIn()) {
+	addAlert("warning", "Login to continue!");
+	apiReturnError($ajax, SITE_ROOT."login.php");
 }
+/*if (!securePage(__FILE__)){
+    apiReturnError($ajax);
+}
+*/
+setReferralPage(getAbsoluteDocumentPath(__FILE__));
+$user_id=$loggedInUser->user_id;
+//print $user_id;
+$validator = new Validator();
+$tid = $validator->requiredGetVar('tid');
+$ansarray=array();
+foreach ($_GET as $key => $val){
+  if($val==$_GET['tid']){
+    continue;
+  }
+error_log(intval(key($_GET)));
+  //array_push($ansarray,$val);
+  if(!rating($user_id,$tid,key($_GET),$val)){
+    print "unknown error";
+    apiReturnError($ajax, SITE_ROOT);
+  }
 
-  apiReturnSuccess($ajax, getReferralPage());
-//print "success";
+
+
+  }
+  /*$ansarray[0]=$validator->requiredGetVar('a');
+  $ansarray[1]=$validator->requiredGetVar('b');
+  $ansarray[2]=$validator->requiredGetVar('c');
+  $ansarray[3]=$validator->requiredGetVar('d');
+  //error_log(implode(" ",$ansarray));*/
+//}
+//$a = $validator->optionalGetVar('a');
+//print $name;
+
+apiReturnSuccess($ajax, getReferralPage());
+print "success";
 ?>

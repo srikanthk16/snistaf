@@ -34,23 +34,12 @@ if(!isUserLoggedIn()) {
 	addAlert("warning", "Login to continue!");
 	apiReturnError($ajax, SITE_ROOT."login.php");
 }
-/*if (!securePage(__FILE__)){
-    apiReturnError($ajax);
-}
-*/
-setReferralPage(getAbsoluteDocumentPath(__FILE__));
-$user_id=$loggedInUser->user_id;
-//print $user_i
+
 $validator = new Validator();
 $fid = $validator->requiredGetVar('fid');
-foreach ($validator->errors as $error){
-  addAlert("danger", $error);
-}
-
-if (count($validator->errors) > 0){
-    apiReturnError($ajax, getReferralPage());
-}
-  if(!$results=loadForumThreads($fid)){
+//$uid=$validator->requiredGetVar('uid');
+$uid=$loggedInUser->user_id;
+  if(!$results=loadForumThreads($fid,$uid)){
 		addAlert("warning", "DB ERROR!");
 		apiReturnError($ajax, getReferralPage());
 	}

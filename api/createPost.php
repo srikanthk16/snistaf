@@ -44,6 +44,7 @@ $threadid = $validator->requiredPostVar('tid');
 $content = $validator->requiredPostVar('content');
 //$iid=$validator->optionalPostVar('iid');
 //$content.='<img height="100" width="100" src="image.php?id='.$iid.'"></img>';
+if(isset($_FILES['userImage'])){
 if(is_array($_FILES)) {
 if(is_uploaded_file($_FILES['userImage']['tmp_name'])) {
 
@@ -58,9 +59,19 @@ $content.='<img src="image.php?id='.$id.'" width="100px" height="100px" />';
 }
 
 }
-}
+}}
 //error_log($content);
 //$im=$validator->optionalPostVar('image');
+if(isset($_POST['status'])){
+	$status=$validator->optionalPostVar('status');
+	if(!addHDPost($user_id,$threadid,$content,$status)){
+		print "unknown error";
+		apiReturnError($ajax, SITE_ROOT);
+
+	}
+	apiReturnSuccess($ajax, getReferralPage());
+
+}
 error_log($content);
 if(!addPost($user_id,$threadid,$content)){
   print "unknown error";

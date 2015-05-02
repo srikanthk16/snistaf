@@ -41,13 +41,12 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 		?>
 	<div id="pagewrapper" padding-left="60px" >
 		<ol class="breadcrumb">
-		<li><a href="index.php">Home</a></li>
+		<li><a href="helpDesk.php">Home</a></li>
 		<li class="active"><a href="?id=<?php echo $fid;?>"><?php echo getForumName($fid);?></a></li>
 		</ol>
   <?php
-
 	$uid=$loggedInUser->user_id;
-	$resultarray=loadForumThreads($fid);
+	$resultarray=loadForumThreads($fid,$uid);
 	if(isset($_GET['page'])){
 	$offset=$_GET['page'];}
 	else
@@ -56,56 +55,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 	$results=array_slice($resultarray,$offset*10,($offset*10)+10,true);
 //print_r($resultarray);
   ?>
-	<?php
-    if(!isSubscribed($uid,$fid)){
-			?>
-				<form name="forum" action="../api/createSubscription.php" method="get">
-				<input type="hidden" name="uid" id="uid" value="<?php echo $uid; ?>"></input>
-				<input type="hidden" name="fid" id="fid" value="<?php echo $fid; ?>"></input>
-				<input type="submit" name="submit" class="btn btn-primary" value="subscribe"></input>
-			</form>
 
-			<script>
-						$(document).ready(function() {
-
-					// Load jumbotron links
-					$(".jumbotron-links").load("jumbotron_links.php");
-
-					alertWidget('display-alerts');
-
-					$("form[name='forum']").submit(function(e){
-					var form = $(this);
-					var url = '../api/createSubscription.php';
-					$.ajax({
-						type: "GET",
-						url: url,
-						data: {
-						uid:	form.find('input[name="uid"]').val(),
-						fid:	form.find('input[name="fid"]').val(),
-						ajaxMode:	"true"
-						},
-						success: function(result) {
-						var resultJSON = processJSONResult(result);
-						if (resultJSON['errors'] && resultJSON['errors'] > 0){
-							alertWidget('display-alerts');
-						} else {
-							/*window.location.replace("");
-							alertWidget('success');*/
-							//alert("success");
-							window.location.replace("");
-						}
-						}
-					});
-					// Prevent form from submitting twice
-					e.preventDefault();
-					});
-
-				});
-			</script>
-			<?php
-		}
-		else{
-			?>
 
 		<!-- Modal -->
 		<div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -115,6 +65,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 		        <h4 class="modal-title" id="myModalLabel">Create Post</h4>
 		      </div>
 		      <div class="modal-body">
+						<span><p>Remeber all questions are private and only permitted groups can make it public</p></span>
 			<form name="thread" action="../api/createThread.php" method="get">
 			<input type="hidden" name="fid" value="<?php echo $fid;?>">
 			<label for="name">Name:</label>
@@ -154,7 +105,6 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 					var resultJSON = processJSONResult(result);
 					if (resultJSON['errors'] && resultJSON['errors'] > 0){
 						alertWidget('display-alerts');
-						alert("either you dont have permission to create thread/We screwed up");
 					} else {
 						/*window.location.replace("");
 						alertWidget('success');*/
@@ -169,9 +119,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 
 			});
 		</script>
-			<?php
-		}
-	?>
+
 
 	<table class="table">
 		<thead>
@@ -183,9 +131,9 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 		<tbody>
 	<?php foreach ($results as $row): array_map('htmlentities', $row); ?>
 	    <tr>
-	      <td class="col-md-6"><a href="viewThread.php?id=<?php echo intval($row[0]);?>" ><?php echo $row[1]; ?></a><?php if($row[4]){echo "-sticked";
+	      <td class="col-md-6"><a href="helpDeskThread.php?id=<?php echo intval($row[0]);?>" ><?php echo $row[1]; ?></a><?php if($row[4]){echo "-sticked";
 				} ?></td>
-				<td class="col-md-2"><?php echo getDisplayNameById($row[2]);?></td>
+				<td class="col-md-2"><?php echo getNameById($row[2]);?></td>
 				<td class="col-md-2"><?php echo getPostsNumber(intval($row[0]));?></td>
 				<td class="col-md-2"><?php echo getviewsNumber(intval($row[0]));?></td>
 	    </tr>

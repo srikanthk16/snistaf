@@ -59,8 +59,8 @@ $results=array_slice($resultarray,$offset*10,10,true);
 //print_r($resultarray);?>
 <div id="pagewrapper" padding-left="60px" >
 	<ol class="breadcrumb">
-	<li><a href="index.php">Home</a></li>
-	<li ><a href="viewForum.php?id=<?php echo $fid;?>"><?php echo getForumName($fid);?></a></li>
+	<li><a href="helpDesk.php">Home</a></li>
+	<li ><a href="helpDeskForum.php?id=<?php echo $fid;?>"><?php echo getForumName($fid);?></a></li>
 	<li class="active"><a href="?id=<?php echo $tid;?>"><?php echo getThreadName($tid);?></a></li>
 	</ol>
 
@@ -101,7 +101,8 @@ $results=array_slice($resultarray,$offset*10,10,true);
 	<form name="cpost" class="form-group" action="" method="POST" >
 	<input type="hidden" name="tid" value="<?php echo $_GET['id'];?>">
 	<textarea form="cpost" id="content" class="form-control" rows="3" name="content"></textarea>
-	<input type="file" name="userImage">
+	<div class="checkbox"><label for="status">Make Public/Private</label>
+	<input type="checkbox"  name="status" value="1"></div>
 </div>
 	<div class="modal-footer">
 		<input type="submit" name="submit" class="btn btn-default" >

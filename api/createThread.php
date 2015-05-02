@@ -45,11 +45,13 @@ $validator = new Validator();
 $fid = $validator->requiredGetVar('fid');
 $name = $validator->requiredGetVar('name');
 $content=$validator->optionalGetVar('content');
-//print $name;
-if(!addThread($user_id,$fid,$name,$content)){
+
+$id=addThread($user_id,$fid,$name,$content);
+if(!$id){
   print "unknown error";
   apiReturnError($ajax, SITE_ROOT);
 }
+
 apiReturnSuccess($ajax, getReferralPage());
 print "success";
 ?>
