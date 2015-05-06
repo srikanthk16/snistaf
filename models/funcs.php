@@ -42,13 +42,13 @@ THE SOFTWARE.
 function formatPhone($num)
 {
 $num = preg_replace('/[^0-9]/', '', $num);
- 
+
 $len = strlen($num);
 if($len == 7)
 $num = preg_replace('/([0-9]{3})([0-9]{4})/', '$1-$2', $num);
 elseif($len == 10)
 $num = preg_replace('/([0-9]{3})([0-9]{3})([0-9]{4})/', '($1) $2-$3', $num);
- 
+
 return $num;
 }
 
@@ -173,7 +173,7 @@ function prettyPrint( $json )
 /*********************************
  * Language Functions
  *********************************/
- 
+
 //Retrieve a list of all .php files in models/languages
 function getLanguageFiles()
 {
@@ -249,7 +249,7 @@ function destroySession($name)
 
 //Generate a unique code
 function getUniqueCode($length = "")
-{	
+{
 	$code = md5(uniqid(rand(), true));
 	if ($length != "") return substr($code, 0, $length);
 	else return $code;
@@ -276,11 +276,11 @@ function passwordVerifyUF($password, $hash){
 		} else {
 			return false;
 		}
-	}	
+	}
 	// Homegrown implementation (assuming that current install has been using a cost parameter of 12)
 	else if (getPasswordHashTypeUF($hash) == "homegrown"){
 		/*used for manual implementation of bcrypt*/
-		$cost = '12'; 
+		$cost = '12';
 		if (substr($hash, 0, 60) == crypt($password, "$2y$".$cost."$".substr($hash, 60))){
 			return true;
 		} else {
@@ -351,9 +351,9 @@ function validate_ip($ip)
 
 //getuseragent
 //taken from comments @ php.net
-function getBrowser() 
-{ 
-    $u_agent = $_SERVER['HTTP_USER_AGENT']; 
+function getBrowser()
+{
+    $u_agent = $_SERVER['HTTP_USER_AGENT'];
     $bname = 'Unknown';
     $platform = 'Unknown';
     $version= "";
@@ -366,30 +366,30 @@ function getBrowser()
     elseif (preg_match('/windows|win32/i', $u_agent)) {
         $platform = 'windows';
     }
-    if(preg_match('/MSIE/i',$u_agent) && !preg_match('/Opera/i',$u_agent)) { 
-        $bname = 'Internet Explorer'; 
-        $ub = "MSIE"; 
-    } 
-    elseif(preg_match('/Firefox/i',$u_agent)) { 
-        $bname = 'Mozilla Firefox'; 
-        $ub = "Firefox"; 
-    } 
-    elseif(preg_match('/Chrome/i',$u_agent)) { 
-        $bname = 'Google Chrome'; 
-        $ub = "Chrome"; 
-    } 
-    elseif(preg_match('/Safari/i',$u_agent)) { 
-        $bname = 'Apple Safari'; 
-        $ub = "Safari"; 
-    } 
-    elseif(preg_match('/Opera/i',$u_agent)) { 
-        $bname = 'Opera'; 
-        $ub = "Opera"; 
-    } 
-    elseif(preg_match('/Netscape/i',$u_agent))  { 
-        $bname = 'Netscape'; 
-        $ub = "Netscape"; 
-    } 
+    if(preg_match('/MSIE/i',$u_agent) && !preg_match('/Opera/i',$u_agent)) {
+        $bname = 'Internet Explorer';
+        $ub = "MSIE";
+    }
+    elseif(preg_match('/Firefox/i',$u_agent)) {
+        $bname = 'Mozilla Firefox';
+        $ub = "Firefox";
+    }
+    elseif(preg_match('/Chrome/i',$u_agent)) {
+        $bname = 'Google Chrome';
+        $ub = "Chrome";
+    }
+    elseif(preg_match('/Safari/i',$u_agent)) {
+        $bname = 'Apple Safari';
+        $ub = "Safari";
+    }
+    elseif(preg_match('/Opera/i',$u_agent)) {
+        $bname = 'Opera';
+        $ub = "Opera";
+    }
+    elseif(preg_match('/Netscape/i',$u_agent))  {
+        $bname = 'Netscape';
+        $ub = "Netscape";
+    }
     $known = array('Version', $ub, 'other');
     $pattern = '#(?<browser>' . join('|', $known) .
     ')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
@@ -416,19 +416,19 @@ function getBrowser()
 /*
 	simply add inside of a form tag like so:
 	form_protect($loggedInUser->csrf_token);
-	
+
 	then in the processing script:
-	
+
 	require_once __DIR__ . '/models/post.php';
-	
+
 	< OR >
-	
+
 	require_once 'models/post.php';
 */
 function form_protect($token)
 {
 	if(isUserLoggedIn())
-	{echo '<input type="hidden" name="csrf_token" value="'. $token .'">';}	
+	{echo '<input type="hidden" name="csrf_token" value="'. $token .'">';}
 }
 
 // Check that request is made by a logged in user.  Immediately fail if not.
@@ -439,21 +439,21 @@ function checkLoggedInUser($ajax){
     }
 }
 
-// Check that a CSRF token is specified and valid.  
+// Check that a CSRF token is specified and valid.
 function checkCSRF($ajax, $csrf_token){
     global $loggedInUser;
     if ($csrf_token) {
         if (!$loggedInUser->csrf_validate(trim($csrf_token))){
             addAlert("danger", lang("ACCESS_DENIED"));
             if (LOG_AUTH_FAILURES)
-                error_log("CSRF token failure - invalid token."); 
+                error_log("CSRF token failure - invalid token.");
             apiReturnError($ajax, $failure_landing_page);
         }
     } else {
         addAlert("danger", lang("ACCESS_DENIED"));
         if (LOG_AUTH_FAILURES)
-            error_log("CSRF token failure - token not specified."); 
-        apiReturnError($ajax, $failure_landing_page);		
+            error_log("CSRF token failure - token not specified.");
+        apiReturnError($ajax, $failure_landing_page);
     }
 }
 
@@ -490,7 +490,7 @@ function minMaxRange($min, $max, $what)
 /*********************************
  * Miscellaneous Functions
  *********************************/
- 
+
 /**
 * array_merge_recursive does indeed merge arrays, but it converts values with duplicate
 * keys to arrays rather than overwriting the value in the first array with the duplicate
@@ -575,12 +575,12 @@ function generateCaptcha(){
     $randc[2] = imagecolorallocate($image, 255, 255, 0);
     $randc[3] = imagecolorallocate($image, 64,64,64);
     $randc[4] = imagecolorallocate($image, 0,0,255);
-    
+
     //add some dots
     for($i=0;$i<1000;$i++) {
         imagesetpixel($image,rand()%200,rand()%50,$randc[rand()%5]);
-    }    
-    
+    }
+
     //calculate center of text
     $x = ( 150 - 0 - imagefontwidth( 5 ) * strlen( $security_code ) ) / 2 + 0 + 5;
 
@@ -621,5 +621,10 @@ function checkUpgrade($version, $dev_env){
             header('Location: upgrade/');
             die();
         }
+    }
+    function movePostImage($filename){
+      $image="../forum/files/".$filename;
+      $image=file_get_contents($image);
+      return addPostImage($image);
     }
 }

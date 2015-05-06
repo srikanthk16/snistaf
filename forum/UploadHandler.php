@@ -9,7 +9,7 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/MIT
  */
-
+ require_once("../models/config.php");
 class UploadHandler
 {
 
@@ -44,8 +44,8 @@ class UploadHandler
         $this->response = array();
         $this->options = array(
             'script_url' => $this->get_full_url().'/'.basename($this->get_server_var('SCRIPT_NAME')),
-            'upload_dir' => '/files/',
-            'upload_url' => '/files/',
+            'upload_dir' => 'files/',
+            'upload_url' => 'files/',
             'user_dirs' => false,
             'mkdir_mode' => 0755,
             'param_name' => 'files',
@@ -1046,8 +1046,7 @@ class UploadHandler
     protected function handle_file_upload($uploaded_file, $name, $size, $type, $error,
             $index = null, $content_range = null) {
         $file = new \stdClass();
-        $file->name = $this->get_file_name($uploaded_file, $name, $size, $type, $error,
-            $index, $content_range);
+        $file->name = $this->generate_unique_filename($name);
         $file->size = $this->fix_integer_overflow((int)$size);
         $file->type = $type;
         if ($this->validate($uploaded_file, $file, $error, $index)) {
@@ -1069,6 +1068,7 @@ class UploadHandler
                     );
                 } else {
                     move_uploaded_file($uploaded_file, $file_path);
+                    $file->url="image.php?id=".movePostImage($file->name);
                 }
             } else {
                 // Non-multipart uploads (PUT method support)
@@ -1080,7 +1080,7 @@ class UploadHandler
             }
             $file_size = $this->get_file_size($file_path, $append_file);
             if ($file_size === $file->size) {
-                $file->url = $this->get_download_url($file->name);
+                //$file->url = $this->get_download_url($file->name);
                 if ($this->is_valid_image_file($file_path)) {
                     $this->handle_image_file($file_path, $file);
                 }
@@ -1169,6 +1169,8 @@ class UploadHandler
                 return 'image/png';
             case 'gif':
                 return 'image/gif';
+            case 'pdf':
+                return 'doc/pdf';
             default:
                 return '';
         }
@@ -1371,5 +1373,22 @@ class UploadHandler
         }
         return $this->generate_response($response, $print_response);
     }
+    protected function generate_unique_filename($filename = "")
+        {
+
+            $extension = "";
+            if ( $filename != "" )
+            {
+                $extension = pathinfo($filename , PATHINFO_EXTENSION);
+
+                if ( $extension != "" )
+                {
+                    $extension = "." . $extension;
+                }
+            }
+
+            return md5(date('Y-m-d H:i:s:u')) . $extension;
+        }
+
 
 }

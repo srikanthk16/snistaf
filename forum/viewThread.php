@@ -81,7 +81,7 @@ $results=array_slice($resultarray,$offset*10,10,true);
 <td class="col-md-12 ">
 
 
-        <p><?php echo nl2br($row['content']); ?></p>
+        <p><?php 	echo nl2br($row['content']); ?></p>
 
 </td></tr><tr>
 <td colspan="2" class="col-md-6 inline">
@@ -102,7 +102,7 @@ $results=array_slice($resultarray,$offset*10,10,true);
 	<form name="cpost" class="form-group" action="" method="POST" >
 	<input type="hidden" name="tid" value="<?php echo $_GET['id'];?>">
 	<textarea form="cpost" id="content" class="form-control" rows="3" name="content"></textarea>
-	<input type="file" name="userImage">
+
 </div>
 	<div class="modal-footer">
 		<input type="submit" name="submit" class="btn btn-default" >
@@ -231,7 +231,7 @@ Post To Thread
 $(function () {
     'use strict';
     // Change this to the location of your server-side upload handler:
-    var url = 'php-files/',
+    var url = 'fileUpload.php',
         uploadButton = $('<button/>')
             .addClass('btn btn-primary')
             .prop('disabled', true)
@@ -307,6 +307,7 @@ $(function () {
                 var link = $('<a>')
                     .attr('target', '_blank')
                     .prop('href', file.url);
+										document.getElementById("content").value=document.getElementById("content").value.concat(link);
                 $(data.context.children()[index])
                     .wrap(link);
             } else if (file.error) {
