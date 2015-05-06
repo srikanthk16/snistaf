@@ -47,7 +47,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
   <?php
 
 	$uid=$loggedInUser->user_id;
-	$resultarray=loadForumThreads($fid);
+	$resultarray=loadForumThreads($fid,$uid);
 	if(isset($_GET['page'])){
 	$offset=$_GET['page'];}
 	else

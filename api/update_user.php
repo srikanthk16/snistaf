@@ -56,7 +56,7 @@ $primary_group_id = $validator->optionalPostVar('primary_group_id');
 $password = $validator->optionalPostVar('password');
 $passwordc = $validator->optionalPostVar('passwordc');
 $passwordcheck = $validator->optionalPostVar('passwordcheck');
-$im=$validator->optionalPostVar('image');
+//$im=$validator->optionalPostVar('image');
 // Add alerts for any failed input validation
 foreach ($validator->errors as $error){
   addAlert("danger", $error);
@@ -116,7 +116,7 @@ if ($title && $userdetails['title'] != $title){
 		$success_count++;
 	}
 }
-if($im){
+/*if($im){
                     if(getimagesize($_FILES['image']['tmp_name']) == FALSE)
                     {
                     $image=NULL;
@@ -135,7 +135,7 @@ if($im){
                     }
 
                 }
-}
+}*/
 // Update enabled if specified
 if ($enabled !== null){
 	if (!updateUserEnabled($user_id, $enabled)){

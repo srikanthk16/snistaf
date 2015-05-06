@@ -70,7 +70,7 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
 		<h1>Account Settings</h1>
 		<div class="row">
 		  <div class="col-lg-6">
-		  <form class="form-horizontal" role="form" enctype='multipart/form-data' name="updateAccount" action="update_user.php" method="post">
+		  <form class="form-horizontal" role="form" name="updateAccount" action="update_user.php" method="post">
 		  <div class="form-group">
 			<label class="col-sm-4 control-label">Email</label>
 			<div class="col-sm-8">
@@ -95,12 +95,7 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
 			  <input type="password" class="form-control" placeholder="Confirm New Password" name='passwordc'>
 			</div>
 		  </div>
-      <div class='form-group'>
-            <div class="col-sm-offset-4 col-sm-8">
-              <label class="col-sm-4 control-label">Change Profile Picture</label>
-            <input type="file" class="form-control" name="image" />
-            </div>
-          </div>
+
 		  <div class="form-group">
 			<div class="col-sm-offset-4 col-sm-8">
 			  <button type="submit" class="btn btn-success submit" value='Update'>Update</button>
@@ -109,7 +104,19 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
 		  <input type="hidden" name="csrf_token" value="<?php echo $loggedInUser->csrf_token; ?>" />
 		  <input type="hidden" name="user_id" value="0" />
 		  </form>
-
+      <form class="form-horizontal" role="form" enctype='multipart/form-data' onsubmit="change(this)" name="updateDP" action="../api/updateDP.php" method="post">
+        <div class='form-group'>
+              <div class="col-sm-offset-4 col-sm-8">
+              <input type="file" class="form-control" name="image" placeholder="change DP"/>
+              </div>
+            </div>
+        <input type="hidden" name="csrf_token" value="<?php echo $loggedInUser->csrf_token; ?>" />
+  		  <input type="hidden" name="user_id" value="<?php echo $loggedInUser->user_id; ?>" />
+        <div class="form-group">
+  			<div class="col-sm-offset-4 col-sm-8">
+        <button type="submit" class="btn btn-success submit" value="change">Change</button>
+      </div></div>
+    </form>
 		  </div>
 		</div>
 	  </div>
@@ -172,7 +179,30 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
 			event.preventDefault();
 		  });
 
+
+
 		});
+    function change(e){
+
+
+   $.ajax({
+   type: "POST",
+   url: "../api/updateDP.php",
+   data: {
+    image: $(e).find('input[name="image"]').val(),
+    ajaxMode: "true"
+   },
+   success: function(result) {
+   var resultJSON = processJSONResult(result);
+   if (resultJSON['errors'] && resultJSON['errors'] > 0){
+    alertWidget('display-alerts');
+   } else {
+      window.location.replace("");
+   }
+   }
+   });
+   e.preventDefault();
+    }
 	</script>
 
   </body>

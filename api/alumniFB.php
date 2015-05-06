@@ -38,33 +38,20 @@ if(!isUserLoggedIn()) {
 */
 setReferralPage(getAbsoluteDocumentPath(__FILE__));
 $user_id=$loggedInUser->user_id;
-//print $user_id;
 $validator = new Validator();
 $tid = $validator->requiredGetVar('tid');
 $ansarray=array();
 foreach ($_GET as $key => $val){
-  if($val==$_GET['tid']){
+	$keys=array_search($val,$_GET);
+print_r(intval($keys));
+  if($val==$_GET['tid']||$val==$_GET['ajaxMode']){
     continue;
   }
-error_log(intval(key($_GET)));
-  //array_push($ansarray,$val);
-  if(!rating($user_id,$tid,key($_GET),$val)){
+  if(!rating($user_id,$tid,$keys,$val)){
     print "unknown error";
-    apiReturnError($ajax, SITE_ROOT);
+  //apiReturnError($ajax, SITE_ROOT);
   }
-
-
-
-  }
-  /*$ansarray[0]=$validator->requiredGetVar('a');
-  $ansarray[1]=$validator->requiredGetVar('b');
-  $ansarray[2]=$validator->requiredGetVar('c');
-  $ansarray[3]=$validator->requiredGetVar('d');
-  //error_log(implode(" ",$ansarray));*/
-//}
-//$a = $validator->optionalGetVar('a');
-//print $name;
-
-apiReturnSuccess($ajax, getReferralPage());
+}
+//apiReturnSuccess($ajax, getReferralPage());
 print "success";
 ?>

@@ -3152,7 +3152,7 @@ function loadThreadPosts($threadid){
 			$db = pdoConnect();
 			$sqlVars = array();
 			//error_log($userid);
-			$query = "SELECT id,content,added_by,timestamp,likes from fo_posts where thread_id = :threadid ORDER BY timestamp";
+			$query = "SELECT id,content,added_by,timestamp,likes from fo_posts where thread_id = :threadid and id not in(SELECT id from fo_posts_banned where stat=0) ORDER BY timestamp";
 			$stmt = $db->prepare($query);
 			$sqlVars[':threadid'] =intval($threadid);
 			if (!$stmt->execute($sqlVars)){
@@ -3864,7 +3864,7 @@ function autoSubscribe($uid){
 function addImage($uid,$name,$image){
 	try{
 		$db=pdoConnect();
-		$query="insert into um_images (id,name,image) values (:uid,:name,:image)";
+		$query="insert into um_images (id,name,image) values (:uid,:name,:image) ON DUPLICATE KEY UPDATE image=:image";
 		$stmt=$db->prepare($query);
 		$sqlVars[':uid']=$uid;
 		$sqlVars[':name']=$name;
@@ -4231,6 +4231,26 @@ function incLike($pid,$userid){
 		return false;
 	}
 }
+function delete($pid){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="INSERT INTO fo_posts_banned VALUES(:pid,0) ON DUPLICATE KEY UPDATE stat=0";
+	$stmt=$db->prepare($query);
+	$sqlVars[':pid']=$pid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+		return true;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
 function liked($pid,$uid){
 	try{	$db=pdoConnect();
 	$sqlVars=array();
@@ -4363,7 +4383,7 @@ try{
 			";
 	$stmt = $db->prepare($query);
 	$sqlVars[':uid']=$uid;
-	$sqlVars[':qid'] = $qid;
+	$sqlVars[':qid'] = intval($qid);
 	$sqlVars[':tid']=$tid;
 	$sqlVars[':answer']=$answer;
 	if (!$stmt->execute($sqlVars)){
@@ -4388,8 +4408,8 @@ function loadFeedbackQuestions($templateid){
 			//global $forum_db_table_prefix;
 			$db = pdoConnect();
 			$sqlVars = array();
-			error_log($userid);
-			$query = "select question,type from fb_snist_questions where id in(select qid from fb_question_template_mapping where tid in (select tid from fb_question_template where tid=:tid and status=1)) and status=1
+			//error_log($userid);
+			$query = "select id,question,type from fb_snist_questions where id in(select qid from fb_question_template_mapping where tid in (select tid from fb_question_template where tid=:tid and status=1)) and status=1
 					";
 			$stmt = $db->prepare($query);
 			$sqlVars[':tid'] =intval($templateid);
@@ -4515,5 +4535,31 @@ function getForumCount(){
 		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
 		return false;
 	}
+}
+function loadFeedbackAnswers($questionid){
+	try {
+			//use prefixes when modules changed, for now omitting
+			//global $forum_db_table_prefix;
+			$db = pdoConnect();
+			$sqlVars = array();
+			//error_log($userid);
+			$query = "select options from fb_question_options where id in (SELECT oid from fb_question_options_mapping where qid=:qid) and status=1
+					";
+			$stmt = $db->prepare($query);
+			$sqlVars[':qid'] =intval($questionid);
+			if (!$stmt->execute($sqlVars)){
+					// Error
+					return false;
+			}
+			return $stmt->fetchall();
+	} catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+
 }
 ?>
