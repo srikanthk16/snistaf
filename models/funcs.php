@@ -627,4 +627,9 @@ function checkUpgrade($version, $dev_env){
       $image=file_get_contents($image);
       return addPostImage($image);
     }
+		function moveUserImage($uid,$filename){
+			$image="../account/files/".$filename;
+			$image=file_get_contents($image);
+			return addImage($uid,$image);
+		}
 }

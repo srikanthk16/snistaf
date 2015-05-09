@@ -183,11 +183,11 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 		<tbody>
 	<?php foreach ($results as $row): array_map('htmlentities', $row); ?>
 	    <tr>
-	      <td class="col-md-6"><a href="viewThread.php?id=<?php echo intval($row[0]);?>" ><?php echo $row[1]; ?></a><?php if($row[4]){echo "-sticked";
+	      <td class="col-md-8"><a href="viewThread.php?id=<?php echo intval($row[0]);?>" ><?php echo $row[1]; ?></a><?php if($row[4]){echo "-sticked";
 				} ?></td>
-				<td class="col-md-2"><?php echo getDisplayNameById($row[2]);?></td>
-				<td class="col-md-2"><?php echo getPostsNumber(intval($row[0]));?></td>
-				<td class="col-md-2"><?php echo getviewsNumber(intval($row[0]));?></td>
+				<td class="col-md-1"><?php echo getDisplayNameById($row[2]);?></td>
+				<td class="col-md-1"><?php echo getPostsNumber(intval($row[0]));?></td>
+				<td class="col-md-1"><?php echo getviewsNumber(intval($row[0]));?></td>
 	    </tr>
 	<?php endforeach; ?>
 	  <tbody>

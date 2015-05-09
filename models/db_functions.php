@@ -3861,13 +3861,12 @@ function autoSubscribe($uid){
 		return false;
 	}
 }
-function addImage($uid,$name,$image){
+function addImage($uid,$image){
 	try{
 		$db=pdoConnect();
-		$query="insert into um_images (id,name,image) values (:uid,:name,:image) ON DUPLICATE KEY UPDATE image=:image";
+		$query="insert into um_images (id,image) values (:uid,:image) ON DUPLICATE KEY UPDATE image=:image";
 		$stmt=$db->prepare($query);
 		$sqlVars[':uid']=$uid;
-		$sqlVars[':name']=$name;
 		$sqlVars[':image']=$image;
 		if(!$stmt->execute($sqlVars)){
 			return false;

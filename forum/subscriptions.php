@@ -43,14 +43,17 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 		?>
 
 	<div id="pagewrapper" padding-left="60px" >
-		<ol class="breadcrumb">
-		<li><a href="#">Forums</a></li>
-		</ol>
 		<div class="row">
 				<div id='display-alerts' class="col-lg-12">
 
 				</div>
 			</div>
+				<div class="row" >
+					<div class="col-lg-12">
+		<ol class="breadcrumb">
+		<li><a href="#">Forums</a></li>
+		</ol>
+
 	<?php
 	$user_id=$loggedInUser->user_id;
 	//autoSubscribe($user_id); lets write better algoirthm when designing welcome screen, for now is enabled by default
@@ -105,7 +108,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 	</script>-->
 
 
-<table class="table ">
+<table class="table" class="col-lg-12">
 	<thead>
 		<th class="col-md-6">Your Subscribed Forums</th>
 		<th class="col-md-1">Posts</th>
@@ -124,7 +127,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 </li><li ><a href="?page=<?php echo $offset*10<$arr_length?$offset:$offset+=1;?>" ><span aria-hidden="true" class="fa fa-angle-right"></span></a>
 </li></ul>
 	</div>
-
+</div>
 	</div>
 	<script>
         $(document).ready(function() {

@@ -41,25 +41,13 @@ $user_id=$loggedInUser->user_id;
 //print $user_id;
 $validator = new Validator();
 $threadid = $validator->requiredPostVar('tid');
+$image=$validator->requiredPostVar('fil');
 $content = $validator->requiredPostVar('content');
-//$iid=$validator->optionalPostVar('iid');
-//$content.='<img height="100" width="100" src="image.php?id='.$iid.'"></img>';
-if(isset($_FILES['userImage'])){
-if(is_array($_FILES)) {
-if(is_uploaded_file($_FILES['userImage']['tmp_name'])) {
 
-$sourcePath = $_FILES['userImage']['tmp_name'];
-$image=file_get_contents(addslashes($sourcePath));
-$id=addPostImage($image);
-$targetPath = "../forum/images/".$_FILES['userImage']['name'];
-if($id) {
-//return $id;
-$content.='<img src="image.php?id='.$id.'" width="100px" height="100px" />';
-
+//error_log($image);
+if($image){
+$content.='<a href="image.php?id='.$image.'"	 id="imagePop"><img class="img-responsive" id="postImage" src="image.php?id='.$image.'" alt="click to enlarge"></img></a>';
 }
-
-}
-}}
 //error_log($content);
 //$im=$validator->optionalPostVar('image');
 if(isset($_POST['status'])){
@@ -72,7 +60,12 @@ if(isset($_POST['status'])){
 	apiReturnSuccess($ajax, getReferralPage());
 
 }
-error_log($content);
+//error_log($content);
+if(empty(trim($content))){
+	error_log("content is null");
+	addAlert("warning","content cannot be null");
+	apiReturnError($ajax,getReferralPage());
+}
 if(!addPost($user_id,$threadid,$content)){
   print "unknown error";
   apiReturnError($ajax, SITE_ROOT);

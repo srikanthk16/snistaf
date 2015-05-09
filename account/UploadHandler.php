@@ -1068,7 +1068,7 @@ class UploadHandler
                     );
                 } else {
                     move_uploaded_file($uploaded_file, $file_path);
-                    $file->url=movePostImage($file->name);
+                    //$file->url="image.php?id=."moveUserImage($file->name);
                 }
             } else {
                 // Non-multipart uploads (PUT method support)
@@ -1080,7 +1080,7 @@ class UploadHandler
             }
             $file_size = $this->get_file_size($file_path, $append_file);
             if ($file_size === $file->size) {
-                //$file->url = $this->get_download_url($file->name);
+                $file->url = $this->get_download_url($file->name);
                 if ($this->is_valid_image_file($file_path)) {
                     $this->handle_image_file($file_path, $file);
                 }

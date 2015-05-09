@@ -40,6 +40,12 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 		<?php echo renderMenu("Forum");
 		?>
 	<div id="pagewrapper" padding-left="60px" >
+<div class="row">
+				<div id='display-alerts' class="col-lg-12">
+
+				</div></div>
+				<div class="row" 	>
+					<div class="col-lg-12">
   <?php echo renderMenu	("Forum");?>
   <?php
   $tid=$_GET['id'];
@@ -70,7 +76,7 @@ $results=array_slice($resultarray,$offset*10,10,true);
 <?php foreach($results as $row): array_map('htmlentities',$row); ?>
 
     <tr >
-			<td class="col-md-1">
+			<td class="col-md-1" rowspan="2">
 
 
         <img src="../account/image.php?id=<?php echo $row['added_by']; ?>" width="60px" height="60px" alt="DP" class="img-responsive">
@@ -87,7 +93,7 @@ $results=array_slice($resultarray,$offset*10,10,true);
 <td colspan="2" class="col-md-6 inline">
 	<p class="pull-left">Likes:<span><?php echo $row['likes']; ?></span></p>
 	<button class="btn btn-default pull-right" id="like" onclick="like(this)"  value="<?php echo $row['id'];?>">Like</button>
-	<button class="btn btn-default pull-right" id="reply" onclick="reply(this)"  value="<?php echo $row['content'];?>" > Reply</button>
+	<button class="btn btn-default pull-right" id="reply" onclick="reply(this)"  value="<?php echo strip_tags($row['content']);?>" > Reply</button>
 	<?php if(isMod($loggedInUser->user_id,$fid)) { ?><button class="btn btn-default pull-right" id="delete" onclick="del(this)"  value="<?php echo $row['id'];?>">Delete</button> <?php } ?>
 </td>
 </tr>
@@ -99,8 +105,9 @@ $results=array_slice($resultarray,$offset*10,10,true);
         <h4 class="modal-title" id="myModalLabel">Create Post</h4>
       </div>
       <div class="modal-body">
-	<form name="cpost" class="form-group" action="" method="POST" >
+	<form name="cpost" id="cpost" class="form-group" action="" method="POS	T" >
 	<input type="hidden" name="tid" value="<?php echo $_GET['id'];?>">
+	<input type="hidden" name="fil" id="fil" value="">
 	<textarea form="cpost" id="content" class="form-control" rows="3" name="content"></textarea>
 
 </div>
@@ -111,7 +118,7 @@ $results=array_slice($resultarray,$offset*10,10,true);
 				<i class="glyphicon glyphicon-plus"></i>
 				<span>Add files...</span>
 				<!-- The file input field used as target for the file upload widget -->
-				<input id="fileupload" type="file" name="files[]" multiple>
+				<input id="fileupload" type="file"  name="files[]" multiple>
 		</span>
 		<br>
 		<br>
@@ -128,10 +135,25 @@ $results=array_slice($resultarray,$offset*10,10,true);
 <button type="button" class="btn btn-primary btn-small pull-left" data-toggle="modal" data-target="#postModal">
 Post To Thread
 </button>
-
+<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Image preview</h4>
+      </div>
+      <div class="modal-body">
+        <img src="" id="imagepreview" style="width: 400px; height: 264px;" >
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 <ul class="pager">
 <li>	<a href="?id=<?php echo $tid;?>&page=<?php echo $offset==0?0:$prev;?>" class="btn btn-info" role="button"><span class="fa fa-angle-left" aria-hidden="true" ></span></a>
-</li><li>	<a href="?id=<?php echo $tid;?>&page=<?php echo $offset*10<$arr_length?$next:$offset;?>" class="btn btn-info" role="button"><span class="fa fa-angle-right" aria-hidden="true"></span></a>
+</li><li>	<a href="?id=<?php echo $tid;?>&page=<?php echo $next*10<=$arr_length?$next:$offset;?>" class="btn btn-info" role="button"><span class="fa fa-angle-right" aria-hidden="true"></span></a>
 </li></ul>
 <script>
 			$(document).ready(function() {
@@ -152,7 +174,7 @@ Post To Thread
 			data: {
 				tid:	form.find('input[name="tid"]').val(),
 				content: form.find('textarea[name="content"]').val(),
-				userImage: form.find('input[name="userImage"]').val(),
+				fil: form.find('input[name="fil"]').val(),
 				ajaxMode: "true"
 			},
 			success: function(result) {
@@ -307,9 +329,10 @@ $(function () {
                 var link = $('<a>')
                     .attr('target', '_blank')
                     .prop('href', file.url);
-										document.getElementById("content").value=document.getElementById("content").value.concat(link);
-                $(data.context.children()[index])
+							 $(data.context.children()[index])
                     .wrap(link);
+
+									document.getElementById("fil").value=file.url;
             } else if (file.error) {
                 var error = $('<span class="text-danger"/>').text(file.error);
                 $(data.context.children()[index])
@@ -332,7 +355,11 @@ $(function () {
 				    alert(data.files[data.index].error);
 				});
 });
+/*$("#imagePop").on("click", function() {
+   $('#imagepreview').attr('src', $('#postImage').attr('src')); // here asign the image to the modal when the user click the enlarge link
+   $('#imagemodal').modal('show'); // imagemodal is the id attribute assigned to the bootstrap modal, then i use the show function
+});*/
 </script>
-</div></div>
+</div></div></div>
 </body>
 </html>
