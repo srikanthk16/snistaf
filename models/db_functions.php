@@ -3863,11 +3863,14 @@ function autoSubscribe($uid){
 }
 function addImage($uid,$image){
 	try{
+		//error_log("updating db");
 		$db=pdoConnect();
-		$query="insert into um_images (id,image) values (:uid,:image) ON DUPLICATE KEY UPDATE image=:image";
+		$query="INSERT INTO um_images(id,image) values (:uid,:img) ON DUPLICATE KEY UPDATE image=:image";
 		$stmt=$db->prepare($query);
 		$sqlVars[':uid']=$uid;
+		$sqlVars[':img']=$image;//if we dont give multiple params pdo will throw error
 		$sqlVars[':image']=$image;
+		//error_log($image);
 		if(!$stmt->execute($sqlVars)){
 			return false;
 		}

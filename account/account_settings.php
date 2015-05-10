@@ -168,6 +168,8 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
 				  $form.find("input[name='password']").val("");
 				  $form.find("input[name='passwordc']").val("");
 				  $form.find("input[name='passwordcheck']").val("");
+          $form.find("input[name='userImage']").val("");
+          window.location.href="";//for debugging cases
 				}
 			}).fail(function (jqXHR, textStatus, errorThrown){
 				// log the error to the console

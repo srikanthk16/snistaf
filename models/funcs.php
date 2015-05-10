@@ -621,15 +621,17 @@ function checkUpgrade($version, $dev_env){
             header('Location: upgrade/');
             die();
         }
-    }
+    }}
     function movePostImage($filename){
       $image="../forum/files/".$filename;
       $image=file_get_contents($image);
       return addPostImage($image);
     }
 		function moveUserImage($uid,$filename){
-			$image="../account/files/".$filename;
+			error_log($filename);
+			$image="../account/".$filename;
+			error_log($image);
 			$image=file_get_contents($image);
+			error_log($image);
 			return addImage($uid,$image);
 		}
-}

@@ -57,6 +57,7 @@ $password = $validator->optionalPostVar('password');
 $passwordc = $validator->optionalPostVar('passwordc');
 $passwordcheck = $validator->optionalPostVar('passwordcheck');
 $image=$validator->optionalPostVar('userImage');
+//error_log($image);
 //$im=$validator->optionalPostVar('image');
 // Add alerts for any failed input validation
 foreach ($validator->errors as $error){
@@ -117,8 +118,11 @@ if ($title && $userdetails['title'] != $title){
 		$success_count++;
 	}
 }
-if(!$image){
-  moveUserImage($user_id,$image);
+if($image){
+  if(!moveUserImage($user_id,$image))
+  $error_count++;
+  else
+  $success_count++;
 }
 // Update enabled if specified
 if ($enabled !== null){
