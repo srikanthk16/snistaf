@@ -1,5 +1,9 @@
 /*
 
+Srikanth Kasukurthi for SNISTAF
+Javascript resource bundle.
+copyright (c) 2015
+
 UserFrosting Version: 0.2.2
 By Alex Weissman
 Copyright (c) 2014
@@ -41,7 +45,7 @@ function getSitePath() {
     }
 
     scriptPath = script.getAttribute('src', -1);
-	
+
 	var basePath = scriptPath.substr(0, scriptPath.lastIndexOf( '/js' )+1 );
 	return basePath;
 }
@@ -51,11 +55,11 @@ function getTemplateAjax(path) {
 	var template;
 	$.ajax({
 		url: path, //ex. js/templates/mytemplate.handlebars
-		async: false,  
+		async: false,
 		success: function(data) {
 			source    = data;
 			template  = Handlebars.compile(source);
-		}               
+		}
 	});
 	return template;
 }
@@ -68,7 +72,7 @@ function formatCurrency(val) {
 }
 
 function formatPhone(num) {
-	num = num.replace(/[^0-9]/, '', num); 
+	num = num.replace(/[^0-9]/, '', num);
 	var len = num.length;
 	if(len == 7)
 	num = num.replace(/([0-9]{3})([0-9]{4})/, '$1-$2');
@@ -170,7 +174,7 @@ function typeaheadDropdown(typeahead_element, suggestions, suggestion_render_tem
 	var template = Handlebars.compile(suggestion_render_template);
 	// Enable item
 	//jQuery.fn._typeahead.noConflict();
-	// Test array: var colors = ["red", "blue", "green", "yellow", "brown", "black"];    
+	// Test array: var colors = ["red", "blue", "green", "yellow", "brown", "black"];
 	$(typeahead_element).typeahead({
 		//name: classLabel,     // Update 2/19/2014: remove name to keep typeahead from caching data
 		minLength: 0,
@@ -245,7 +249,7 @@ function validateFormFields(dialog_id) {
 		} else {
 			val = input.value;
 		}
-		console.log("validating field: " + input.name + "='" + val + "'");		
+		console.log("validating field: " + input.name + "='" + val + "'");
 		var fieldErrors = 0;
 		// Get validation metadata
 		var validationData = $(this).data('validate');
@@ -268,7 +272,7 @@ function validateFormFields(dialog_id) {
 						errorMessages.push("'" + label + "' must be at least " + validationData.minLength + " characters long.");
 						fieldErrors += 1;
 					}
-				}		
+				}
 				if (!validationData.minLength && validationData.maxLength) {
 					if (val.length > validationData.maxLength) {
 						errorMessages.push("'" + label + "' must be at most " + validationData.maxLength + " characters long.");
@@ -329,7 +333,7 @@ function validateFormFields(dialog_id) {
 		} else {
 			closestGroup.removeClass('has-error');
 			closestGroup.addClass('has-success');
-		}		
+		}
 	});
 	//console.log(errorMessages);
 	return errorMessages;
@@ -337,13 +341,13 @@ function validateFormFields(dialog_id) {
 
 function loadCurrentUser() {
 	var url = APIPATH + 'load_current_user.php';
-	var result = $.ajax({  
-	  type: "GET",  
+	var result = $.ajax({
+	  type: "GET",
 	  url: url,
 	  async: false
-	}).responseText;	
+	}).responseText;
 	var resultJSON = processJSONResult(result);
-	
+
 	if (resultJSON['user_id']) {
 		return resultJSON;
 	} else {
@@ -352,12 +356,86 @@ function loadCurrentUser() {
 		return;
 	}
 }
+function loadCurrentUserPhone() {
+	var url = APIPATH + 'load_current_user_phone.php';
+	var result = $.ajax({
+	  type: "GET",
+	  url: url,
+	  async: false
+	}).responseText;
+  //alert(result);
+  if(result){
+	var resultJSON = processJSONResult(result);}
+else
+{
+  var resultJSON=array();
+}
+	if (resultJSON['phoneNum']) {
+		return resultJSON;
+	} else {
+    resultJSON['phoneNum']=" ";
+		return resultJSON;
+	}
+}
+function loadCurrentUserAddr() {
+	var url = APIPATH + 'load_current_user_addr.php';
+	var result = $.ajax({
+	  type: "GET",
+	  url: url,
+	  async: false
+	}).responseText;
+  //alert(result);
+  if(result){
+	var resultJSON = processJSONResult(result);}
+  else{
+    var resultJSON=array();
+  }
 
+	if (resultJSON['address']) {
+		return resultJSON;
+	} else {
+	resultJSON['address']=' ';
+		return resultJSON;
+	}
+}
+function loadCurrentUserEmp() {
+	var url = APIPATH + 'load_current_user_emp.php';
+	var result = $.ajax({
+	  type: "GET",
+	  url: url,
+	  async: false
+	}).responseText;
+  //alert(result);
+  if(result){
+	var resultJSON = processJSONResult(result);}
+  else{
+    var resultJSON=array();
+  }
+
+	if (resultJSON['role']) {
+		return resultJSON;
+	} else {
+	resultJSON['role']=' ';
+		return resultJSON;
+	}
+}
+function loadCurrentUserAlumni() {
+	var url = APIPATH + 'load_current_user_alumni.php';
+	var result = $.ajax({
+	  type: "GET",
+	  url: url,
+	  async: false
+	}).responseText;
+  //alert(result);
+return result;
+
+
+}
 // Load permissions for the logged in user
 function userLoadPermissions() {
 	var url = APIPATH + 'load_groups.php';
-	var result = $.ajax({  
-	  type: "GET",  
+	var result = $.ajax({
+	  type: "GET",
 	  url: url,
 	  async: false,
 	  data: {user_id: '0'}
@@ -368,8 +446,8 @@ function userLoadPermissions() {
 
 function loadAllGroups() {
 	var url = APIPATH + 'load_groups.php';
-	var result = $.ajax({  
-	  type: "GET",  
+	var result = $.ajax({
+	  type: "GET",
 	  url: url,
 	  async: false,
 	  data: {}
@@ -380,8 +458,8 @@ function loadAllGroups() {
 
 function loadSecureFunctions() {
 	var url = APIPATH + 'load_secure_functions.php';
-	var result = $.ajax({  
-	  type: "GET",  
+	var result = $.ajax({
+	  type: "GET",
 	  url: url,
 	  async: false,
 	  data: {}
@@ -392,8 +470,8 @@ function loadSecureFunctions() {
 
 function loadPermissionValidators() {
 	var url = APIPATH + 'load_permission_validators.php';
-	var result = $.ajax({  
-	  type: "GET",  
+	var result = $.ajax({
+	  type: "GET",
 	  url: url,
 	  async: false,
 	  data: {}
@@ -404,19 +482,19 @@ function loadPermissionValidators() {
 
 function addAlert(type, msg) {
 	var url = APIPATH + 'user_alerts.php';
-	$.ajax({  
-	  type: "POST",  
+	$.ajax({
+	  type: "POST",
 	  url: url,
 	  async: false,
 	  data: {
 		type: type,
 		message: msg
-	  },		  
+	  },
 	  success: function() {
 		//alert("Added alert successfully");
 		// Do nothing.  What, you want an alert that your alert posted successfully?
 	  }
-	}); 
+	});
 }
 
 // Load alerts from $_SESSION['userAlerts'] variable into specified element
@@ -435,7 +513,7 @@ function alertWidget(widget_id){
 			} else if (alert_message['type'] == "danger"){
 				alertHTML += "<div class='alert alert-danger'>" + alert_message['message'] + "</div>";
 			}
-		});	
+		});
 		$('#' + widget_id).html(alertHTML);
 		$("html, body").animate({ scrollTop: 0 }, "fast");		// Scroll back to top of page
 	});
@@ -456,6 +534,6 @@ function processJSONResult(result) {
 			console.log("Backend error: " + result);
 			addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
             return {"errors": 1, "successes": 0};
-		}	
+		}
 	}
 }

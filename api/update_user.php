@@ -57,6 +57,9 @@ $password = $validator->optionalPostVar('password');
 $passwordc = $validator->optionalPostVar('passwordc');
 $passwordcheck = $validator->optionalPostVar('passwordcheck');
 $image=$validator->optionalPostVar('userImage');
+$phone=$validator->optionalPostVar('phone');
+$address=$validator->optionalPostVar('address');
+$role=$validator->optionalPostVar('role');
 //error_log($image);
 //$im=$validator->optionalPostVar('image');
 // Add alerts for any failed input validation
@@ -201,7 +204,30 @@ if ($primary_group_id && $userdetails['primary_group_id'] != $primary_group_id){
 		$error_count++;
 	}
 }
-
+$mobile=fetchUserPhone($user_id);
+if($phone&& $phone!=$mobile['phoneNum']){
+  if(!updatePhone($user_id,$phone)){
+    $error_count++;
+  }
+  else
+  $success_count++;
+}
+$addr=fetchUserAddr($user_id);
+if($address && $address!=$addr['address']){
+  if(!updateAddress($user_id,$address)){
+    $error_count++;
+  }
+  else
+  $success_count++;
+}
+$emp=fetchUserEmp($user_id);
+if($role && $role!=$emp['role']){
+  if(!updateEmp($user_id,$role)){
+    $error_count++;
+  }
+  else
+  $success_count++;
+}
 restore_error_handler();
 
 if ($error_count > 0){

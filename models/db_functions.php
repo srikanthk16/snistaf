@@ -328,7 +328,117 @@ function fetchUserDisplayName($user_id){
         return false;
     }
 }
+function fetchUserPhone($user_id){
+    try {
+        global $db_table_prefix;
 
+        $db = pdoConnect();
+
+        $sqlVars = array();
+
+        // First, check that the specified field exists.  Very important as we are using other unsanitized data in the following query.
+        $query = "SELECT `phoneNum`
+            FROM ".$db_table_prefix."phone
+            WHERE `id` = :user_id and isPrimary=1";
+
+        $stmt = $db->prepare($query);
+
+        $sqlVars[':user_id'] = $user_id;
+
+        $stmt->execute($sqlVars);
+
+        if (!($results = $stmt->fetch(PDO::FETCH_ASSOC))){
+            // The user does not exist
+						$ans['phoneNum']=' ';
+            return $ans;
+        }
+
+        $stmt = null;
+        return $results;
+
+    } catch (PDOException $e) {
+        addAlert("danger", "Oops, looks like our database encountered an error.");
+        error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+        return false;
+    } catch (ErrorException $e) {
+        addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+        return false;
+    }
+}
+function fetchUserAddr($user_id){
+    try {
+        global $db_table_prefix;
+
+        $db = pdoConnect();
+
+        $sqlVars = array();
+
+        // First, check that the specified field exists.  Very important as we are using other unsanitized data in the following query.
+        $query = "SELECT `address`
+            FROM ".$db_table_prefix."address
+            WHERE `id` = :user_id ";
+
+        $stmt = $db->prepare($query);
+
+        $sqlVars[':user_id'] = $user_id;
+
+        $stmt->execute($sqlVars);
+
+        if (!($results = $stmt->fetch(PDO::FETCH_ASSOC))){
+            // The user does not exist
+						$ans['address']=' ';
+            return $ans;
+        }
+
+        $stmt = null;
+        return $results;
+
+    } catch (PDOException $e) {
+        addAlert("danger", "Oops, looks like our database encountered an error.");
+        error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+        return false;
+    } catch (ErrorException $e) {
+        addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+        return false;
+    }
+}
+function fetchUserEmp($user_id){
+    try {
+        global $db_table_prefix;
+
+        $db = pdoConnect();
+
+        $sqlVars = array();
+
+        // First, check that the specified field exists.  Very important as we are using other unsanitized data in the following query.
+        $query = "SELECT `role`
+            FROM ".$db_table_prefix."alumni_employment
+            WHERE `id` = :user_id and isCurrent=1";
+
+        $stmt = $db->prepare($query);
+
+        $sqlVars[':user_id'] = $user_id;
+
+        $stmt->execute($sqlVars);
+
+        if (!($results = $stmt->fetch(PDO::FETCH_ASSOC))){
+            // The user does not exist
+						$ans['role']=' ';
+            return $ans;
+        }
+
+        $stmt = null;
+        return $results;
+
+    } catch (PDOException $e) {
+        addAlert("danger", "Oops, looks like our database encountered an error.");
+        error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+        return false;
+    } catch (ErrorException $e) {
+        addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+        return false;
+    }
+}
 // Shortcut functions for fetchUserAuth by different parameters
 function fetchUserAuthById($user_id){
     return fetchUserAuth('id', $user_id);
@@ -4085,7 +4195,7 @@ function isFeedbackDone($userid){
 }
 function isAlumni($userid){
 	/*
-	isFeedbackDone call is made to verify is user already provided feedbacl
+	if the user is part of alumni group or not
 	*/
 	try{	$db=pdoConnect();
 	$sqlVars=array();
@@ -4627,5 +4737,100 @@ function magikFill($rollno){
 	}
 }
 
-
+function updateAddress($user_id,$address){
+try {
+		//use prefixes when modules changed, for now omitting
+		//global $forum_db_table_prefix;
+		$db = pdoConnect();
+		$sqlVars = array();
+		//error_log($rollno);
+		$query = "UPDATE um_user_address set isCurrent=0 where id=:id";
+		$stmt = $db->prepare($query);
+		$sqlVars[':id'] =$user_id;
+		if (!$stmt->execute($sqlVars)){
+				// Error
+				return false;
+		}
+		$stmt=null;
+		$query="INSERT INTO um_user_address(id,address) VALUES(:id,:address)";
+		$stmt=$db->prepare($query);
+		$sqlVars[':address']=$address;
+		if (!$stmt->execute($sqlVars)){
+				// Error
+				return false;
+		}
+		return true;
+} catch (PDOException $e) {
+	addAlert("danger", "Oops, looks like our database encountered an error.");
+	error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+	return false;
+} catch (ErrorException $e) {
+	addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+	return false;
+}
+}
+function updatePhone($user_id,$phone){
+try {
+		//use prefixes when modules changed, for now omitting
+		//global $forum_db_table_prefix;
+		$db = pdoConnect();
+		$sqlVars = array();
+		//error_log($rollno);
+		$query = "UPDATE um_phone set isPrimary=0 where id=:id";
+		$stmt = $db->prepare($query);
+		$sqlVars[':id'] =$user_id;
+		if (!$stmt->execute($sqlVars)){
+				// Error
+				return false;
+		}
+		$stmt=null;
+		$query="INSERT INTO um_phone(id,phoneNum) VALUES(:id,:phone)";
+		$stmt=$db->prepare($query);
+		$sqlVars[':phone']=$phone;
+		if (!$stmt->execute($sqlVars)){
+				// Error
+				return false;
+		}
+		return true;
+} catch (PDOException $e) {
+	addAlert("danger", "Oops, looks like our database encountered an error.");
+	error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+	return false;
+} catch (ErrorException $e) {
+	addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+	return false;
+}
+}
+function updateEmp($user_id,$role){
+try {
+		//use prefixes when modules changed, for now omitting
+		//global $forum_db_table_prefix;
+		$db = pdoConnect();
+		$sqlVars = array();
+		//error_log($rollno);
+		$query = "UPDATE um_alumni_employment set isCurrent=0 where id=:id";
+		$stmt = $db->prepare($query);
+		$sqlVars[':id'] =$user_id;
+		if (!$stmt->execute($sqlVars)){
+				// Error
+				return false;
+		}
+		$stmt=null;
+		$query="INSERT INTO um_alumni_employment(id,role) VALUES(:id,:role)";
+		$stmt=$db->prepare($query);
+		$sqlVars[':role']=$role;
+		if (!$stmt->execute($sqlVars)){
+				// Error
+				return false;
+		}
+		return true;
+} catch (PDOException $e) {
+	addAlert("danger", "Oops, looks like our database encountered an error.");
+	error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+	return false;
+} catch (ErrorException $e) {
+	addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+	return false;
+}
+}
 ?>

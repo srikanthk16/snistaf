@@ -623,15 +623,20 @@ function checkUpgrade($version, $dev_env){
         }
     }}
     function movePostImage($filename){
-      $image="../forum/files/".$filename;
-      $image=file_get_contents($image);
-      return addPostImage($image);
+      $imagename="../forum/files/".$filename;
+      $image=file_get_contents($imagename);
+      $id= addPostImage($image);
+			unlink($imagename);
+			return $id;
     }
 		function moveUserImage($uid,$filename){
 			error_log($filename);
 			$image="../account/".$filename;
-			error_log($image);
+			$filename=$image;
+			//error_log($image);
 			$image=file_get_contents($image);
-			error_log($image);
-			return addImage($uid,$image);
+			//error_log($image);
+			$id=addImage($uid,$image);
+			unlink($filename);
+			return $id;
 		}

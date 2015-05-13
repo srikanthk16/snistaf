@@ -36,7 +36,7 @@ THE SOFTWARE.
 // Create a new user.
 
 require_once("../models/config.php");
-
+require_once("../models/invite_funcs.php");
 set_error_handler('logAllErrors');
 
 // Request method: POST
@@ -88,6 +88,7 @@ $yearjoin=intval(trim($validator->requiredPostVar('yearJoin')));
 $yearend=intval(trim($validator->optionalPostVar('YearEnd')));
 $dept=$validator->requiredPostVar('dept');
 $section=$validator->requiredPostVar('section');
+$token=$validator->optionalPostVar('token');
 if($yearend==null){
   $yearend=$yearjoin+4;
   //so bullshit code, we need to  change this shit when we unify registration for everyone
@@ -149,7 +150,7 @@ if ($error_count == 0){
 error_log($dept);
 	// Try to create the new user
 	if ($new_user_id = createUser($user_name, $display_name, $email,$fullname,$roll,$yearjoin,$yearend,$dept,$section, $title, $password, $passwordc, $require_activation, $admin)){
-
+    confirmInviteRegistration($token,1);
 	} else {
 		apiReturnError($ajax, ($admin == "true") ? ACCOUNT_ROOT : SITE_ROOT);
 	}

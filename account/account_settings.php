@@ -95,7 +95,25 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
 			  <input type="password" class="form-control" placeholder="Confirm New Password" name='passwordc'>
 			</div>
 		  </div>
-
+      <div class="form-group">
+			<label class="col-sm-4 control-label">Mobile Number</label>
+			<div class="col-sm-8">
+			  <input type="text" class="form-control" placeholder="Mobile Number" name='phone'>
+			</div>
+		  </div>
+      <div class="form-group">
+			<label class="col-sm-4 control-label">Address</label>
+			<div class="col-sm-8">
+			  <textarea class="form-control" placeholder="your address" name='address'></textarea>
+			</div>
+		  </div>
+      <?php if(isAlumni($loggedInUser->user_id)){?>
+        <div class="form-group">
+        <label class="col-sm-4 control-label">Role</label>
+        <div class="col-sm-8">
+          <textarea class="form-control" placeholder="Job/Education" name='role'></textarea>
+        </div>
+        </div><?php } ?>
 		  <div class="form-group">
 			<div class="col-sm-offset-4 col-sm-8">
 			  <button type="submit" class="btn btn-success submit" value='Update'>Update</button>
@@ -107,7 +125,10 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
 		  </form>
 
               <div class="col-sm-offset-4 col-sm-8">
-                <span>Change image...</span>
+
+                <span class="btn btn-success fileinput-button">
+            				<i class="glyphicon glyphicon-plus"></i>
+                <span>Change DP</span>
                 <!-- The file input field used as target for the file upload widget -->
                 <input id="fileupload" type="file"  name="files[]">
             </span>
@@ -118,7 +139,7 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
                 <div class="progress-bar progress-bar-success"></div>
             </div>
             <!-- The container for the uploaded files -->
-            <div id="files" class="files"></div>
+            <div id="files" class="files">Upload and then hit update</div>
               </div>
             </div>
   			</div>
@@ -130,13 +151,30 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
 	<script>
         $(document).ready(function() {
           // Get id of the logged in user to determine how to render this page.
+
           var user = loadCurrentUser();
           var user_id = user['user_id'];
 
+          var addr=loadCurrentUserAddr();
+          var address=addr['address'];
+
+          var phn=loadCurrentUserPhone();
+          var phone=phn['phoneNum'];
+          var tmp=loadCurrentUserAlumni();
+          //alert(tmp);
+          tmp=tmp.replace(/['"]+/g, '');
+          if(tmp==String(1)){
+          var emp=loadCurrentUserEmp();
+          var role=emp['role'];
+          //alert(emp['role']);
+          $('form[name="updateAccount"] textarea[name="role"]').val(emp['role']);
+          }
 		  alertWidget('display-alerts');
 
 		  // Set default form field values
 		  $('form[name="updateAccount"] input[name="email"]').val(user['email']);
+      $('form[name="updateAccount"] input[name="phone"]').val(phn['phoneNum']);
+      $('form[name="updateAccount"] textarea[name="address"]').val(addr['address']);
 
 		  var request;
 		  $("form[name='updateAccount']").submit(function(event){

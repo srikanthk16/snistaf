@@ -51,6 +51,10 @@ if(isUserLoggedIn()) {
 <!DOCTYPE html>
 <html lang="en">
   <?php
+	if(isset($_GET['token'])){
+		$token=$_GET['token'];
+	}
+	else $token=null;
 	echo renderTemplate("head.html", array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Register"));
 
     $fields = [
@@ -228,7 +232,7 @@ if(isUserLoggedIn()) {
 		  </div>
 
 <input type='hidden' name='dept' value=''>
-
+<input type='hidden' name='token' value='".$token."'>
 
 
 		  <div class='row'>

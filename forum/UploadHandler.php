@@ -1069,6 +1069,7 @@ class UploadHandler
                 } else {
                     move_uploaded_file($uploaded_file, $file_path);
                     $file->url=movePostImage($file->name);
+                    
                 }
             } else {
                 // Non-multipart uploads (PUT method support)
