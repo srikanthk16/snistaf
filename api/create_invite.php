@@ -29,7 +29,7 @@ THE SOFTWARE.
 
 */
 
-require_once("../../../models/config.php");
+require_once("../models/config.php");
 require_once("../models/invite_funcs.php");
 
 
@@ -81,7 +81,7 @@ if(!$user_id or !userIdExists($user_id)){
 	}
 	exit();
 }
-	
+
 $userdetails = fetchUserAuthById($user_id); //Fetch user details
 
 $error_count = 0;
@@ -105,9 +105,9 @@ if (($invitesLeft>0) & (!$userExist))
 	//decrease inviterIds invite count
 
 	//create email
-	$mail = new userCakeMail();					
-	$invite_url = SITE_ROOT."/modules/invite/invite_register.php?token=".$token;
-	
+	$mail = new userCakeMail();
+	$invite_url = SITE_ROOT."register.php?token=".$token;
+
 	//Setup our custom hooks
 	$hooks = array(
 		"searchStrs" => array("#INVITATION-URL","#NAME#","#SITENAME#", "#INVITERNAME#"),
@@ -119,7 +119,7 @@ if (($invitesLeft>0) & (!$userExist))
 	}
 	else
 	{
-		
+
 		if (!$mail->sendMail($email,"You are invited to ".$websiteName))
 		{
 			$errors[] = lang("MAIL_ERROR");
@@ -130,14 +130,14 @@ if (($invitesLeft>0) & (!$userExist))
 			$successes[] = lang("ACCOUNT_NEW_INVITATION_SENT");
 			//addAlert("danger", "Your email has been sent!");
 		}
-	}	
+	}
 	//send email
-}	
+}
 else
 {
- if ($invitesLeft<1) 
+ if ($invitesLeft<1)
  	addAlert("danger", "I'm sorry, you don't have any invites left!");
- if ($userExist) 
+ if ($userExist)
  	addAlert("danger", "A user with that email allready exist");
 }
 
@@ -161,4 +161,3 @@ if ($ajaxMode == "true" ){
 }
 
 ?>
-	

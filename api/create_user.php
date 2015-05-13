@@ -1,5 +1,8 @@
 <?php
 /*
+SNISTAF
+By Srikanth Kasukurthi
+Rights reserved with www.sreenidhi.edu.in
 
 UserFrosting Version: 0.2.2
 By Alex Weissman
@@ -33,7 +36,7 @@ THE SOFTWARE.
 // Create a new user.
 
 require_once("../models/config.php");
-
+require_once("../models/invite_funcs.php");
 set_error_handler('logAllErrors');
 
 // Request method: POST
@@ -82,8 +85,18 @@ $email = str_normalize($validator->requiredPostVar('email'));
 $fullname=trim($validator->requiredPostVar('full_name'));
 $roll=trim($validator->requiredPostVar('roll_no'));
 $yearjoin=intval(trim($validator->requiredPostVar('yearJoin')));
-$yearend=intval(trim($validator->requiredPostVar('YearEnd')));
-$dept=intval(trim($validator->requiredPostVar('dept')));
+$yearend=intval(trim($validator->optionalPostVar('YearEnd')));
+$dept=$validator->requiredPostVar('dept');
+$section=$validator->requiredPostVar('section');
+$token=$validator->optionalPostVar('token');
+if($yearend==null){
+  $yearend=$yearjoin+4;
+  //so bullshit code, we need to  change this shit when we unify registration for everyone
+}
+
+$dept=getDepartmentID($dept);
+error_log($dept);
+
 // If we're in admin mode, require title.  Otherwise, use the default title
 if ($admin == "true"){
   $title = trim($validator->requiredPostVar('title'));
@@ -134,33 +147,14 @@ if ($error_count == 0){
 	  $require_activation = false;
 	else
 	  $require_activation = $emailActivation;
-
+error_log($dept);
 	// Try to create the new user
-	if ($new_user_id = createUser($user_name, $display_name, $email,$fullname,$roll,$yearjoin,$yearend,$dept, $title, $password, $passwordc, $require_activation, $admin)){
-
+	if ($new_user_id = createUser($user_name, $display_name, $email,$fullname,$roll,$yearjoin,$yearend,$dept,$section, $title, $password, $passwordc, $require_activation, $admin)){
+    confirmInviteRegistration($token,1);
 	} else {
 		apiReturnError($ajax, ($admin == "true") ? ACCOUNT_ROOT : SITE_ROOT);
 	}
-  if($im){
-                      if(getimagesize($_FILES['image']['tmp_name']) == FALSE)
-                      {
-                      $image=NULL;
-                      }
-                      else
-                      {
-                      $image= addslashes($_FILES['image']['tmp_name']);
-                      $imagename= addslashes($_FILES['image']['name']);
-                      $image= file_get_contents($image);
-                      $image= base64_encode($image);
-                      if(addImage($new_user_id,$imagename,$image)){
 
-                      }
-                      else{
-                        apiReturnError($ajax,SITE_ROOT);
-                      }
-
-                  }
-  }
 	// If creation succeeds, try to add groups
 
 	// If we're in admin mode and add_groups is specified, try to add those groups
@@ -171,7 +165,7 @@ if ($error_count == 0){
 	  foreach ($group_ids_arr as $group_id){
 		$addition_count += addUserToGroup($new_user_id, $group_id);
 	  }
-
+    if(!autoSubscribe($new_user_id)){return false;} //add user susbscriptions
 	  // Set primary group
 	  if(!empty($primary_group_id)){
 		  if (updateUserPrimaryGroup($new_user_id, $primary_group_id)){

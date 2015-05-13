@@ -34,10 +34,23 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
 echo renderTemplate("head.html", array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Login"));
 ?>
 <body>
-	<form name="forum" action="../api/createForum.php" method="get">
-		<input type="text" name="name" id="name"></input>
-		<input type="text" name="description" id="description"></input>
-		<input type="text" name="type" id="type"></input>
+  <div id="wrapper">
+		<?php echo renderMenu("Forum");
+		?>
+<?php echo "Request for Creating Forum"; ?>
+	<div id="pagewrapper" padding-left="60px" >
+		<ol class="breadcrumb">
+		<li><a href="#">Forums</a></li>
+		</ol>
+		<div class="row">
+				<div id='display-alerts' class="col-lg-12">
+
+				</div>
+			</div>
+	<form name="forum" class="form-control" action="../api/createForum.php" method="get">
+		Name:<input type="text" name="name" id="name"></input>
+		Description:<input type="text" name="description" id="description"></input>
+		Type:<input type="text" name="type" id="type"></input>
 		<input type="submit" name="submit" value="submit"></input>
 	</form>
 
@@ -81,6 +94,6 @@ echo renderTemplate("head.html", array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#
 
 		});
 	</script>
-
+</div>
 </body>
 </html>

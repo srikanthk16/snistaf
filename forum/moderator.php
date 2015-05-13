@@ -67,3 +67,4 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
         die("<script>location.href = 'index.php'</script>");
       }
   			?>
+				

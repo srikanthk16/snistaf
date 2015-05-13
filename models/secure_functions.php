@@ -1,6 +1,9 @@
 <?php
 /*
 
+Srikanth Kasukurthi for SNISTAF
+Copyright (c) 2015
+
 UserFrosting Version: 0.2.2
 By Alex Weissman
 Copyright (c) 2014
@@ -99,7 +102,7 @@ function loadUsersInGroup($group_id){
  * @param boolean $admin True if admin is creating user, False if not admin creating user.
  * @return int $inserted_id
  */
-function createUser($user_name, $display_name, $email,$fullname,$roll,$yearjoin,$yearend,$dept, $title, $password, $passwordc, $require_activation, $admin) {
+function createUser($user_name, $display_name, $email,$fullname,$roll,$yearjoin,$yearend,$dept,$section, $title, $password, $passwordc, $require_activation, $admin) {
     // if we're in admin mode, then the user must be logged in and have appropriate permissions
     if ($admin == "true"){
         // This block automatically checks this action against the permissions database before running.
@@ -252,9 +255,11 @@ function createUser($user_name, $display_name, $email,$fullname,$roll,$yearjoin,
             }
         }
     }
-
+if(is_null($section)){
+  $section='a';
+}
     // Insert the user into the database and return the new user's id
-    return addUser($user_name, $display_name,$fullname,$roll,$yearjoin,$yearend,$dept,$alumni, $title, $password_hash, $email, $active, $activation_token);
+    return addUser($user_name, $display_name,$fullname,$roll,$yearjoin,$yearend,$dept,$section,$alumni, $title, $password_hash, $email, $active, $activation_token);
 }
 
 /**

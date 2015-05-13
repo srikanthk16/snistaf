@@ -1,8 +1,9 @@
 <?php
 /*
-SNISTAF Public Code
+SNISTAF API
 By Srikanth Kasukurthi
 Copyright (c) 2015 for SNIST
+
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the 'Software'), to deal
@@ -22,45 +23,36 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 */
-require_once("../../models/config.php");
+
+
+
+require_once("../models/config.php");
+//error_log(checkRequestMode("POST"));
+$ajax = checkRequestMode("get");
+//error_log($ajax);
 if(!isUserLoggedIn()) {
 	addAlert("warning", "Login to continue!");
 	apiReturnError($ajax, SITE_ROOT."login.php");
 }
-
-//for fucks sake, only goku can auto create forums, other admins cant' below is code if we want all masters to do
-if($loggedInUser->user_id!=1){ //isset($_SESSION["userCakeUser"]) && is_object($_SESSION["userCakeUser"]) and $_SESSION["userCakeUser"]->user_id == $master_account)
-  addAlert("warning","Only Goku can autocreate");
+/*if (!securePage(__FILE__)){
+    apiReturnError($ajax);
 }
+*/
 setReferralPage(getAbsoluteDocumentPath(__FILE__));
- ?>
-<html>
-<?php
-//echo renderTemplate("head.html", array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Subscriptions"))	;
-echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Subscriptions"));
+$user_id=$loggedInUser->user_id;
+
+//print $user_id;
+$validator = new Validator();
+$tid = $validator->requiredGetVar('tid');
+if(!isMod($user_id,$tid)){
+  addAlert("warning", "FCK OFF!");
+  apiReturnError($ajax, SITE_ROOT."index.php");
+}
+//print $name;
+if(!sticky($tid)){
+  print "unknown error";
+  apiReturnError($ajax, SITE_ROOT);
+}
+apiReturnSuccess($ajax, getReferralPage());
+print "success";
 ?>
-
-
-<body>
-	<div id="wrapper">
-		<?php echo renderMenu("AutoCreate");
-		?>
-	<div id="pagewrapper" padding-left="60px" >
-	<?php
-  echo "Calling auto create module"
-  if(!autoCreate()){
-    echo "some error with auto create, please check logs";
-  }
-  else
-  echo "auto create has done it...";
-  echo "you can ask user to do/enable by default auto subscribe";
-?>
-
-	</div>
-
-	</div>
-
-
-  <?php echo renderTemplate("footer.html"); ?>
-</body>
-</html>

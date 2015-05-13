@@ -31,7 +31,7 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
  ?>
 <html>
 <?php
-echo renderTemplate("head.html", array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Forum"))	;
+//echo renderTemplate("head.html", array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Forum"))	;
 echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Forum"));
 ?>
 <body>
@@ -47,7 +47,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
   <?php
 
 	$uid=$loggedInUser->user_id;
-	$resultarray=loadForumThreads($fid);
+	$resultarray=loadForumThreads($fid,$uid);
 	if(isset($_GET['page'])){
 	$offset=$_GET['page'];}
 	else
@@ -120,7 +120,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 			<label for="name">Name:</label>
 			<textarea type="text" class="form-control" name="name" form="thread" rows="2"></textarea>
 			<label for="content">Post:</label>
-			<textarea type="text" class="form-control" name="content" form="thread" rows="5"></textarea>
+			<pre><textarea type="text" class="form-control" name="content" form="thread" rows="5"></textarea></pre>
 		</div>
 			<div class="modal-footer">
 				<input type="submit" name="submit" class="btn btn-default" >
@@ -154,6 +154,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 					var resultJSON = processJSONResult(result);
 					if (resultJSON['errors'] && resultJSON['errors'] > 0){
 						alertWidget('display-alerts');
+						alert("either you dont have permission to create thread/We screwed up");
 					} else {
 						/*window.location.replace("");
 						alertWidget('success');*/
@@ -182,11 +183,11 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 		<tbody>
 	<?php foreach ($results as $row): array_map('htmlentities', $row); ?>
 	    <tr>
-	      <td class="col-md-6"><a href="viewThread.php?id=<?php echo intval($row[0]);?>" ><?php echo $row[1]; ?></a><?php if($row[4]){echo "-sticked";
+	      <td class="col-md-8"><a href="viewThread.php?id=<?php echo intval($row[0]);?>" ><?php echo $row[1]; ?></a><?php if($row[4]){echo "-sticked";
 				} ?></td>
-				<td class="col-md-2"><?php echo getNameById($row[2]);?></td>
-				<td class="col-md-2"><?php echo getPostsNumber(intval($row[0]));?></td>
-				<td class="col-md-2"><?php echo getviewsNumber(intval($row[0]));?></td>
+				<td class="col-md-1"><?php echo getDisplayNameById($row[2]);?></td>
+				<td class="col-md-1"><?php echo getPostsNumber(intval($row[0]));?></td>
+				<td class="col-md-1"><?php echo getviewsNumber(intval($row[0]));?></td>
 	    </tr>
 	<?php endforeach; ?>
 	  <tbody>

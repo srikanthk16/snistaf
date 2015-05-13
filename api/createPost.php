@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 require_once("../models/config.php");
 //error_log(checkRequestMode("POST"));
-$ajax = checkRequestMode("get");
+$ajax = checkRequestMode("POST");
 //error_log($ajax);
 if(!isUserLoggedIn()) {
 	addAlert("warning", "Login to continue!");
@@ -40,13 +40,39 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
 $user_id=$loggedInUser->user_id;
 //print $user_id;
 $validator = new Validator();
-$threadid = $validator->requiredGetVar('tid');
-$content = $validator->optionalGetVar('content');
-//print $name;
+$threadid = $validator->requiredPostVar('tid');
+$image=$validator->requiredPostVar('fil');
+$content = $validator->requiredPostVar('content');
+$status=$validator->requiredPostVar('status');
+error_log("status is".$status);
+if($image){
+$content.='<a href="image.php?id='.$image.'"	 id="imagePop"><img class="img-responsive" id="postImage" src="image.php?id='.$image.'" alt="click to enlarge"></img></a>';
+}
+//error_log($content);
+//$im=$validator->optionalPostVar('image');
+if(!is_null($status)){
+if($status==1 || $status==0){
+	//$status=$validator->optionalPostVar('status');
+	error_log("trying hdpost");
+	if(!addHDPost($user_id,$threadid,$content,$status)){
+		print "unknown error";
+		apiReturnError($ajax, SITE_ROOT);
+
+	}
+	apiReturnSuccess($ajax, getReferralPage());
+
+}}
+//error_log($content);
+if(empty(trim($content))){
+	error_log("content is null");
+	addAlert("warning","content cannot be null");
+	apiReturnError($ajax,getReferralPage());
+}
 if(!addPost($user_id,$threadid,$content)){
   print "unknown error";
   apiReturnError($ajax, SITE_ROOT);
 }
+
 apiReturnSuccess($ajax, getReferralPage());
 print "success";
 ?>

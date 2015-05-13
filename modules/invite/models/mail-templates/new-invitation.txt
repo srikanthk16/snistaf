@@ -1,9 +1,0 @@
-Hello #NAME#
-
-We have been invited to #SITENAME# by #INVITERNAME#. Please follow the link below to register.
-
-
-#INVITATION-URL
-
--Regards 
-

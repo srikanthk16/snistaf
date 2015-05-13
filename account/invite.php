@@ -33,7 +33,7 @@ THE SOFTWARE.
 
 */
 
-require_once("../../../models/config.php");
+require_once("../models/config.php");
 require_once("../models/invite_funcs.php");
 
 

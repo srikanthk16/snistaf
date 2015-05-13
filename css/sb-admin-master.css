@@ -117,9 +117,20 @@ table.tablesorter thead tr th:hover {
 	height: 100%;
 	border-radius: 0;
 	border: none;
-	background-color: #d9534f;
+	background-color: #2c3e50;
 	overflow-y: auto;
   }
+  panel-heading {
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+  }
+  panel-heading {
+  border-color: #eff2f7;
+  font-size: 16px;
+  font-weight: 300;
+}
 
   /* Bootstrap Default Overrides - Customized Dropdowns for the Side Nav */
 
@@ -144,7 +155,7 @@ table.tablesorter thead tr th:hover {
   .side-nav>li.dropdown>ul.dropdown-menu>li.active>a,
   .side-nav>li.dropdown>ul.dropdown-menu>li>a:focus {
 	color: #ffffff;
-	background-color: #c0534f;
+	background-color: #34495e;
   }
 
   .side-nav>li>a {
@@ -191,14 +202,14 @@ table.tablesorter thead tr th:hover {
 .navbar-inverse .navbar-nav > li > a:hover,
 .navbar-inverse .navbar-nav > li > a:focus {
   color: #ffffff;
-  background-color: #c0534f;
+  background-color: #34495e;
 }
 
 .navbar-inverse .navbar-nav > .active > a,
 .navbar-inverse .navbar-nav > .active > a:hover,
 .navbar-inverse .navbar-nav > .active > a:focus {
   color: #ffffff;
-  background-color: #c0534f;
+  background-color: #34495e;
 }
 
 .navbar-inverse .navbar-nav > .disabled > a,
@@ -230,7 +241,7 @@ table.tablesorter thead tr th:hover {
 .navbar-inverse .navbar-nav > .open > a:hover,
 .navbar-inverse .navbar-nav > .open > a:focus {
   color: #ffffff;
-  background-color: #c0534f;
+  background-color: #34495e;
 }
 
 .navbar-inverse .navbar-nav > .dropdown > a:hover .caret {
