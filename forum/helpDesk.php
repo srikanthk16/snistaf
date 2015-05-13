@@ -57,14 +57,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 			</div>
 	<?php
 	$user_id=$loggedInUser->user_id;
-	//autoSubscribe($user_id); lets write better algoirthm when designing welcome screen, for now is enabled by default
 	$resultarray = loadSubscriptionsHelpdesk ($user_id);
-	/*if(empty($resultarray)){
-		echo "Goku is gathering energy for you";*/
-		autoSubscribe($user_id);
-		//echo '<script>location.reload();</script>';
-		//header("");//very bad usage. please use ajax in further development
-	//}
 	if(isset($_GET['page'])){
 	$offset=$_GET['page'];}
 	else

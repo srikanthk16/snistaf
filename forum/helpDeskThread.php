@@ -101,8 +101,12 @@ $results=array_slice($resultarray,$offset*10,10,true);
 	<form name="cpost" class="form-group" action="" method="POST" >
 	<input type="hidden" name="tid" value="<?php echo $_GET['id'];?>">
 	<textarea form="cpost" id="content" class="form-control" rows="3" name="content"></textarea>
-	<div class="checkbox"><label for="status">Make Public/Private</label>
+	<?php if(!isSolved($tid)){ ?><div class="checkbox"><label for="status">Make Solved</label>
 	<input type="checkbox"  name="status" value="1"></div>
+	<?php }
+	 else { ?> <div class="checkbox"><label for="status">OpenAgain</label>
+<input type="checkbox"  name="status" value="0"></div>
+<?php }?>
 </div>
 	<div class="modal-footer">
 		<input type="submit" name="submit" class="btn btn-default" >
@@ -138,7 +142,7 @@ Post To Thread
 			data: {
 				tid:	form.find('input[name="tid"]').val(),
 				content: form.find('textarea[name="content"]').val(),
-				userImage: form.find('input[name="userImage"]').val(),
+				status: form.find('input[name="status"]').val(),
 				ajaxMode: "true"
 			},
 			success: function(result) {

@@ -913,7 +913,7 @@ function updatePasswordFromToken($password, $current_token) {
 
 /*****************  User create and delete functions *******************/
 
-function addUser($user_name, $display_name,$fullname,$roll,$yearjoin,$yearend,$dept,$alumni, $title, $password, $email, $active, $activation_token){
+function addUser($user_name, $display_name,$fullname,$roll,$yearjoin,$yearend,$dept,$section,$alumni, $title, $password, $email, $active, $activation_token){
     try {
         global $db_table_prefix;
 
@@ -973,6 +973,7 @@ function addUser($user_name, $display_name,$fullname,$roll,$yearjoin,$yearend,$d
 						:full_name,
 						:rollno,
 						:dept,
+						:section,
 						:yj,
 						:ye,
 						:alumni,
@@ -984,6 +985,7 @@ function addUser($user_name, $display_name,$fullname,$roll,$yearjoin,$yearend,$d
 						':full_name' => $fullname,
 						':rollno' => $roll,
 						':dept' => $dept,
+						':section'=>$section,
 						':yj' => $yearjoin,
 						':ye' => $yearend,
 						':alumni' => $alumni
@@ -1001,6 +1003,7 @@ function addUser($user_name, $display_name,$fullname,$roll,$yearjoin,$yearend,$d
 				if($alumni==1){
 					dbAddUserToGroups($inserted_id,5);
 				}
+				autoSubscribe($inserted_id);
         return $inserted_id;
 
     } catch (PDOException $e) {
@@ -3071,7 +3074,7 @@ function loadSubscriptions($userid){
 			$sqlVars = array();
 			error_log($userid);
 			$query = "SELECT id,name,threads from fo_forums where id in (select fid from um_user_subscriptions
-					where uid=:userid)
+					where uid=:userid) and helpdesk=0
 					";
 			$stmt = $db->prepare($query);
 			$sqlVars[':userid'] =intval($userid);
@@ -3115,6 +3118,7 @@ function loadSubscriptionsHelpdesk($userid){
 	}
 
 }
+//function forumAddedBy
 function loadForumThreads($forumid,$userid){
 	try {
 			//use prefixes when modules changed, for now omitting
@@ -3123,15 +3127,22 @@ function loadForumThreads($forumid,$userid){
 			$sqlVars = array();
 			//error_log($userid);
 			$query = "SELECT id,name,added_by,time_Stamp,sticky from fo_threads where forum_id = :forumid ORDER BY sticky DESC,time_Stamp DESC";
-			$stmt = $db->prepare($query);
+
 			$sqlVars[':forumid'] =intval($forumid);
+
 			//$sqlVars[':userid']=intval($userid);
 			if(isHelpDesk($forumid)){
-				$query="SELECT id,name,added_by,time_Stamp,sticky from fo_threads where forum_id = :forumid and id in ( SELECT tid from fo_helpdesk_status where stat = '1' )  ORDER BY sticky DESC,time_Stamp DESC";
+				$sqlVars[':fid']=intval($forumid);
+				$sqlVars[':userid']=intval($userid);
+				$query="SELECT id,name,added_by,time_Stamp,sticky from fo_threads where forum_id = :forumid and id in (SELECT tid from fo_helpdesk_status where stat = '1') OR id in (select id from fo_threads where forum_id=:fid and added_by=:userid)  ORDER BY sticky DESC,time_Stamp DESC";
 			}
+			$stmt = $db->prepare($query);
 			if (!$stmt->execute($sqlVars)){
 					// Error
 					return false;
+			}
+			if(isHelpDesk($forumid)){
+				//send notification to respective department here
 			}
 			return $stmt->fetchall();
 	} catch (PDOException $e) {
@@ -3821,7 +3832,7 @@ function getParentForum($tid){
 function autoSubscribe($uid){
 	try{
 		$db=pdoConnect();
-		$query="select department,year_join,year_end from um_user_details where id=:uid LIMIT 1";
+		$query="select department,section,year_join,year_end from um_user_details where id=:uid LIMIT 1";
 		$stmt=$db->prepare($query);
 		$sqlVars[':uid']=$uid;
 		if(!$stmt->execute($sqlVars)){
@@ -3831,11 +3842,15 @@ function autoSubscribe($uid){
 		//print_r($ansarr);
 		$forumVar=getDepartmentName($ansarr[0]['department'])."_".$ansarr[0]['year_join']."-".$ansarr[0]['year_end'];
 		$forumVar2="snist ".$ansarr[0]['year_join']."-".$ansarr[0]['year_end'];
+		$forumVar3=getDepartmentName($ansarr[0]['department'])."-".$ansarr[0]['section']."_".$ansarr[0]['year_join']."-".$ansarr[0]['year_end'];
 		$id=addForum($uid,$forumVar,$forumVar,3);//create if not exists that forum
 		$id=getForumID($forumVar);
 		addSubscription($uid,$id); //subscribe
 		$id=addForum($uid,$forumVar2,$forumVar2,3);//create that forum
 		$id=getForumID($forumVar2);//to make sure problems when it already exists
+		addSubscription($uid,$id);
+		$id=addForum($uid,$forumVar3,$forumVar3,3);//create that forum
+		$id=getForumID($forumVar3);//to make sure problems when it already exists
 		addSubscription($uid,$id);
 		$query2="SELECT forumid from fo_mandate_subscriptions";
 		$stmt2=$db->prepare($query2);
@@ -4276,6 +4291,28 @@ function liked($pid,$uid){
 		return false;
 	}
 }
+function isSolved($tid){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="SELECT 1 from fo_helpdesk_status where tid=:tid and stat=1";
+	$stmt=$db->prepare($query);
+	$sqlVars[':tid']=$tid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+	if($ansArr['1']==1){return true;}
+		return false;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
 function isHelpdesk($fid){
 	try {
 			//use prefixes when modules changed, for now omitting
@@ -4292,7 +4329,7 @@ function isHelpdesk($fid){
 					return false;
 			}
 			$ansArr= $stmt->fetch(PDO::FETCH_ASSOC);
-			error_log($ansArr['a']);
+			error_log("check for helpdesk".$ansArr['a']);
 			if(!$ansArr['a']) return false;
 			return true;
 	} catch (PDOException $e) {
@@ -4305,18 +4342,19 @@ function isHelpdesk($fid){
 	}
 
 }
+
 function setHelpdeskStatus($tid,$status){
 	try {
 			//use prefixes when modules changed, for now omitting
 			//global $forum_db_table_prefix;
 			$db = pdoConnect();
 			$sqlVars = array();
-			//error_log($userid);
-			$query = "INSERT INTO fo_helpdesk_status VALUES (null,:tid,:status) ON DUPLICATE KEY UPDATE stat=:status";
+			error_log("set helpdesk status");
+			$query = "INSERT INTO fo_helpdesk_status VALUES (:tid,:status) ON DUPLICATE KEY UPDATE stat=:stat";
 			$stmt = $db->prepare($query);
 			$sqlVars[':tid']=	$tid;
 			$sqlVars[':status']=$status;
-
+			$sqlVars[':stat']=$status;
 			if (!$stmt->execute($sqlVars)){
 					// Error
 					return false;
@@ -4564,4 +4602,30 @@ function loadFeedbackAnswers($questionid){
 	}
 
 }
+function magikFill($rollno){
+	try {
+			//use prefixes when modules changed, for now omitting
+			//global $forum_db_table_prefix;
+			$db = pdoConnect();
+			$sqlVars = array();
+			//error_log($rollno);
+			$query = "select * from um_port_student_db where rollno=:no";
+			$stmt = $db->prepare($query);
+			$sqlVars[':no'] =strtoupper($rollno);
+			if (!$stmt->execute($sqlVars)){
+					// Error
+					return false;
+			}
+			return $stmt->fetch(PDO::FETCH_ASSOC);
+	} catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+
+
 ?>

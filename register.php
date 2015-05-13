@@ -171,38 +171,51 @@ if(isUserLoggedIn()) {
 
     $captcha = generateCaptcha();
 
-    $template = "
+    $template = "		<button class='btn btn-info btn-xs inline' id='magik'>magik</button></br>enter roll number and hit magik</br>
         <form name='newUser' class='form-horizontal' enctype='multipart/form-data' id='newUser' role='form' action='api/create_user.php' method='post'>
 		  <div class='row'>
 			<div id='display-alerts' class='col-lg-12'>
 
 			</div>
 		  </div>
+			<div class='row'>
+						<div class='col-sm-12'>
+								{{roll_no}}
+
+						</div>
+			</div>
+			<div class='row'>
+		<div class='col-sm-12'>
+							{{email}}
+					</div>
+		</div>
 		  <div class='row'>
 			<div class='col-sm-12'>
                 {{user_name}}
             </div>
 		  </div>
+			<div class='row'>
+						<div class='col-sm-12'>
+								{{password}}
+						</div>
+			</div>
+			<div class='row'>
+						<div class='col-sm-12'>
+								{{passwordc}}
+						</div>
+			</div>
 		  <div class='row'>
             <div class='col-sm-12'>
                 {{display_name}}
             </div>
 		  </div>
-		  <div class='row'>
-			<div class='col-sm-12'>
-                {{email}}
-            </div>
-		  </div>
+
 			<div class='row'>
 			<div class='col-sm-12'>
                 {{full_name}}
             </div>
 		  </div>
-		  <div class='row'>
-            <div class='col-sm-12'>
-                {{roll_no}}
-            </div>
-		  </div>
+
 		  <div class='row'>
 			<div class='col-sm-12'>
                 {{yearJoin}}
@@ -213,29 +226,11 @@ if(isUserLoggedIn()) {
                 {{YearEnd}}
             </div>
 		  </div>
-		  <div class='row'>
 
-            <div class='col-sm-12'>
-						<label for='dept' style='display:inline;'>Select Dept:</label>
-<select class='form-control selectWidth' id='dept' name='dept'>
-<option value='CSE'>cse</option>
-<option value='IT'>it</option>
-<option value='ME'>ME</option>
-<option vaue='ECE'>Ece</option>
-</select>
-            </div>
-		  </div>
+<input type='hidden' name='dept' value=''>
 
-		  <div class='row'>
-            <div class='col-sm-12'>
-                {{password}}
-            </div>
-		  </div>
-		  <div class='row'>
-            <div class='col-sm-12'>
-                {{passwordc}}
-            </div>
-		  </div>
+
+
 		  <div class='row'>
             <div class='col-sm-12'>
                 {{captcha}}
@@ -252,7 +247,7 @@ if(isUserLoggedIn()) {
             </div>
 		  </div>
 		  <br>
-
+<input type='hidden' name='section' value=''/>
 		  <div class='form-group'>
 			<div class='col-sm-12'>
 			  <button type='submit' class='btn btn-success submit' value='Register'>Register</button>
@@ -271,6 +266,9 @@ if(isUserLoggedIn()) {
   ?>
 
   <body>
+		<script>
+
+		</script>
     <div class="container">
       <div class="header">
         <ul class="nav nav-pills navbar pull-right">
@@ -308,7 +306,47 @@ if(isUserLoggedIn()) {
 		$(".navbar").load("header-loggedout.php", function() {
             $(".navbar .navitem-register").addClass('active');
         });
+				$("#magik").click(function(){
+					var url = APIPATH + "loadMagikFill.php";
+					var roll=$( "input[name='roll_no']" ).val();
+					//alert(roll);
+					$.ajax({
+						type: "GET",
+						url: url,
+						data: {
+							rollno: roll,
+						ajaxMode: "true"
+						},
+					}).done(function(result) {
+						var resultJSON = processJSONResult(result);
+						if (resultJSON['errors'] && resultJSON['errors'] > 0){
+									console.log("error");
+								}
+								if(!resultJSON){
+									alert("you must be ninja coz we dont have details about you");
+																}
+								else{
+								$("input[name='dept']").val(resultJSON['department']);
+								$("input[name='dept']").prop('readOnly', true);
+								$( "input[name='yearJoin']" ).val(resultJSON['yearJoin']);
+								$( "input[name='yearJoin']" ).prop('readOnly', true);
+								$( "input[name='YearEnd']" ).val(resultJSON['yearEnd']);
+								$( "input[name='YearEnd']" ).prop('readOnly', true);
+								$( "input[name='section']" ).val(resultJSON['section']);
+								$( "input[name='section']" ).prop('readOnly', true);
+								$( "input[name='full_name']" ).val(resultJSON['name']);
+								$( "input[name='full_name']" ).prop('readOnly', true);
+								$("input[name='roll_no']").val(resultJSON['rollno']);;
+								$("input[name='roll_no']").prop('readOnly', true);
+								$( "input[name='email']" ).val(resultJSON['rollno'].concat("@sreenidhi.edu.in"));
+								$( "input[name='display_name']" ).val(resultJSON['name'].split(' ')[1]);
+								$( "input[name='user_name']" ).val(resultJSON['name'].split(' ')[1].concat(resultJSON['rollno'].slice(Math.max(resultJSON['rollno'].length - 2, 1))));
+								//string.split(' ').join('');
+								//alert(JSON.stringify(resultJSON));
+							}
+								});
 
+				});
 		// Process submission
         $("form[name='newUser']").submit(function(e){
 			e.preventDefault();
@@ -353,7 +391,9 @@ if(isUserLoggedIn()) {
                 });
             }
 		});
+
 	});
 </script>
+
 </body>
 </html>

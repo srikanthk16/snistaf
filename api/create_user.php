@@ -87,6 +87,7 @@ $roll=trim($validator->requiredPostVar('roll_no'));
 $yearjoin=intval(trim($validator->requiredPostVar('yearJoin')));
 $yearend=intval(trim($validator->optionalPostVar('YearEnd')));
 $dept=$validator->requiredPostVar('dept');
+$section=$validator->requiredPostVar('section');
 if($yearend==null){
   $yearend=$yearjoin+4;
   //so bullshit code, we need to  change this shit when we unify registration for everyone
@@ -147,31 +148,12 @@ if ($error_count == 0){
 	  $require_activation = $emailActivation;
 error_log($dept);
 	// Try to create the new user
-	if ($new_user_id = createUser($user_name, $display_name, $email,$fullname,$roll,$yearjoin,$yearend,$dept, $title, $password, $passwordc, $require_activation, $admin)){
+	if ($new_user_id = createUser($user_name, $display_name, $email,$fullname,$roll,$yearjoin,$yearend,$dept,$section, $title, $password, $passwordc, $require_activation, $admin)){
 
 	} else {
 		apiReturnError($ajax, ($admin == "true") ? ACCOUNT_ROOT : SITE_ROOT);
 	}
-  if($im){
-                      if(getimagesize($_FILES['image']['tmp_name']) == FALSE)
-                      {
-                      $image=NULL;
-                      }
-                      else
-                      {
-                      $image= addslashes($_FILES['image']['tmp_name']);
-                      $imagename= addslashes($_FILES['image']['name']);
-                      $image= file_get_contents($image);
-                      $image= base64_encode($image);
-                      if(addImage($new_user_id,$imagename,$image)){
 
-                      }
-                      else{
-                        apiReturnError($ajax,SITE_ROOT);
-                      }
-
-                  }
-  }
 	// If creation succeeds, try to add groups
 
 	// If we're in admin mode and add_groups is specified, try to add those groups
