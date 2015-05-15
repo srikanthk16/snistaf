@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 13, 2015 at 01:56 PM
+-- Generation Time: May 15, 2015 at 08:04 AM
 -- Server version: 5.6.24-0ubuntu2
 -- PHP Version: 5.6.4-4ubuntu6
 
@@ -120,6 +120,22 @@ SET newTitle=(SELECT title from um_user_levels where id=ulevel);
 UPDATE um_users SET TITLE=newTitle where id=uid and title!="Master Account";
 END$$
 
+DROP PROCEDURE IF EXISTS `makeAlumni`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `makeAlumni`()
+    MODIFIES SQL DATA
+BEGIN
+UPDATE um_user_details set isAlumni=1 where year_end=YEAR(CURDATE());
+END$$
+
+DROP PROCEDURE IF EXISTS `updateFBDone`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `updateFBDone`(IN `sessionId` INT UNSIGNED)
+    MODIFIES SQL DATA
+    COMMENT 'updates feedback is done for user based on session id'
+BEGIN
+UPDATE fb_session set done=1 where id=sessionId;
+UPDATE um_user_details set feedback_done=1 where id=(SELECT userId from fb_session where id=sessionId);
+END$$
+
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -154,13 +170,6 @@ CREATE TABLE IF NOT EXISTS `fb_alumni_curriculim` (
   `u` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
---
--- Dumping data for table `fb_alumni_curriculim`
---
-
-INSERT INTO `fb_alumni_curriculim` (`uid`, `a`, `b`, `c`, `d`, `e`, `f`, `g`, `h`, `i`, `j`, `k`, `l`, `m`, `n`, `o`, `p`, `q`, `r`, `s`, `t`, `u`) VALUES
-(9, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4);
-
 -- --------------------------------------------------------
 
 --
@@ -176,13 +185,6 @@ CREATE TABLE IF NOT EXISTS `fb_alumni_employability` (
   `d` int(11) NOT NULL,
   `e` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
---
--- Dumping data for table `fb_alumni_employability`
---
-
-INSERT INTO `fb_alumni_employability` (`uid`, `a`, `b`, `c`, `d`, `e`) VALUES
-(9, 4, 4, 4, 4, 4);
 
 -- --------------------------------------------------------
 
@@ -206,13 +208,6 @@ CREATE TABLE IF NOT EXISTS `fb_alumni_impression` (
   `k` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
---
--- Dumping data for table `fb_alumni_impression`
---
-
-INSERT INTO `fb_alumni_impression` (`uid`, `a`, `b`, `c`, `d`, `e`, `f`, `g`, `h`, `i`, `j`, `k`) VALUES
-(9, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4);
-
 -- --------------------------------------------------------
 
 --
@@ -227,19 +222,6 @@ CREATE TABLE IF NOT EXISTS `fb_alumni_objectives` (
   `c` int(11) NOT NULL,
   `d` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
---
--- Dumping data for table `fb_alumni_objectives`
---
-
-INSERT INTO `fb_alumni_objectives` (`uid`, `a`, `b`, `c`, `d`) VALUES
-(2, 5, 5, 5, 5),
-(2, 0, 0, 0, 0),
-(2, 0, 0, 0, 0),
-(2, 0, 0, 0, 0),
-(2, 0, 0, 0, 0),
-(9, 4, 4, 4, 4),
-(25, 5, 5, 5, 5);
 
 -- --------------------------------------------------------
 
@@ -265,14 +247,6 @@ CREATE TABLE IF NOT EXISTS `fb_alumni_outcomes` (
   `m` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
---
--- Dumping data for table `fb_alumni_outcomes`
---
-
-INSERT INTO `fb_alumni_outcomes` (`uid`, `a`, `b`, `c`, `d`, `e`, `f`, `g`, `h`, `i`, `j`, `k`, `l`, `m`) VALUES
-(9, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4),
-(25, 5, 5, 55, 5, 5, 55, 5, 55, 5, 5, 5, 5, 5);
-
 -- --------------------------------------------------------
 
 --
@@ -288,17 +262,6 @@ CREATE TABLE IF NOT EXISTS `fb_alumni_suggestion` (
   `d` text COLLATE latin1_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
---
--- Dumping data for table `fb_alumni_suggestion`
---
-
-INSERT INTO `fb_alumni_suggestion` (`uid`, `a`, `b`, `c`, `d`) VALUES
-(9, 'blah blah', 'blah blah blah', 'blah ', 'blaah blah bluh bla'),
-(9, 'blah blah', 'blah blah blah', 'blah ', 'blaah blah bluh bla'),
-(9, 'blah blah', 'blah blah blah', 'blah ', 'blaah blah bluh bla'),
-(9, 'blah blah', 'blah blah blah', 'blah ', 'blaah blah bluh bla'),
-(9, 'blah blah', 'blah blah blah', 'blah ', 'blaah blah bluh bla');
-
 -- --------------------------------------------------------
 
 --
@@ -313,14 +276,6 @@ CREATE TABLE IF NOT EXISTS `fb_employer_objectives` (
   `peoc` int(11) NOT NULL,
   `peod` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
---
--- Dumping data for table `fb_employer_objectives`
---
-
-INSERT INTO `fb_employer_objectives` (`uid`, `peoa`, `peob`, `peoc`, `peod`) VALUES
-(9, 4, 4, 4, 4),
-(9, 5, 5, 5, 5);
 
 -- --------------------------------------------------------
 
@@ -345,13 +300,6 @@ CREATE TABLE IF NOT EXISTS `fb_employer_outcomes` (
   `l` int(11) NOT NULL,
   `m` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
---
--- Dumping data for table `fb_employer_outcomes`
---
-
-INSERT INTO `fb_employer_outcomes` (`uid`, `a`, `b`, `c`, `d`, `e`, `f`, `g`, `h`, `i`, `j`, `k`, `l`, `m`) VALUES
-(9, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4);
 
 -- --------------------------------------------------------
 
@@ -379,13 +327,6 @@ CREATE TABLE IF NOT EXISTS `fb_employer_skills` (
   `15` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
---
--- Dumping data for table `fb_employer_skills`
---
-
-INSERT INTO `fb_employer_skills` (`uid`, `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `10`, `11`, `12`, `13`, `14`, `15`) VALUES
-(9, 4, 4, 4, 4, 44, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0);
-
 -- --------------------------------------------------------
 
 --
@@ -405,13 +346,6 @@ CREATE TABLE IF NOT EXISTS `fb_parent_college` (
   `h` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
---
--- Dumping data for table `fb_parent_college`
---
-
-INSERT INTO `fb_parent_college` (`uid`, `a`, `b`, `c`, `d`, `e`, `f`, `g`, `h`) VALUES
-(9, 4, 4, 4, 4, 4, 4, 4, 4);
-
 -- --------------------------------------------------------
 
 --
@@ -425,7 +359,7 @@ CREATE TABLE IF NOT EXISTS `fb_question_answers` (
   `qid` int(11) NOT NULL,
   `tid` int(11) NOT NULL,
   `answer` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 -- --------------------------------------------------------
 
@@ -440,17 +374,6 @@ CREATE TABLE IF NOT EXISTS `fb_question_options` (
   `status` int(11) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
---
--- Dumping data for table `fb_question_options`
---
-
-INSERT INTO `fb_question_options` (`id`, `options`, `status`) VALUES
-(1, 1, 1),
-(2, 2, 1),
-(3, 3, 1),
-(4, 4, 1),
-(5, 5, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -463,11 +386,1517 @@ CREATE TABLE IF NOT EXISTS `fb_question_options_mapping` (
   `oid` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fb_question_template`
+--
+
+DROP TABLE IF EXISTS `fb_question_template`;
+CREATE TABLE IF NOT EXISTS `fb_question_template` (
+`id` int(11) NOT NULL,
+  `question_template` varchar(255) COLLATE latin1_general_ci NOT NULL,
+  `status` int(11) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fb_question_template_mapping`
+--
+
+DROP TABLE IF EXISTS `fb_question_template_mapping`;
+CREATE TABLE IF NOT EXISTS `fb_question_template_mapping` (
+  `qid` int(11) NOT NULL,
+  `tid` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fb_question_type`
+--
+
+DROP TABLE IF EXISTS `fb_question_type`;
+CREATE TABLE IF NOT EXISTS `fb_question_type` (
+`id` int(11) NOT NULL,
+  `name` varchar(255) COLLATE latin1_general_ci NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fb_session`
+--
+
+DROP TABLE IF EXISTS `fb_session`;
+CREATE TABLE IF NOT EXISTS `fb_session` (
+`id` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `userType` int(11) NOT NULL DEFAULT '1',
+  `status` int(11) NOT NULL DEFAULT '0',
+  `done` int(11) NOT NULL DEFAULT '0',
+  `nonUMUser` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fb_snist_questions`
+--
+
+DROP TABLE IF EXISTS `fb_snist_questions`;
+CREATE TABLE IF NOT EXISTS `fb_snist_questions` (
+`id` int(11) NOT NULL,
+  `question` varchar(2048) COLLATE latin1_general_ci NOT NULL,
+  `type` int(2) NOT NULL DEFAULT '1',
+  `status` tinyint(1) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fb_user_type_template_mapping`
+--
+
+DROP TABLE IF EXISTS `fb_user_type_template_mapping`;
+CREATE TABLE IF NOT EXISTS `fb_user_type_template_mapping` (
+  `tid` int(11) NOT NULL,
+  `gid` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fo_forums`
+--
+
+DROP TABLE IF EXISTS `fo_forums`;
+CREATE TABLE IF NOT EXISTS `fo_forums` (
+`id` int(10) NOT NULL,
+  `name` varchar(255) COLLATE latin1_general_ci NOT NULL,
+  `description` text COLLATE latin1_general_ci,
+  `type` int(5) NOT NULL DEFAULT '1',
+  `threads` int(10) NOT NULL DEFAULT '0',
+  `helpdesk` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fo_helpdesk_status`
+--
+
+DROP TABLE IF EXISTS `fo_helpdesk_status`;
+CREATE TABLE IF NOT EXISTS `fo_helpdesk_status` (
+  `tid` int(11) NOT NULL,
+  `stat` tinyint(1) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fo_mandate_subscriptions`
+--
+
+DROP TABLE IF EXISTS `fo_mandate_subscriptions`;
+CREATE TABLE IF NOT EXISTS `fo_mandate_subscriptions` (
+  `forumid` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fo_mods`
+--
+
+DROP TABLE IF EXISTS `fo_mods`;
+CREATE TABLE IF NOT EXISTS `fo_mods` (
+  `fid` int(10) NOT NULL,
+  `uid` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fo_posts`
+--
+
+DROP TABLE IF EXISTS `fo_posts`;
+CREATE TABLE IF NOT EXISTS `fo_posts` (
+`id` int(10) NOT NULL,
+  `thread_id` int(10) NOT NULL,
+  `content` longtext COLLATE latin1_general_ci NOT NULL,
+  `added_by` int(10) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `likes` int(10) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=158 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fo_posts_banned`
+--
+
+DROP TABLE IF EXISTS `fo_posts_banned`;
+CREATE TABLE IF NOT EXISTS `fo_posts_banned` (
+  `id` int(11) NOT NULL,
+  `stat` int(11) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fo_post_images`
+--
+
+DROP TABLE IF EXISTS `fo_post_images`;
+CREATE TABLE IF NOT EXISTS `fo_post_images` (
+`id` int(11) NOT NULL,
+  `image` longblob NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fo_post_likes`
+--
+
+DROP TABLE IF EXISTS `fo_post_likes`;
+CREATE TABLE IF NOT EXISTS `fo_post_likes` (
+  `pid` int(11) NOT NULL,
+  `uid` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fo_threads`
+--
+
+DROP TABLE IF EXISTS `fo_threads`;
+CREATE TABLE IF NOT EXISTS `fo_threads` (
+`id` int(10) NOT NULL,
+  `forum_id` int(10) NOT NULL,
+  `name` text COLLATE latin1_general_ci NOT NULL,
+  `added_by` int(10) NOT NULL,
+  `time_Stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `sticky` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fo_thread_stats`
+--
+
+DROP TABLE IF EXISTS `fo_thread_stats`;
+CREATE TABLE IF NOT EXISTS `fo_thread_stats` (
+  `tid` int(11) NOT NULL,
+  `posts` int(11) NOT NULL DEFAULT '0',
+  `views` int(11) NOT NULL DEFAULT '0',
+  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fo_type`
+--
+
+DROP TABLE IF EXISTS `fo_type`;
+CREATE TABLE IF NOT EXISTS `fo_type` (
+`id` int(5) NOT NULL,
+  `type` varchar(255) COLLATE latin1_general_ci NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `uf_invites`
+--
+
+DROP TABLE IF EXISTS `uf_invites`;
+CREATE TABLE IF NOT EXISTS `uf_invites` (
+`id` int(11) NOT NULL,
+  `inviterId` int(11) NOT NULL,
+  `invitedEmail` text NOT NULL,
+  `status` int(11) NOT NULL,
+  `inviteToken` text NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `accepted` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `message` text NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `uf_user_invites`
+--
+
+DROP TABLE IF EXISTS `uf_user_invites`;
+CREATE TABLE IF NOT EXISTS `uf_user_invites` (
+  `userId` int(11) NOT NULL,
+  `invitesLeft` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `um_address`
+--
+DROP VIEW IF EXISTS `um_address`;
+CREATE TABLE IF NOT EXISTS `um_address` (
+`id` int(11)
+,`address` text
+);
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_alumni_employment`
+--
+
+DROP TABLE IF EXISTS `um_alumni_employment`;
+CREATE TABLE IF NOT EXISTS `um_alumni_employment` (
+  `id` int(11) NOT NULL,
+  `role` varchar(255) COLLATE latin1_general_ci NOT NULL,
+  `isCurrent` int(11) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `um_auth`
+--
+DROP VIEW IF EXISTS `um_auth`;
+CREATE TABLE IF NOT EXISTS `um_auth` (
+`id` int(11)
+,`refer_id` int(11)
+,`email` varchar(255)
+,`auth_key` varchar(255)
+,`group` tinyint(4)
+,`isActive` int(11)
+);
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_batches`
+--
+
+DROP TABLE IF EXISTS `um_batches`;
+CREATE TABLE IF NOT EXISTS `um_batches` (
+`id` int(11) NOT NULL,
+  `deptid` int(11) NOT NULL,
+  `yearJ` int(11) NOT NULL,
+  `yearE` int(11) NOT NULL,
+  `section` int(11) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=721 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_configuration`
+--
+
+DROP TABLE IF EXISTS `um_configuration`;
+CREATE TABLE IF NOT EXISTS `um_configuration` (
+`id` int(11) NOT NULL,
+  `name` varchar(150) NOT NULL,
+  `value` varchar(150) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_department`
+--
+
+DROP TABLE IF EXISTS `um_department`;
+CREATE TABLE IF NOT EXISTS `um_department` (
+`id` int(2) NOT NULL,
+  `name` varchar(255) COLLATE latin1_general_ci NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `um_employement`
+--
+DROP VIEW IF EXISTS `um_employement`;
+CREATE TABLE IF NOT EXISTS `um_employement` (
+);
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_filelist`
+--
+
+DROP TABLE IF EXISTS `um_filelist`;
+CREATE TABLE IF NOT EXISTS `um_filelist` (
+`id` int(11) NOT NULL,
+  `path` varchar(150) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_groups`
+--
+
+DROP TABLE IF EXISTS `um_groups`;
+CREATE TABLE IF NOT EXISTS `um_groups` (
+`id` int(11) NOT NULL,
+  `name` varchar(150) NOT NULL,
+  `is_default` tinyint(1) NOT NULL,
+  `can_delete` tinyint(1) NOT NULL,
+  `home_page_id` int(11) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_group_action_permits`
+--
+
+DROP TABLE IF EXISTS `um_group_action_permits`;
+CREATE TABLE IF NOT EXISTS `um_group_action_permits` (
+`id` int(10) unsigned NOT NULL,
+  `group_id` int(11) NOT NULL,
+  `action` varchar(100) NOT NULL,
+  `permits` varchar(400) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_group_page_matches`
+--
+
+DROP TABLE IF EXISTS `um_group_page_matches`;
+CREATE TABLE IF NOT EXISTS `um_group_page_matches` (
+`id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  `page_id` int(11) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_images`
+--
+
+DROP TABLE IF EXISTS `um_images`;
+CREATE TABLE IF NOT EXISTS `um_images` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) COLLATE latin1_general_ci NOT NULL,
+  `image` longblob NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_nav`
+--
+
+DROP TABLE IF EXISTS `um_nav`;
+CREATE TABLE IF NOT EXISTS `um_nav` (
+`id` int(11) NOT NULL,
+  `menu` varchar(75) NOT NULL,
+  `page` varchar(175) NOT NULL,
+  `name` varchar(150) NOT NULL,
+  `position` int(11) NOT NULL,
+  `class_name` varchar(150) NOT NULL,
+  `icon` varchar(150) NOT NULL,
+  `parent_id` int(11) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_nav_group_matches`
+--
+
+DROP TABLE IF EXISTS `um_nav_group_matches`;
+CREATE TABLE IF NOT EXISTS `um_nav_group_matches` (
+`id` int(11) NOT NULL,
+  `menu_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_other_auth`
+--
+
+DROP TABLE IF EXISTS `um_other_auth`;
+CREATE TABLE IF NOT EXISTS `um_other_auth` (
+`id` int(11) NOT NULL,
+  `refer_id` int(11) NOT NULL,
+  `email` varchar(255) COLLATE latin1_general_ci NOT NULL,
+  `auth_key` varchar(255) COLLATE latin1_general_ci NOT NULL,
+  `group` tinyint(4) NOT NULL DEFAULT '1',
+  `isActive` int(11) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_pages`
+--
+
+DROP TABLE IF EXISTS `um_pages`;
+CREATE TABLE IF NOT EXISTS `um_pages` (
+`id` int(11) NOT NULL,
+  `page` varchar(150) NOT NULL,
+  `private` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_phone`
+--
+
+DROP TABLE IF EXISTS `um_phone`;
+CREATE TABLE IF NOT EXISTS `um_phone` (
+  `id` int(11) NOT NULL,
+  `phoneNum` bigint(11) NOT NULL,
+  `isPrimary` int(11) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_plugin_configuration`
+--
+
+DROP TABLE IF EXISTS `um_plugin_configuration`;
+CREATE TABLE IF NOT EXISTS `um_plugin_configuration` (
+`id` int(11) NOT NULL,
+  `name` varchar(150) NOT NULL,
+  `value` varchar(150) NOT NULL,
+  `binary` int(1) NOT NULL,
+  `variable` varchar(150) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_plugin_pm`
+--
+
+DROP TABLE IF EXISTS `um_plugin_pm`;
+CREATE TABLE IF NOT EXISTS `um_plugin_pm` (
+`id` int(11) NOT NULL,
+  `sender_id` int(11) NOT NULL,
+  `receiver_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `time_sent` int(11) NOT NULL,
+  `time_read` int(11) NOT NULL DEFAULT '0',
+  `receiver_read` tinyint(1) DEFAULT '0',
+  `sender_deleted` tinyint(1) DEFAULT '0',
+  `receiver_deleted` tinyint(1) DEFAULT '0',
+  `parent_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_port_student_db`
+--
+
+DROP TABLE IF EXISTS `um_port_student_db`;
+CREATE TABLE IF NOT EXISTS `um_port_student_db` (
+  `rollno` varchar(11) COLLATE latin1_general_ci NOT NULL,
+  `name` varchar(255) COLLATE latin1_general_ci NOT NULL,
+  `department` varchar(11) COLLATE latin1_general_ci NOT NULL,
+  `section` varchar(1) COLLATE latin1_general_ci NOT NULL,
+  `yearJoin` int(4) NOT NULL,
+  `yearEnd` int(4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_users`
+--
+
+DROP TABLE IF EXISTS `um_users`;
+CREATE TABLE IF NOT EXISTS `um_users` (
+`id` int(11) NOT NULL,
+  `user_name` varchar(50) NOT NULL,
+  `display_name` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `activation_token` varchar(225) NOT NULL,
+  `last_activation_request` int(11) NOT NULL,
+  `lost_password_request` tinyint(1) NOT NULL,
+  `lost_password_timestamp` int(11) DEFAULT NULL,
+  `active` tinyint(1) NOT NULL,
+  `title` varchar(150) NOT NULL,
+  `sign_up_stamp` int(11) NOT NULL,
+  `last_sign_in_stamp` int(11) NOT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Specifies if the account is enabled.  Disabled accounts cannot be logged in to, but they retain all of their data and settings.',
+  `primary_group_id` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Specifies the primary group for the user.'
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_user_action_permits`
+--
+
+DROP TABLE IF EXISTS `um_user_action_permits`;
+CREATE TABLE IF NOT EXISTS `um_user_action_permits` (
+`id` int(10) unsigned NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `action` varchar(100) NOT NULL,
+  `permits` varchar(400) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_user_address`
+--
+
+DROP TABLE IF EXISTS `um_user_address`;
+CREATE TABLE IF NOT EXISTS `um_user_address` (
+  `id` int(11) NOT NULL,
+  `address` text COLLATE latin1_general_ci NOT NULL,
+  `isCurrent` int(1) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_user_details`
+--
+
+DROP TABLE IF EXISTS `um_user_details`;
+CREATE TABLE IF NOT EXISTS `um_user_details` (
+  `id` int(11) NOT NULL,
+  `full_name` varchar(255) COLLATE latin1_general_ci NOT NULL,
+  `roll_no` varchar(12) COLLATE latin1_general_ci NOT NULL,
+  `department` int(3) NOT NULL DEFAULT '1',
+  `section` varchar(1) COLLATE latin1_general_ci NOT NULL DEFAULT 'A',
+  `year_join` int(4) NOT NULL DEFAULT '2015',
+  `year_end` int(4) NOT NULL DEFAULT '2018',
+  `isAlumni` int(1) NOT NULL DEFAULT '0',
+  `feedback_done` int(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='User details definition';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_user_group_matches`
+--
+
+DROP TABLE IF EXISTS `um_user_group_matches`;
+CREATE TABLE IF NOT EXISTS `um_user_group_matches` (
+`id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_user_levels`
+--
+
+DROP TABLE IF EXISTS `um_user_levels`;
+CREATE TABLE IF NOT EXISTS `um_user_levels` (
+`id` int(11) NOT NULL,
+  `title` varchar(50) COLLATE latin1_general_ci NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `um_user_subscriptions`
+--
+
+DROP TABLE IF EXISTS `um_user_subscriptions`;
+CREATE TABLE IF NOT EXISTS `um_user_subscriptions` (
+  `uid` int(10) NOT NULL,
+  `fid` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `um_address`
+--
+DROP TABLE IF EXISTS `um_address`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `um_address` AS select `um_user_address`.`id` AS `id`,`um_user_address`.`address` AS `address` from `um_user_address` where (`um_user_address`.`isCurrent` = 1);
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `um_auth`
+--
+DROP TABLE IF EXISTS `um_auth`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `um_auth` AS select `um_other_auth`.`id` AS `id`,`um_other_auth`.`refer_id` AS `refer_id`,`um_other_auth`.`email` AS `email`,`um_other_auth`.`auth_key` AS `auth_key`,`um_other_auth`.`group` AS `group`,`um_other_auth`.`isActive` AS `isActive` from `um_other_auth` where (`um_other_auth`.`isActive` = 1);
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `um_employement`
+--
+DROP TABLE IF EXISTS `um_employement`;
+-- in use(#1356 - View 'snistaa.um_employement' references invalid table(s) or column(s) or function(s) or definer/invoker of view lack rights to use them)
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `fb_alumni_curriculim`
+--
+ALTER TABLE `fb_alumni_curriculim`
+ ADD KEY `uid` (`uid`);
+
+--
+-- Indexes for table `fb_alumni_employability`
+--
+ALTER TABLE `fb_alumni_employability`
+ ADD KEY `uid` (`uid`);
+
+--
+-- Indexes for table `fb_alumni_impression`
+--
+ALTER TABLE `fb_alumni_impression`
+ ADD KEY `uid` (`uid`);
+
+--
+-- Indexes for table `fb_alumni_objectives`
+--
+ALTER TABLE `fb_alumni_objectives`
+ ADD KEY `uid` (`uid`);
+
+--
+-- Indexes for table `fb_alumni_outcomes`
+--
+ALTER TABLE `fb_alumni_outcomes`
+ ADD KEY `uid` (`uid`);
+
+--
+-- Indexes for table `fb_alumni_suggestion`
+--
+ALTER TABLE `fb_alumni_suggestion`
+ ADD KEY `uid` (`uid`);
+
+--
+-- Indexes for table `fb_employer_objectives`
+--
+ALTER TABLE `fb_employer_objectives`
+ ADD KEY `uid` (`uid`);
+
+--
+-- Indexes for table `fb_employer_outcomes`
+--
+ALTER TABLE `fb_employer_outcomes`
+ ADD KEY `uid` (`uid`);
+
+--
+-- Indexes for table `fb_employer_skills`
+--
+ALTER TABLE `fb_employer_skills`
+ ADD KEY `uid` (`uid`);
+
+--
+-- Indexes for table `fb_parent_college`
+--
+ALTER TABLE `fb_parent_college`
+ ADD KEY `uid` (`uid`);
+
+--
+-- Indexes for table `fb_question_answers`
+--
+ALTER TABLE `fb_question_answers`
+ ADD PRIMARY KEY (`id`), ADD KEY `uid` (`uid`), ADD KEY `qid` (`qid`), ADD KEY `tid` (`tid`);
+
+--
+-- Indexes for table `fb_question_options`
+--
+ALTER TABLE `fb_question_options`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `fb_question_options_mapping`
+--
+ALTER TABLE `fb_question_options_mapping`
+ ADD KEY `qid` (`qid`), ADD KEY `oid` (`oid`);
+
+--
+-- Indexes for table `fb_question_template`
+--
+ALTER TABLE `fb_question_template`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `fb_question_template_mapping`
+--
+ALTER TABLE `fb_question_template_mapping`
+ ADD KEY `qid` (`qid`), ADD KEY `tid` (`tid`);
+
+--
+-- Indexes for table `fb_question_type`
+--
+ALTER TABLE `fb_question_type`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `fb_session`
+--
+ALTER TABLE `fb_session`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `id` (`id`), ADD UNIQUE KEY `userId` (`userId`);
+
+--
+-- Indexes for table `fb_snist_questions`
+--
+ALTER TABLE `fb_snist_questions`
+ ADD PRIMARY KEY (`id`), ADD KEY `type` (`type`);
+
+--
+-- Indexes for table `fb_user_type_template_mapping`
+--
+ALTER TABLE `fb_user_type_template_mapping`
+ ADD KEY `tid` (`tid`), ADD KEY `gid` (`gid`);
+
+--
+-- Indexes for table `fo_forums`
+--
+ALTER TABLE `fo_forums`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `name` (`name`), ADD UNIQUE KEY `name_2` (`name`), ADD KEY `type` (`type`);
+
+--
+-- Indexes for table `fo_helpdesk_status`
+--
+ALTER TABLE `fo_helpdesk_status`
+ ADD UNIQUE KEY `tid` (`tid`);
+
+--
+-- Indexes for table `fo_mandate_subscriptions`
+--
+ALTER TABLE `fo_mandate_subscriptions`
+ ADD KEY `forumid` (`forumid`);
+
+--
+-- Indexes for table `fo_mods`
+--
+ALTER TABLE `fo_mods`
+ ADD KEY `fid` (`fid`), ADD KEY `uid` (`uid`);
+
+--
+-- Indexes for table `fo_posts`
+--
+ALTER TABLE `fo_posts`
+ ADD PRIMARY KEY (`id`), ADD KEY `thread_id` (`thread_id`), ADD KEY `added_by` (`added_by`);
+
+--
+-- Indexes for table `fo_posts_banned`
+--
+ALTER TABLE `fo_posts_banned`
+ ADD UNIQUE KEY `id` (`id`);
+
+--
+-- Indexes for table `fo_post_images`
+--
+ALTER TABLE `fo_post_images`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `fo_post_likes`
+--
+ALTER TABLE `fo_post_likes`
+ ADD KEY `pid` (`pid`), ADD KEY `uid` (`uid`);
+
+--
+-- Indexes for table `fo_threads`
+--
+ALTER TABLE `fo_threads`
+ ADD PRIMARY KEY (`id`), ADD KEY `forum_id` (`forum_id`), ADD KEY `added_by` (`added_by`);
+
+--
+-- Indexes for table `fo_thread_stats`
+--
+ALTER TABLE `fo_thread_stats`
+ ADD KEY `tid` (`tid`);
+
+--
+-- Indexes for table `fo_type`
+--
+ALTER TABLE `fo_type`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `uf_invites`
+--
+ALTER TABLE `uf_invites`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `uf_user_invites`
+--
+ALTER TABLE `uf_user_invites`
+ ADD UNIQUE KEY `userId` (`userId`);
+
+--
+-- Indexes for table `um_alumni_employment`
+--
+ALTER TABLE `um_alumni_employment`
+ ADD KEY `id` (`id`);
+
+--
+-- Indexes for table `um_batches`
+--
+ALTER TABLE `um_batches`
+ ADD PRIMARY KEY (`id`), ADD KEY `deptid` (`deptid`);
+
+--
+-- Indexes for table `um_configuration`
+--
+ALTER TABLE `um_configuration`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `um_department`
+--
+ALTER TABLE `um_department`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `um_filelist`
+--
+ALTER TABLE `um_filelist`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `path` (`path`);
+
+--
+-- Indexes for table `um_groups`
+--
+ALTER TABLE `um_groups`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `um_group_action_permits`
+--
+ALTER TABLE `um_group_action_permits`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `um_group_page_matches`
+--
+ALTER TABLE `um_group_page_matches`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `um_images`
+--
+ALTER TABLE `um_images`
+ ADD UNIQUE KEY `id` (`id`);
+
+--
+-- Indexes for table `um_nav`
+--
+ALTER TABLE `um_nav`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `um_nav_group_matches`
+--
+ALTER TABLE `um_nav_group_matches`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `um_other_auth`
+--
+ALTER TABLE `um_other_auth`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `um_pages`
+--
+ALTER TABLE `um_pages`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `um_phone`
+--
+ALTER TABLE `um_phone`
+ ADD UNIQUE KEY `phoneNum` (`phoneNum`), ADD KEY `um_phone_ibfk_1` (`id`);
+
+--
+-- Indexes for table `um_plugin_configuration`
+--
+ALTER TABLE `um_plugin_configuration`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `um_plugin_pm`
+--
+ALTER TABLE `um_plugin_pm`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `um_users`
+--
+ALTER TABLE `um_users`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `um_user_action_permits`
+--
+ALTER TABLE `um_user_action_permits`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `um_user_address`
+--
+ALTER TABLE `um_user_address`
+ ADD KEY `id` (`id`);
+
+--
+-- Indexes for table `um_user_details`
+--
+ALTER TABLE `um_user_details`
+ ADD UNIQUE KEY `full_name` (`full_name`), ADD KEY `id` (`id`), ADD KEY `department` (`department`);
+
+--
+-- Indexes for table `um_user_group_matches`
+--
+ALTER TABLE `um_user_group_matches`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `um_user_levels`
+--
+ALTER TABLE `um_user_levels`
+ ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `um_user_subscriptions`
+--
+ALTER TABLE `um_user_subscriptions`
+ ADD UNIQUE KEY `uid_2` (`uid`,`fid`), ADD UNIQUE KEY `uid_3` (`uid`,`fid`), ADD KEY `uid` (`uid`), ADD KEY `fid` (`fid`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `fb_question_answers`
+--
+ALTER TABLE `fb_question_answers`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=106;
+--
+-- AUTO_INCREMENT for table `fb_question_options`
+--
+ALTER TABLE `fb_question_options`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT for table `fb_question_template`
+--
+ALTER TABLE `fb_question_template`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
+--
+-- AUTO_INCREMENT for table `fb_question_type`
+--
+ALTER TABLE `fb_question_type`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT for table `fb_session`
+--
+ALTER TABLE `fb_session`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=29;
+--
+-- AUTO_INCREMENT for table `fb_snist_questions`
+--
+ALTER TABLE `fb_snist_questions`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=78;
+--
+-- AUTO_INCREMENT for table `fo_forums`
+--
+ALTER TABLE `fo_forums`
+MODIFY `id` int(10) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=59;
+--
+-- AUTO_INCREMENT for table `fo_posts`
+--
+ALTER TABLE `fo_posts`
+MODIFY `id` int(10) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=158;
+--
+-- AUTO_INCREMENT for table `fo_post_images`
+--
+ALTER TABLE `fo_post_images`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=14;
+--
+-- AUTO_INCREMENT for table `fo_threads`
+--
+ALTER TABLE `fo_threads`
+MODIFY `id` int(10) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=49;
+--
+-- AUTO_INCREMENT for table `fo_type`
+--
+ALTER TABLE `fo_type`
+MODIFY `id` int(5) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT for table `uf_invites`
+--
+ALTER TABLE `uf_invites`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT for table `um_batches`
+--
+ALTER TABLE `um_batches`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=721;
+--
+-- AUTO_INCREMENT for table `um_configuration`
+--
+ALTER TABLE `um_configuration`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=14;
+--
+-- AUTO_INCREMENT for table `um_department`
+--
+ALTER TABLE `um_department`
+MODIFY `id` int(2) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=10;
+--
+-- AUTO_INCREMENT for table `um_filelist`
+--
+ALTER TABLE `um_filelist`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT for table `um_groups`
+--
+ALTER TABLE `um_groups`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+--
+-- AUTO_INCREMENT for table `um_group_action_permits`
+--
+ALTER TABLE `um_group_action_permits`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=24;
+--
+-- AUTO_INCREMENT for table `um_group_page_matches`
+--
+ALTER TABLE `um_group_page_matches`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=36;
+--
+-- AUTO_INCREMENT for table `um_nav`
+--
+ALTER TABLE `um_nav`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=17;
+--
+-- AUTO_INCREMENT for table `um_nav_group_matches`
+--
+ALTER TABLE `um_nav_group_matches`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=19;
+--
+-- AUTO_INCREMENT for table `um_other_auth`
+--
+ALTER TABLE `um_other_auth`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
+--
+-- AUTO_INCREMENT for table `um_pages`
+--
+ALTER TABLE `um_pages`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=33;
+--
+-- AUTO_INCREMENT for table `um_plugin_configuration`
+--
+ALTER TABLE `um_plugin_configuration`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `um_plugin_pm`
+--
+ALTER TABLE `um_plugin_pm`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT for table `um_users`
+--
+ALTER TABLE `um_users`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=30;
+--
+-- AUTO_INCREMENT for table `um_user_action_permits`
+--
+ALTER TABLE `um_user_action_permits`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `um_user_group_matches`
+--
+ALTER TABLE `um_user_group_matches`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=26;
+--
+-- AUTO_INCREMENT for table `um_user_levels`
+--
+ALTER TABLE `um_user_levels`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `fb_alumni_curriculim`
+--
+ALTER TABLE `fb_alumni_curriculim`
+ADD CONSTRAINT `fb_alumni_curriculim_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`),
+ADD CONSTRAINT `fb_alumni_curriculim_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
+
+--
+-- Constraints for table `fb_alumni_employability`
+--
+ALTER TABLE `fb_alumni_employability`
+ADD CONSTRAINT `fb_alumni_employability_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`),
+ADD CONSTRAINT `fb_alumni_employability_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
+
+--
+-- Constraints for table `fb_alumni_impression`
+--
+ALTER TABLE `fb_alumni_impression`
+ADD CONSTRAINT `fb_alumni_impression_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`),
+ADD CONSTRAINT `fb_alumni_impression_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
+
+--
+-- Constraints for table `fb_alumni_objectives`
+--
+ALTER TABLE `fb_alumni_objectives`
+ADD CONSTRAINT `fb_alumni_objectives_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
+
+--
+-- Constraints for table `fb_alumni_outcomes`
+--
+ALTER TABLE `fb_alumni_outcomes`
+ADD CONSTRAINT `fb_alumni_outcomes_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`),
+ADD CONSTRAINT `fb_alumni_outcomes_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
+
+--
+-- Constraints for table `fb_alumni_suggestion`
+--
+ALTER TABLE `fb_alumni_suggestion`
+ADD CONSTRAINT `fb_alumni_suggestion_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
+
+--
+-- Constraints for table `fb_employer_objectives`
+--
+ALTER TABLE `fb_employer_objectives`
+ADD CONSTRAINT `fb_employer_objectives_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
+
+--
+-- Constraints for table `fb_employer_outcomes`
+--
+ALTER TABLE `fb_employer_outcomes`
+ADD CONSTRAINT `fb_employer_outcomes_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`),
+ADD CONSTRAINT `fb_employer_outcomes_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
+
+--
+-- Constraints for table `fb_employer_skills`
+--
+ALTER TABLE `fb_employer_skills`
+ADD CONSTRAINT `fb_employer_skills_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
+
+--
+-- Constraints for table `fb_parent_college`
+--
+ALTER TABLE `fb_parent_college`
+ADD CONSTRAINT `fb_parent_college_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
+
+--
+-- Constraints for table `fb_question_answers`
+--
+ALTER TABLE `fb_question_answers`
+ADD CONSTRAINT `fb_question_answers_ibfk_2` FOREIGN KEY (`qid`) REFERENCES `fb_snist_questions` (`id`),
+ADD CONSTRAINT `fb_question_answers_ibfk_3` FOREIGN KEY (`tid`) REFERENCES `fb_question_template` (`id`),
+ADD CONSTRAINT `fb_question_answers_ibfk_4` FOREIGN KEY (`uid`) REFERENCES `fb_session` (`id`);
+
+--
+-- Constraints for table `fb_question_options_mapping`
+--
+ALTER TABLE `fb_question_options_mapping`
+ADD CONSTRAINT `fb_question_options_mapping_ibfk_1` FOREIGN KEY (`qid`) REFERENCES `fb_snist_questions` (`id`),
+ADD CONSTRAINT `fb_question_options_mapping_ibfk_2` FOREIGN KEY (`oid`) REFERENCES `fb_question_options` (`id`);
+
+--
+-- Constraints for table `fb_question_template_mapping`
+--
+ALTER TABLE `fb_question_template_mapping`
+ADD CONSTRAINT `fb_question_template_mapping_ibfk_1` FOREIGN KEY (`qid`) REFERENCES `fb_snist_questions` (`id`),
+ADD CONSTRAINT `fb_question_template_mapping_ibfk_2` FOREIGN KEY (`tid`) REFERENCES `fb_question_template` (`id`);
+
+--
+-- Constraints for table `fb_snist_questions`
+--
+ALTER TABLE `fb_snist_questions`
+ADD CONSTRAINT `fb_snist_questions_ibfk_1` FOREIGN KEY (`type`) REFERENCES `fb_question_type` (`id`);
+
+--
+-- Constraints for table `fb_user_type_template_mapping`
+--
+ALTER TABLE `fb_user_type_template_mapping`
+ADD CONSTRAINT `fb_user_type_template_mapping_ibfk_1` FOREIGN KEY (`tid`) REFERENCES `fb_question_template` (`id`),
+ADD CONSTRAINT `fb_user_type_template_mapping_ibfk_3` FOREIGN KEY (`tid`) REFERENCES `fb_question_template` (`id`),
+ADD CONSTRAINT `fb_user_type_template_mapping_ibfk_4` FOREIGN KEY (`gid`) REFERENCES `um_groups` (`id`);
+
+--
+-- Constraints for table `fo_forums`
+--
+ALTER TABLE `fo_forums`
+ADD CONSTRAINT `fo_forums_ibfk_1` FOREIGN KEY (`type`) REFERENCES `fo_type` (`id`);
+
+--
+-- Constraints for table `fo_mandate_subscriptions`
+--
+ALTER TABLE `fo_mandate_subscriptions`
+ADD CONSTRAINT `fo_mandate_subscriptions_ibfk_1` FOREIGN KEY (`forumid`) REFERENCES `fo_forums` (`id`);
+
+--
+-- Constraints for table `fo_mods`
+--
+ALTER TABLE `fo_mods`
+ADD CONSTRAINT `fo_mods_ibfk_1` FOREIGN KEY (`fid`) REFERENCES `fo_forums` (`id`),
+ADD CONSTRAINT `fo_mods_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
+
+--
+-- Constraints for table `fo_posts`
+--
+ALTER TABLE `fo_posts`
+ADD CONSTRAINT `fo_posts_ibfk_1` FOREIGN KEY (`thread_id`) REFERENCES `fo_threads` (`id`),
+ADD CONSTRAINT `fo_posts_ibfk_2` FOREIGN KEY (`added_by`) REFERENCES `um_users` (`id`);
+
+--
+-- Constraints for table `fo_posts_banned`
+--
+ALTER TABLE `fo_posts_banned`
+ADD CONSTRAINT `fo_posts_banned_ibfk_1` FOREIGN KEY (`id`) REFERENCES `fo_posts` (`id`);
+
+--
+-- Constraints for table `fo_post_likes`
+--
+ALTER TABLE `fo_post_likes`
+ADD CONSTRAINT `fo_post_likes_ibfk_1` FOREIGN KEY (`pid`) REFERENCES `fo_posts` (`id`),
+ADD CONSTRAINT `fo_post_likes_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
+
+--
+-- Constraints for table `fo_threads`
+--
+ALTER TABLE `fo_threads`
+ADD CONSTRAINT `fo_threads_ibfk_1` FOREIGN KEY (`forum_id`) REFERENCES `fo_forums` (`id`),
+ADD CONSTRAINT `fo_threads_ibfk_2` FOREIGN KEY (`added_by`) REFERENCES `um_users` (`id`);
+
+--
+-- Constraints for table `fo_thread_stats`
+--
+ALTER TABLE `fo_thread_stats`
+ADD CONSTRAINT `fo_thread_stats_ibfk_1` FOREIGN KEY (`tid`) REFERENCES `fo_threads` (`id`);
+
+--
+-- Constraints for table `um_alumni_employment`
+--
+ALTER TABLE `um_alumni_employment`
+ADD CONSTRAINT `um_alumni_employment_ibfk_1` FOREIGN KEY (`id`) REFERENCES `um_users` (`id`);
+
+--
+-- Constraints for table `um_batches`
+--
+ALTER TABLE `um_batches`
+ADD CONSTRAINT `um_batches_ibfk_1` FOREIGN KEY (`deptid`) REFERENCES `um_department` (`id`);
+
+--
+-- Constraints for table `um_images`
+--
+ALTER TABLE `um_images`
+ADD CONSTRAINT `um_images_ibfk_1` FOREIGN KEY (`id`) REFERENCES `um_users` (`id`);
+
+--
+-- Constraints for table `um_phone`
+--
+ALTER TABLE `um_phone`
+ADD CONSTRAINT `um_phone_ibfk_1` FOREIGN KEY (`id`) REFERENCES `um_users` (`id`);
+
+--
+-- Constraints for table `um_user_address`
+--
+ALTER TABLE `um_user_address`
+ADD CONSTRAINT `um_user_address_ibfk_1` FOREIGN KEY (`id`) REFERENCES `um_users` (`id`);
+
+--
+-- Constraints for table `um_user_details`
+--
+ALTER TABLE `um_user_details`
+ADD CONSTRAINT `um_user_details_ibfk_1` FOREIGN KEY (`id`) REFERENCES `um_users` (`id`),
+ADD CONSTRAINT `um_user_details_ibfk_2` FOREIGN KEY (`department`) REFERENCES `um_department` (`id`);
+
+--
+-- Constraints for table `um_user_subscriptions`
+--
+ALTER TABLE `um_user_subscriptions`
+ADD CONSTRAINT `um_user_subscriptions_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
+
+DELIMITER $$
+--
+-- Events
+--
+DROP EVENT `mkAlumni`$$
+CREATE DEFINER=`root`@`localhost` EVENT `mkAlumni` ON SCHEDULE EVERY 12 MONTH STARTS '2015-06-01 00:00:00' ON COMPLETION NOT PRESERVE ENABLE DO CALL makeAlumni()$$
+
+DELIMITER ;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+-- phpMyAdmin SQL Dump
+-- version 4.2.12deb2
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: May 15, 2015 at 08:06 AM
+-- Server version: 5.6.24-0ubuntu2
+-- PHP Version: 5.6.4-4ubuntu6
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- Database: `snistaa`
+--
+CREATE DATABASE IF NOT EXISTS `snistaa` DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci;
+USE `snistaa`;
+
+--
+-- Dumping data for table `fb_question_answers`
+--
+
+INSERT IGNORE INTO `fb_question_answers` (`id`, `uid`, `qid`, `tid`, `answer`) VALUES
+(1, 2, 1, 1, 4),
+(2, 2, 2, 1, 4),
+(3, 2, 3, 1, 4),
+(4, 2, 4, 1, 4),
+(5, 2, 5, 2, 4),
+(6, 2, 6, 2, 4),
+(7, 2, 7, 2, 4),
+(8, 2, 8, 2, 4),
+(9, 2, 9, 2, 4),
+(10, 2, 10, 2, 4),
+(11, 2, 11, 2, 4),
+(12, 2, 12, 2, 4),
+(13, 2, 13, 2, 4),
+(14, 2, 14, 2, 4),
+(15, 2, 15, 2, 4),
+(16, 2, 16, 2, 4),
+(17, 2, 17, 2, 4),
+(18, 2, 19, 3, 4),
+(19, 2, 20, 3, 4),
+(20, 2, 21, 3, 4),
+(21, 2, 22, 3, 4),
+(22, 2, 23, 3, 4),
+(23, 2, 24, 3, 4),
+(24, 2, 25, 3, 4),
+(25, 2, 26, 3, 4),
+(26, 2, 27, 3, 4),
+(27, 2, 28, 3, 4),
+(28, 2, 29, 3, 4),
+(29, 2, 30, 3, 4),
+(30, 2, 31, 3, 4),
+(31, 2, 32, 3, 4),
+(32, 2, 33, 3, 4),
+(33, 2, 34, 3, 4),
+(34, 2, 35, 3, 4),
+(35, 2, 36, 3, 4),
+(36, 2, 37, 3, 4),
+(37, 2, 38, 3, 4),
+(38, 2, 18, 5, 4),
+(39, 2, 50, 5, 4),
+(40, 2, 51, 5, 4),
+(41, 2, 52, 5, 4),
+(42, 2, 53, 5, 4),
+(43, 2, 54, 5, 4),
+(44, 7, 1, 7, 3),
+(45, 7, 2, 7, 3),
+(46, 7, 3, 7, 3),
+(47, 7, 4, 7, 3),
+(48, 7, 1, 7, 3),
+(49, 7, 2, 7, 3),
+(50, 7, 3, 7, 3),
+(51, 7, 4, 7, 3),
+(52, 7, 1, 7, 3),
+(53, 7, 2, 7, 3),
+(54, 7, 3, 7, 3),
+(55, 7, 4, 7, 3),
+(56, 2, 2, 1, 3),
+(57, 2, 3, 1, 3),
+(58, 7, 1, 7, 4),
+(59, 7, 2, 7, 4),
+(60, 7, 3, 7, 3),
+(61, 7, 4, 7, 2),
+(62, 7, 5, 8, 3),
+(63, 7, 6, 8, 3),
+(64, 7, 7, 8, 3),
+(65, 7, 8, 8, 3),
+(66, 7, 9, 8, 3),
+(67, 7, 10, 8, 3),
+(68, 7, 11, 8, 3),
+(69, 7, 12, 8, 3),
+(70, 7, 13, 8, 3),
+(71, 7, 14, 8, 3),
+(72, 7, 15, 8, 3),
+(73, 7, 16, 8, 3),
+(74, 7, 17, 8, 3),
+(75, 7, 55, 9, 5),
+(76, 7, 56, 9, 5),
+(77, 7, 57, 9, 5),
+(78, 7, 58, 9, 5),
+(79, 7, 59, 9, 5),
+(80, 7, 60, 9, 5),
+(81, 7, 61, 9, 5),
+(82, 7, 62, 9, 5),
+(83, 7, 63, 9, 5),
+(84, 7, 64, 9, 5),
+(85, 7, 65, 9, 5),
+(86, 7, 66, 9, 5),
+(87, 7, 67, 9, 5),
+(88, 7, 68, 9, 5),
+(89, 7, 69, 9, 5),
+(90, 9, 70, 10, 5),
+(91, 9, 71, 10, 5),
+(92, 9, 72, 10, 5),
+(93, 9, 73, 10, 5),
+(94, 9, 74, 10, 5),
+(95, 9, 75, 10, 5),
+(96, 9, 76, 10, 5),
+(97, 9, 77, 10, 5),
+(98, 27, 70, 10, 4),
+(99, 27, 71, 10, 4),
+(100, 27, 72, 10, 4),
+(101, 27, 73, 10, 4),
+(102, 27, 74, 10, 4),
+(103, 27, 75, 10, 4),
+(104, 27, 76, 10, 4),
+(105, 27, 77, 10, 4);
+
+--
+-- Dumping data for table `fb_question_options`
+--
+
+INSERT IGNORE INTO `fb_question_options` (`id`, `options`, `status`) VALUES
+(1, 1, 1),
+(2, 2, 1),
+(3, 3, 1),
+(4, 4, 1),
+(5, 5, 1);
+
 --
 -- Dumping data for table `fb_question_options_mapping`
 --
 
-INSERT INTO `fb_question_options_mapping` (`qid`, `oid`) VALUES
+INSERT IGNORE INTO `fb_question_options_mapping` (`qid`, `oid`) VALUES
 (1, 1),
 (2, 1),
 (3, 1),
@@ -854,24 +2283,11 @@ INSERT INTO `fb_question_options_mapping` (`qid`, `oid`) VALUES
 (76, 5),
 (77, 5);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `fb_question_template`
---
-
-DROP TABLE IF EXISTS `fb_question_template`;
-CREATE TABLE IF NOT EXISTS `fb_question_template` (
-`id` int(11) NOT NULL,
-  `question_template` varchar(255) COLLATE latin1_general_ci NOT NULL,
-  `status` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
 --
 -- Dumping data for table `fb_question_template`
 --
 
-INSERT INTO `fb_question_template` (`id`, `question_template`, `status`) VALUES
+INSERT IGNORE INTO `fb_question_template` (`id`, `question_template`, `status`) VALUES
 (1, 'alumni_objectives', 1),
 (2, 'alumni_outcomes', 1),
 (3, 'alumni_curriculum', 1),
@@ -883,23 +2299,11 @@ INSERT INTO `fb_question_template` (`id`, `question_template`, `status`) VALUES
 (9, 'employer_skills', 1),
 (10, 'parent_college', 1);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `fb_question_template_mapping`
---
-
-DROP TABLE IF EXISTS `fb_question_template_mapping`;
-CREATE TABLE IF NOT EXISTS `fb_question_template_mapping` (
-  `qid` int(11) NOT NULL,
-  `tid` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
 --
 -- Dumping data for table `fb_question_template_mapping`
 --
 
-INSERT INTO `fb_question_template_mapping` (`qid`, `tid`) VALUES
+INSERT IGNORE INTO `fb_question_template_mapping` (`qid`, `tid`) VALUES
 (1, 1),
 (2, 1),
 (3, 1),
@@ -995,63 +2399,33 @@ INSERT INTO `fb_question_template_mapping` (`qid`, `tid`) VALUES
 (76, 10),
 (77, 10);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `fb_question_type`
---
-
-DROP TABLE IF EXISTS `fb_question_type`;
-CREATE TABLE IF NOT EXISTS `fb_question_type` (
-`id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE latin1_general_ci NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
 --
 -- Dumping data for table `fb_question_type`
 --
 
-INSERT INTO `fb_question_type` (`id`, `name`) VALUES
+INSERT IGNORE INTO `fb_question_type` (`id`, `name`) VALUES
 (1, 'Rating'),
 (2, 'Text'),
 (3, 'Boolean'),
 (4, 'CheckBox'),
 (5, 'RadioBox');
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `fb_session`
+-- Dumping data for table `fb_session`
 --
 
-DROP TABLE IF EXISTS `fb_session`;
-CREATE TABLE IF NOT EXISTS `fb_session` (
-`id` int(11) NOT NULL,
-  `userId` int(11) NOT NULL,
-  `status` int(11) NOT NULL DEFAULT '1',
-  `done` int(11) NOT NULL DEFAULT '0',
-  `nonUMUser` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `fb_snist_questions`
---
-
-DROP TABLE IF EXISTS `fb_snist_questions`;
-CREATE TABLE IF NOT EXISTS `fb_snist_questions` (
-`id` int(11) NOT NULL,
-  `question` varchar(2048) COLLATE latin1_general_ci NOT NULL,
-  `type` int(2) NOT NULL DEFAULT '1',
-  `status` tinyint(1) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+INSERT IGNORE INTO `fb_session` (`id`, `userId`, `userType`, `status`, `done`, `nonUMUser`) VALUES
+(1, 2, 5, 3, 0, 0),
+(2, 9, 5, 6, 1, 0),
+(7, 1, 6, 9, 1, 1),
+(9, 8, 6, 10, 1, 1),
+(27, 10, 7, 10, 1, 1);
 
 --
 -- Dumping data for table `fb_snist_questions`
 --
 
-INSERT INTO `fb_snist_questions` (`id`, `question`, `type`, `status`) VALUES
+INSERT IGNORE INTO `fb_snist_questions` (`id`, `question`, `type`, `status`) VALUES
 (1, 'PEO –A: Graduates of the program will have requisite engineering knowledge with abilities for analysis of the problem and to design, development of solutions and to arrive at an optimal solution using modern tools which help them to be employable.', 1, 1),
 (2, 'PEO–B: Ability to work in a team/ lead a team which needs effective communication skills and knowledge of project management, finance and entrepreneurial abilities.', 1, 1),
 (3, 'PEO-C: Graduates should have abilities to conduct investigation of complex problems and attitude for lifelong learning skills which will enable them to pursue advanced studies, Research and Development.	', 1, 1),
@@ -1130,39 +2504,27 @@ INSERT INTO `fb_snist_questions` (`id`, `question`, `type`, `status`) VALUES
 (76, 'Cocurricular and extra curricular activities (Sports/Games/NSS/Cultural)', 1, 1),
 (77, 'Development of Employability skills (Campus recruitment training facilities)', 1, 1);
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `fb_user_type_template_mapping`
+-- Dumping data for table `fb_user_type_template_mapping`
 --
 
-DROP TABLE IF EXISTS `fb_user_type_template_mapping`;
-CREATE TABLE IF NOT EXISTS `fb_user_type_template_mapping` (
-  `tid` int(11) NOT NULL,
-  `gid` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `fo_forums`
---
-
-DROP TABLE IF EXISTS `fo_forums`;
-CREATE TABLE IF NOT EXISTS `fo_forums` (
-`id` int(10) NOT NULL,
-  `name` varchar(255) COLLATE latin1_general_ci NOT NULL,
-  `description` text COLLATE latin1_general_ci,
-  `type` int(5) NOT NULL DEFAULT '1',
-  `threads` int(10) NOT NULL DEFAULT '0',
-  `helpdesk` tinyint(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+INSERT IGNORE INTO `fb_user_type_template_mapping` (`tid`, `gid`) VALUES
+(1, 5),
+(2, 5),
+(3, 5),
+(4, 5),
+(5, 5),
+(6, 5),
+(7, 6),
+(8, 6),
+(9, 6),
+(10, 7);
 
 --
 -- Dumping data for table `fo_forums`
 --
 
-INSERT INTO `fo_forums` (`id`, `name`, `description`, `type`, `threads`, `helpdesk`) VALUES
+INSERT IGNORE INTO `fo_forums` (`id`, `name`, `description`, `type`, `threads`, `helpdesk`) VALUES
 (17, 'beggarss', 'bigga', 3, 5, 0),
 (18, '', NULL, 3, 0, 0),
 (20, 'beggarssz', 'bigga', 3, 0, 0),
@@ -1195,23 +2557,11 @@ INSERT INTO `fo_forums` (`id`, `name`, `description`, `type`, `threads`, `helpde
 (55, 'CSE C_2011-2015', 'CSE C_2011-2015', 3, 0, 0),
 (58, 'CSE-C_2011-2015', 'CSE-C_2011-2015', 3, 0, 0);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `fo_helpdesk_status`
---
-
-DROP TABLE IF EXISTS `fo_helpdesk_status`;
-CREATE TABLE IF NOT EXISTS `fo_helpdesk_status` (
-  `tid` int(11) NOT NULL,
-  `stat` tinyint(1) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
 --
 -- Dumping data for table `fo_helpdesk_status`
 --
 
-INSERT INTO `fo_helpdesk_status` (`tid`, `stat`) VALUES
+INSERT IGNORE INTO `fo_helpdesk_status` (`tid`, `stat`) VALUES
 (1, 0),
 (17, 0),
 (31, 0),
@@ -1223,44 +2573,21 @@ INSERT INTO `fo_helpdesk_status` (`tid`, `stat`) VALUES
 (47, 1),
 (48, 1);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `fo_mandate_subscriptions`
---
-
-DROP TABLE IF EXISTS `fo_mandate_subscriptions`;
-CREATE TABLE IF NOT EXISTS `fo_mandate_subscriptions` (
-  `forumid` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
 --
 -- Dumping data for table `fo_mandate_subscriptions`
 --
 
-INSERT INTO `fo_mandate_subscriptions` (`forumid`) VALUES
+INSERT IGNORE INTO `fo_mandate_subscriptions` (`forumid`) VALUES
 (36),
 (46),
 (47),
 (48);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `fo_mods`
---
-
-DROP TABLE IF EXISTS `fo_mods`;
-CREATE TABLE IF NOT EXISTS `fo_mods` (
-  `fid` int(10) NOT NULL,
-  `uid` int(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
 --
 -- Dumping data for table `fo_mods`
 --
 
-INSERT INTO `fo_mods` (`fid`, `uid`) VALUES
+INSERT IGNORE INTO `fo_mods` (`fid`, `uid`) VALUES
 (32, 2),
 (18, 1),
 (20, 1),
@@ -1269,27 +2596,11 @@ INSERT INTO `fo_mods` (`fid`, `uid`) VALUES
 (34, 1),
 (36, 1);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `fo_posts`
---
-
-DROP TABLE IF EXISTS `fo_posts`;
-CREATE TABLE IF NOT EXISTS `fo_posts` (
-`id` int(10) NOT NULL,
-  `thread_id` int(10) NOT NULL,
-  `content` longtext COLLATE latin1_general_ci NOT NULL,
-  `added_by` int(10) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `likes` int(10) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB AUTO_INCREMENT=155 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
 --
 -- Dumping data for table `fo_posts`
 --
 
-INSERT INTO `fo_posts` (`id`, `thread_id`, `content`, `added_by`, `timestamp`, `likes`) VALUES
+INSERT IGNORE INTO `fo_posts` (`id`, `thread_id`, `content`, `added_by`, `timestamp`, `likes`) VALUES
 (1, 1, 'demoPost', 2, '2015-04-05 04:39:07', 0),
 (2, 1, 'stupid idiot baka', 2, '2015-04-11 15:35:29', 0),
 (3, 2, 'this is the first thread', 2, '2015-04-11 15:36:20', 0),
@@ -1443,46 +2754,25 @@ INSERT INTO `fo_posts` (`id`, `thread_id`, `content`, `added_by`, `timestamp`, `
 (151, 22, 'its happening<a href="image.php?id=8"	 id="imagePop"><img class="img-responsive" id="postImage" src="image.php?id=8" alt="click to enlarge"></img></a>', 2, '2015-05-13 04:53:41', 0),
 (152, 22, '<a href="image.php?id=9"	 id="imagePop"><img class="img-responsive" id="postImage" src="image.php?id=9" alt="click to enlarge"></img></a>', 2, '2015-05-13 04:55:10', 0),
 (153, 15, '<a href="image.php?id=10"	 id="imagePop"><img class="img-responsive" id="postImage" src="image.php?id=10" alt="click to enlarge"></img></a>', 1, '2015-05-13 04:56:28', 0),
-(154, 15, '<a href="image.php?id=11"	 id="imagePop"><img class="img-responsive" id="postImage" src="image.php?id=11" alt="click to enlarge"></img></a>', 1, '2015-05-13 04:57:38', 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `fo_posts_banned`
---
-
-DROP TABLE IF EXISTS `fo_posts_banned`;
-CREATE TABLE IF NOT EXISTS `fo_posts_banned` (
-  `id` int(11) NOT NULL,
-  `stat` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+(154, 15, '<a href="image.php?id=11"	 id="imagePop"><img class="img-responsive" id="postImage" src="image.php?id=11" alt="click to enlarge"></img></a>', 1, '2015-05-13 04:57:38', 1),
+(155, 22, '&quot;am john snow&quot;\nhi john snow', 9, '2015-05-13 13:59:39', 0),
+(156, 25, '<a href="image.php?id=12"	 id="imagePop"><img class="img-responsive" id="postImage" src="image.php?id=12" alt="click to enlarge"></img></a>', 9, '2015-05-13 14:04:21', 0),
+(157, 25, '<a href="image.php?id=13"	 id="imagePop"><img class="img-responsive" id="postImage" src="image.php?id=13" alt="click to enlarge"></img></a>', 9, '2015-05-13 14:04:30', 0);
 
 --
 -- Dumping data for table `fo_posts_banned`
 --
 
-INSERT INTO `fo_posts_banned` (`id`, `stat`) VALUES
+INSERT IGNORE INTO `fo_posts_banned` (`id`, `stat`) VALUES
 (41, 0),
 (83, 0),
 (119, 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `fo_post_likes`
---
-
-DROP TABLE IF EXISTS `fo_post_likes`;
-CREATE TABLE IF NOT EXISTS `fo_post_likes` (
-  `pid` int(11) NOT NULL,
-  `uid` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
 -- Dumping data for table `fo_post_likes`
 --
 
-INSERT INTO `fo_post_likes` (`pid`, `uid`) VALUES
+INSERT IGNORE INTO `fo_post_likes` (`pid`, `uid`) VALUES
 (64, 1),
 (26, 1),
 (27, 1),
@@ -1495,27 +2785,11 @@ INSERT INTO `fo_post_likes` (`pid`, `uid`) VALUES
 (154, 1),
 (33, 27);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `fo_threads`
---
-
-DROP TABLE IF EXISTS `fo_threads`;
-CREATE TABLE IF NOT EXISTS `fo_threads` (
-`id` int(10) NOT NULL,
-  `forum_id` int(10) NOT NULL,
-  `name` text COLLATE latin1_general_ci NOT NULL,
-  `added_by` int(10) NOT NULL,
-  `time_Stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `sticky` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
 --
 -- Dumping data for table `fo_threads`
 --
 
-INSERT INTO `fo_threads` (`id`, `forum_id`, `name`, `added_by`, `time_Stamp`, `sticky`) VALUES
+INSERT IGNORE INTO `fo_threads` (`id`, `forum_id`, `name`, `added_by`, `time_Stamp`, `sticky`) VALUES
 (1, 32, 'demoThread', 2, '2015-04-05 04:35:15', 0),
 (2, 32, 'demoThread2', 2, '2015-04-05 08:21:38', 0),
 (3, 17, 'demoThread', 2, '2015-05-06 12:23:39', 0),
@@ -1537,10 +2811,10 @@ INSERT INTO `fo_threads` (`id`, `forum_id`, `name`, `added_by`, `time_Stamp`, `s
 (19, 32, 'demo thread', 2, '2015-04-16 15:44:14', 0),
 (20, 35, 'big title for this forum thread, so that dumb people can post content in the entire thing dammit', 2, '2015-04-16 15:45:48', 0),
 (21, 32, 'this is thread name', 2, '2015-04-16 15:49:52', 0),
-(22, 17, 'sticky', 2, '2015-05-10 05:31:42', 1),
+(22, 17, 'sticky', 2, '2015-05-13 13:59:39', 1),
 (23, 36, 'new thread', 1, '2015-05-02 01:44:05', 0),
 (24, 25, 'thread', 1, '2015-04-20 16:36:32', 0),
-(25, 17, 'new thread', 1, '2015-04-22 13:39:23', 0),
+(25, 17, 'new thread', 1, '2015-05-13 14:04:30', 0),
 (26, 40, 'hello', 12, '2015-04-25 14:51:34', 0),
 (27, 45, 'first user in me', 24, '2015-04-26 05:24:06', 0),
 (28, 35, 'dev forum', 2, '2015-04-26 09:56:34', 0),
@@ -1565,25 +2839,11 @@ INSERT INTO `fo_threads` (`id`, `forum_id`, `name`, `added_by`, `time_Stamp`, `s
 (47, 46, 'test thread', 2, '2015-05-12 13:36:02', 0),
 (48, 48, 'new private qestion', 2, '2015-05-13 04:45:15', 0);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `fo_thread_stats`
---
-
-DROP TABLE IF EXISTS `fo_thread_stats`;
-CREATE TABLE IF NOT EXISTS `fo_thread_stats` (
-  `tid` int(11) NOT NULL,
-  `posts` int(11) NOT NULL DEFAULT '0',
-  `views` int(11) NOT NULL DEFAULT '0',
-  `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
 --
 -- Dumping data for table `fo_thread_stats`
 --
 
-INSERT INTO `fo_thread_stats` (`tid`, `posts`, `views`, `last_updated`) VALUES
+INSERT IGNORE INTO `fo_thread_stats` (`tid`, `posts`, `views`, `last_updated`) VALUES
 (14, 3, 9, '2015-04-12 06:44:20'),
 (15, 6, 14, '2015-05-13 04:57:38'),
 (16, 1, 3, '2015-04-12 06:50:30'),
@@ -1592,10 +2852,10 @@ INSERT INTO `fo_thread_stats` (`tid`, `posts`, `views`, `last_updated`) VALUES
 (19, 0, 0, '2015-04-16 15:44:14'),
 (20, 0, 2, '2015-04-16 15:45:48'),
 (21, 1, 5, '2015-04-16 16:01:08'),
-(22, 12, 100, '2015-05-13 04:55:10'),
+(22, 13, 104, '2015-05-13 13:59:39'),
 (23, 5, 119, '2015-05-02 01:44:05'),
 (24, 0, 2, '2015-04-20 16:36:32'),
-(25, 4, 25, '2015-04-22 14:15:48'),
+(25, 6, 28, '2015-05-13 14:04:30'),
 (26, 2, 6, '2015-04-25 14:57:42'),
 (27, 3, 10, '2015-04-26 15:43:50'),
 (28, 3, 13, '2015-04-26 10:06:04'),
@@ -1618,119 +2878,46 @@ INSERT INTO `fo_thread_stats` (`tid`, `posts`, `views`, `last_updated`) VALUES
 (47, 7, 12, '2015-05-12 13:36:02'),
 (48, 3, 5, '2015-05-13 04:46:27');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `fo_type`
---
-
-DROP TABLE IF EXISTS `fo_type`;
-CREATE TABLE IF NOT EXISTS `fo_type` (
-`id` int(5) NOT NULL,
-  `type` varchar(255) COLLATE latin1_general_ci NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
 --
 -- Dumping data for table `fo_type`
 --
 
-INSERT INTO `fo_type` (`id`, `type`) VALUES
+INSERT IGNORE INTO `fo_type` (`id`, `type`) VALUES
 (1, 'General'),
 (2, 'Announcements'),
 (3, 'Interactions'),
 (4, 'NULL');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `uf_invites`
---
-
-DROP TABLE IF EXISTS `uf_invites`;
-CREATE TABLE IF NOT EXISTS `uf_invites` (
-`id` int(11) NOT NULL,
-  `inviterId` int(11) NOT NULL,
-  `invitedEmail` text NOT NULL,
-  `status` int(11) NOT NULL,
-  `inviteToken` text NOT NULL,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `accepted` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `message` text NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
-
 --
 -- Dumping data for table `uf_invites`
 --
 
-INSERT INTO `uf_invites` (`id`, `inviterId`, `invitedEmail`, `status`, `inviteToken`, `created`, `accepted`, `message`) VALUES
+INSERT IGNORE INTO `uf_invites` (`id`, `inviterId`, `invitedEmail`, `status`, `inviteToken`, `created`, `accepted`, `message`) VALUES
 (1, 1, 'demo2@localhost', 0, 'a6a7ff6ed955a78fc83c6c27ed457835', '2015-04-14 12:55:06', '0000-00-00 00:00:00', 'join bro'),
 (2, 1, 'uvinaykumaru@gmail.com', 0, '761977d229f2ce5573a35e66d1b78ddc', '2015-04-14 13:06:47', '0000-00-00 00:00:00', 'come bava'),
 (3, 1, 'smarthavoc@gmail.com', 0, 'df976a6f0fcf15769a24d61a7bac5868', '2015-04-14 13:07:10', '0000-00-00 00:00:00', 'come'),
-(4, 1, 'smarthavoc@gmail.com', 0, 'e26907198cbf89fdee75bb938f3fbd89', '2015-04-14 13:17:06', '0000-00-00 00:00:00', 'welcome');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `uf_user_invites`
---
-
-DROP TABLE IF EXISTS `uf_user_invites`;
-CREATE TABLE IF NOT EXISTS `uf_user_invites` (
-  `userId` int(11) NOT NULL,
-  `invitesLeft` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+(4, 1, 'smarthavoc@gmail.com', 0, 'e26907198cbf89fdee75bb938f3fbd89', '2015-04-14 13:17:06', '0000-00-00 00:00:00', 'welcome'),
+(5, 1, 'demoxyzd@localhost', 1, '67abb56f8238f9fdbb8d539ce1f0e5b5', '2015-05-13 10:59:53', '2000-01-22 18:30:00', 'come');
 
 --
 -- Dumping data for table `uf_user_invites`
 --
 
-INSERT INTO `uf_user_invites` (`userId`, `invitesLeft`) VALUES
+INSERT IGNORE INTO `uf_user_invites` (`userId`, `invitesLeft`) VALUES
 (1, 100);
 
--- --------------------------------------------------------
-
 --
--- Stand-in structure for view `um_address`
---
-DROP VIEW IF EXISTS `um_address`;
-CREATE TABLE IF NOT EXISTS `um_address` (
-`id` int(11)
-,`address` text
-);
--- --------------------------------------------------------
-
---
--- Table structure for table `um_alumni_employment`
+-- Dumping data for table `um_alumni_employment`
 --
 
-DROP TABLE IF EXISTS `um_alumni_employment`;
-CREATE TABLE IF NOT EXISTS `um_alumni_employment` (
-  `id` int(11) NOT NULL,
-  `role` varchar(255) COLLATE latin1_general_ci NOT NULL,
-  `employer` varchar(255) COLLATE latin1_general_ci NOT NULL,
-  `isCurrent` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `um_batches`
---
-
-DROP TABLE IF EXISTS `um_batches`;
-CREATE TABLE IF NOT EXISTS `um_batches` (
-`id` int(11) NOT NULL,
-  `deptid` int(11) NOT NULL,
-  `yearJ` int(11) NOT NULL,
-  `yearE` int(11) NOT NULL,
-  `section` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=721 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+INSERT IGNORE INTO `um_alumni_employment` (`id`, `role`, `isCurrent`) VALUES
+(9, 'Developer at Aukaat.com', 1);
 
 --
 -- Dumping data for table `um_batches`
 --
 
-INSERT INTO `um_batches` (`id`, `deptid`, `yearJ`, `yearE`, `section`) VALUES
+INSERT IGNORE INTO `um_batches` (`id`, `deptid`, `yearJ`, `yearE`, `section`) VALUES
 (1, 2, 1998, 2002, 1),
 (2, 2, 1998, 2002, 2),
 (3, 2, 1998, 2002, 3),
@@ -2452,24 +3639,11 @@ INSERT INTO `um_batches` (`id`, `deptid`, `yearJ`, `yearE`, `section`) VALUES
 (719, 9, 2015, 2019, 4),
 (720, 9, 2015, 2019, 5);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `um_configuration`
---
-
-DROP TABLE IF EXISTS `um_configuration`;
-CREATE TABLE IF NOT EXISTS `um_configuration` (
-`id` int(11) NOT NULL,
-  `name` varchar(150) NOT NULL,
-  `value` varchar(150) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
-
 --
 -- Dumping data for table `um_configuration`
 --
 
-INSERT INTO `um_configuration` (`id`, `name`, `value`) VALUES
+INSERT IGNORE INTO `um_configuration` (`id`, `name`, `value`) VALUES
 (1, 'website_name', 'SNISTAA'),
 (2, 'website_url', 'localhost/snistaf/'),
 (3, 'email', 'forums@sreenidhi.edu.in'),
@@ -2482,23 +3656,11 @@ INSERT INTO `um_configuration` (`id`, `name`, `value`) VALUES
 (12, 'token_timeout', '10800'),
 (13, 'version', '0.2.2');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `um_department`
---
-
-DROP TABLE IF EXISTS `um_department`;
-CREATE TABLE IF NOT EXISTS `um_department` (
-`id` int(2) NOT NULL,
-  `name` varchar(255) COLLATE latin1_general_ci NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
 --
 -- Dumping data for table `um_department`
 --
 
-INSERT INTO `um_department` (`id`, `name`) VALUES
+INSERT IGNORE INTO `um_department` (`id`, `name`) VALUES
 (1, 'SH'),
 (2, 'CSE'),
 (3, 'IT'),
@@ -2509,82 +3671,32 @@ INSERT INTO `um_department` (`id`, `name`) VALUES
 (8, 'ECM'),
 (9, 'EEE');
 
--- --------------------------------------------------------
-
---
--- Stand-in structure for view `um_employement`
---
-DROP VIEW IF EXISTS `um_employement`;
-CREATE TABLE IF NOT EXISTS `um_employement` (
-`id` int(11)
-,`role` varchar(255)
-,`employer` varchar(255)
-);
--- --------------------------------------------------------
-
---
--- Table structure for table `um_filelist`
---
-
-DROP TABLE IF EXISTS `um_filelist`;
-CREATE TABLE IF NOT EXISTS `um_filelist` (
-`id` int(11) NOT NULL,
-  `path` varchar(150) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
-
 --
 -- Dumping data for table `um_filelist`
 --
 
-INSERT INTO `um_filelist` (`id`, `path`) VALUES
+INSERT IGNORE INTO `um_filelist` (`id`, `path`) VALUES
 (1, 'account'),
 (2, 'forms');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `um_groups`
---
-
-DROP TABLE IF EXISTS `um_groups`;
-CREATE TABLE IF NOT EXISTS `um_groups` (
-`id` int(11) NOT NULL,
-  `name` varchar(150) NOT NULL,
-  `is_default` tinyint(1) NOT NULL,
-  `can_delete` tinyint(1) NOT NULL,
-  `home_page_id` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `um_groups`
 --
 
-INSERT INTO `um_groups` (`id`, `name`, `is_default`, `can_delete`, `home_page_id`) VALUES
+INSERT IGNORE INTO `um_groups` (`id`, `name`, `is_default`, `can_delete`, `home_page_id`) VALUES
 (1, 'User', 2, 0, 4),
 (2, 'Administrator', 0, 0, 5),
 (3, 'Faculty', 0, 1, 4),
-(4, 'Moderatiors', 0, 1, 0),
-(5, 'alumni', 0, 0, 4);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `um_group_action_permits`
---
-
-DROP TABLE IF EXISTS `um_group_action_permits`;
-CREATE TABLE IF NOT EXISTS `um_group_action_permits` (
-`id` int(10) unsigned NOT NULL,
-  `group_id` int(11) NOT NULL,
-  `action` varchar(100) NOT NULL,
-  `permits` varchar(400) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+(4, 'Moderators', 0, 1, 0),
+(5, 'alumni', 0, 0, 4),
+(6, 'Employers_fb', 0, 0, 28),
+(7, 'Parent_db', 0, 0, 28);
 
 --
 -- Dumping data for table `um_group_action_permits`
 --
 
-INSERT INTO `um_group_action_permits` (`id`, `group_id`, `action`, `permits`) VALUES
+INSERT IGNORE INTO `um_group_action_permits` (`id`, `group_id`, `action`, `permits`) VALUES
 (1, 1, 'updateUserEmail', 'isLoggedInUser(user_id)'),
 (2, 1, 'updateUserPassword', 'isLoggedInUser(user_id)'),
 (3, 1, 'loadUser', 'isUserPrimaryGroup(user_id,''1'')'),
@@ -2609,24 +3721,11 @@ INSERT INTO `um_group_action_permits` (`id`, `group_id`, `action`, `permits`) VA
 (22, 4, 'deleteGroup', 'isSameGroup(group_id,''1'')'),
 (23, 4, 'loadUsersInGroup', 'isSameGroup(group_id,''1'')');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `um_group_page_matches`
---
-
-DROP TABLE IF EXISTS `um_group_page_matches`;
-CREATE TABLE IF NOT EXISTS `um_group_page_matches` (
-`id` int(11) NOT NULL,
-  `group_id` int(11) NOT NULL,
-  `page_id` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
-
 --
 -- Dumping data for table `um_group_page_matches`
 --
 
-INSERT INTO `um_group_page_matches` (`id`, `group_id`, `page_id`) VALUES
+INSERT IGNORE INTO `um_group_page_matches` (`id`, `group_id`, `page_id`) VALUES
 (3, 2, 3),
 (4, 2, 4),
 (5, 2, 5),
@@ -2653,33 +3752,14 @@ INSERT INTO `um_group_page_matches` (`id`, `group_id`, `page_id`) VALUES
 (28, 1, 10),
 (31, 1, 22),
 (32, 2, 22),
-(33, 1, 26),
 (34, 5, 27),
 (35, 2, 27);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `um_nav`
---
-
-DROP TABLE IF EXISTS `um_nav`;
-CREATE TABLE IF NOT EXISTS `um_nav` (
-`id` int(11) NOT NULL,
-  `menu` varchar(75) NOT NULL,
-  `page` varchar(175) NOT NULL,
-  `name` varchar(150) NOT NULL,
-  `position` int(11) NOT NULL,
-  `class_name` varchar(150) NOT NULL,
-  `icon` varchar(150) NOT NULL,
-  `parent_id` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `um_nav`
 --
 
-INSERT INTO `um_nav` (`id`, `menu`, `page`, `name`, `position`, `class_name`, `icon`, `parent_id`) VALUES
+INSERT IGNORE INTO `um_nav` (`id`, `menu`, `page`, `name`, `position`, `class_name`, `icon`, `parent_id`) VALUES
 (1, 'left', 'account/dashboard_admin.php', 'Admin Dashboard', 1, 'dashboard-admin', 'fa fa-dashboard', 0),
 (2, 'left', 'account/users.php', 'Users', 2, 'users', 'fa fa-users', 0),
 (3, 'left', 'account/dashboard.php', 'Dashboard', 3, 'dashboard', 'fa fa-dashboard', 0),
@@ -2693,28 +3773,15 @@ INSERT INTO `um_nav` (`id`, `menu`, `page`, `name`, `position`, `class_name`, `i
 (11, 'top-main-sub', 'account/logout.php', 'Log Out', 2, '', 'fa fa-power-off', 9),
 (12, 'left', 'forum/index.php', 'Forum', 4, '', 'fa fa-university', 0),
 (13, 'top-main', 'privatemessages/pm.php', 'Private Messages', -1, 'pms', 'fa fa-envelope', 0),
-(14, 'left', 'modules/invite/account/invite.php', 'Invite friends', 9, 'invite', 'fa fa-user', 0),
-(15, 'left', 'feedback/Alumni.php?step=1', 'Feedback', 6, '', 'fa fa-table', 0),
+(14, 'left', 'account/invite.php', 'Invite friends', 9, 'invite', 'fa fa-user', 0),
+(15, 'left', 'feedback/feedback.php', 'Feedback', 6, '', 'fa fa-table', 0),
 (16, 'left', 'forum/helpDesk.php', 'HelpDesk', 6, '', 'fa fa-info-circle', 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `um_nav_group_matches`
---
-
-DROP TABLE IF EXISTS `um_nav_group_matches`;
-CREATE TABLE IF NOT EXISTS `um_nav_group_matches` (
-`id` int(11) NOT NULL,
-  `menu_id` int(11) NOT NULL,
-  `group_id` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `um_nav_group_matches`
 --
 
-INSERT INTO `um_nav_group_matches` (`id`, `menu_id`, `group_id`) VALUES
+INSERT IGNORE INTO `um_nav_group_matches` (`id`, `menu_id`, `group_id`) VALUES
 (1, 3, 1),
 (2, 4, 1),
 (3, 9, 1),
@@ -2734,39 +3801,23 @@ INSERT INTO `um_nav_group_matches` (`id`, `menu_id`, `group_id`) VALUES
 (17, 16, 1),
 (18, 14, 5);
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `um_other_auth`
+-- Dumping data for table `um_other_auth`
 --
 
-DROP TABLE IF EXISTS `um_other_auth`;
-CREATE TABLE IF NOT EXISTS `um_other_auth` (
-`id` int(11) NOT NULL,
-  `refer_id` int(11) NOT NULL,
-  `email` varchar(255) COLLATE latin1_general_ci NOT NULL,
-  `auth_key` varchar(255) COLLATE latin1_general_ci NOT NULL,
-  `isActive` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `um_pages`
---
-
-DROP TABLE IF EXISTS `um_pages`;
-CREATE TABLE IF NOT EXISTS `um_pages` (
-`id` int(11) NOT NULL,
-  `page` varchar(150) NOT NULL,
-  `private` tinyint(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+INSERT IGNORE INTO `um_other_auth` (`id`, `refer_id`, `email`, `auth_key`, `group`, `isActive`) VALUES
+(1, 9, 'demoEmp@localhost.com', '645baada484ffbd11f3a98f7aeb3465f', 1, 1),
+(2, 9, 'demoParent@localhost.com', '645baada484ffbd11f3a98f7aeb3465f', 3, 1),
+(5, 9, 'demoE@localhost', '9d29c5f8f443c75667a2d6e3c0bc2a10', 1, 1),
+(8, 9, 'demoP@localhost', '973333910a80387a60da3f91a2ef22be', 0, 1),
+(9, 9, 's@localhost', '7d8b51d6340123377ccfb14beb325ce5', 1, 1),
+(10, 9, 'r@localhost', '7d8b51d6340123377ccfb14beb325ce5', 0, 1);
 
 --
 -- Dumping data for table `um_pages`
 --
 
-INSERT INTO `um_pages` (`id`, `page`, `private`) VALUES
+INSERT IGNORE INTO `um_pages` (`id`, `page`, `private`) VALUES
 (1, 'forms/table_users.php', 1),
 (3, 'account/logout.php', 1),
 (4, 'account/dashboard.php', 1),
@@ -2786,81 +3837,42 @@ INSERT INTO `um_pages` (`id`, `page`, `private`) VALUES
 (22, 'account/Profile.php', 0),
 (23, 'account/includes.php', 0),
 (25, 'account/image.php', 0),
-(26, 'forum/helpDesk.php', 0),
-(27, 'modules/invite/account/invite.php', 0);
-
--- --------------------------------------------------------
+(27, 'account/invite.php', 0),
+(29, 'account/UploadHandler.php', 0),
+(30, 'account/fileUpload.php', 0),
+(31, 'feedback/feedback.php\r\n', 0),
+(32, 'forum/subscriptions.php', 0);
 
 --
--- Table structure for table `um_plugin_configuration`
+-- Dumping data for table `um_phone`
 --
 
-DROP TABLE IF EXISTS `um_plugin_configuration`;
-CREATE TABLE IF NOT EXISTS `um_plugin_configuration` (
-`id` int(11) NOT NULL,
-  `name` varchar(150) NOT NULL,
-  `value` varchar(150) NOT NULL,
-  `binary` int(1) NOT NULL,
-  `variable` varchar(150) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+INSERT IGNORE INTO `um_phone` (`id`, `phoneNum`, `isPrimary`) VALUES
+(1, 9553034723, 0),
+(9, 9553034724, 1),
+(2, 9553034733, 0),
+(2, 9553034753, 1);
 
 --
 -- Dumping data for table `um_plugin_configuration`
 --
 
-INSERT INTO `um_plugin_configuration` (`id`, `name`, `value`, `binary`, `variable`) VALUES
+INSERT IGNORE INTO `um_plugin_configuration` (`id`, `name`, `value`, `binary`, `variable`) VALUES
 (1, 'PM System', '1', 1, '$pmsystem');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `um_plugin_pm`
---
-
-DROP TABLE IF EXISTS `um_plugin_pm`;
-CREATE TABLE IF NOT EXISTS `um_plugin_pm` (
-`id` int(11) NOT NULL,
-  `sender_id` int(11) NOT NULL,
-  `receiver_id` int(11) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `message` text NOT NULL,
-  `time_sent` int(11) NOT NULL,
-  `time_read` int(11) NOT NULL DEFAULT '0',
-  `receiver_read` tinyint(1) DEFAULT '0',
-  `sender_deleted` tinyint(1) DEFAULT '0',
-  `receiver_deleted` tinyint(1) DEFAULT '0',
-  `parent_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `um_plugin_pm`
 --
 
-INSERT INTO `um_plugin_pm` (`id`, `sender_id`, `receiver_id`, `title`, `message`, `time_sent`, `time_read`, `receiver_read`, `sender_deleted`, `receiver_deleted`, `parent_id`) VALUES
+INSERT IGNORE INTO `um_plugin_pm` (`id`, `sender_id`, `receiver_id`, `title`, `message`, `time_sent`, `time_read`, `receiver_read`, `sender_deleted`, `receiver_deleted`, `parent_id`) VALUES
 (1, 1, 1, 'demo mesage', 'demo', 1428822744, 0, 0, 0, 0, NULL),
 (2, 2, 1, 'dude', 'hello dude', 1428823148, 0, 0, 0, 0, NULL);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `um_port_student_db`
---
-
-DROP TABLE IF EXISTS `um_port_student_db`;
-CREATE TABLE IF NOT EXISTS `um_port_student_db` (
-  `rollno` varchar(11) COLLATE latin1_general_ci NOT NULL,
-  `name` varchar(255) COLLATE latin1_general_ci NOT NULL,
-  `department` varchar(11) COLLATE latin1_general_ci NOT NULL,
-  `section` varchar(1) COLLATE latin1_general_ci NOT NULL,
-  `yearJoin` int(4) NOT NULL,
-  `yearEnd` int(4) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
 -- Dumping data for table `um_port_student_db`
 --
 
-INSERT INTO `um_port_student_db` (`rollno`, `name`, `department`, `section`, `yearJoin`, `yearEnd`) VALUES
+INSERT IGNORE INTO `um_port_student_db` (`rollno`, `name`, `department`, `section`, `yearJoin`, `yearEnd`) VALUES
 ('11311A05C1', 'Somisetty SaiBharath', 'CSE', 'C', 2011, 2015),
 ('11311A05C2', 'Miryala Sai Goutham', 'CSE', 'C', 2011, 2015),
 ('11311A05C3', 'Neelam Samanth', 'CSE', 'C', 2011, 2015),
@@ -2932,41 +3944,16 @@ INSERT INTO `um_port_student_db` (`rollno`, `name`, `department`, `section`, `ye
 ('12315A0535', 'A Adithya ', 'CSE', 'C', 2012, 2015),
 ('12315A0536', 'V Ramesh', 'CSE', 'C', 2012, 2015);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `um_users`
---
-
-DROP TABLE IF EXISTS `um_users`;
-CREATE TABLE IF NOT EXISTS `um_users` (
-`id` int(11) NOT NULL,
-  `user_name` varchar(50) NOT NULL,
-  `display_name` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `email` varchar(150) NOT NULL,
-  `activation_token` varchar(225) NOT NULL,
-  `last_activation_request` int(11) NOT NULL,
-  `lost_password_request` tinyint(1) NOT NULL,
-  `lost_password_timestamp` int(11) DEFAULT NULL,
-  `active` tinyint(1) NOT NULL,
-  `title` varchar(150) NOT NULL,
-  `sign_up_stamp` int(11) NOT NULL,
-  `last_sign_in_stamp` int(11) NOT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Specifies if the account is enabled.  Disabled accounts cannot be logged in to, but they retain all of their data and settings.',
-  `primary_group_id` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Specifies the primary group for the user.'
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
-
 --
 -- Dumping data for table `um_users`
 --
 
-INSERT INTO `um_users` (`id`, `user_name`, `display_name`, `password`, `email`, `activation_token`, `last_activation_request`, `lost_password_request`, `lost_password_timestamp`, `active`, `title`, `sign_up_stamp`, `last_sign_in_stamp`, `enabled`, `primary_group_id`) VALUES
-(1, 'goku', 'Goku', '$2y$10$alYFtsgzj4q2zkrfoQU2.eOX2q/LiXDesu/lOdsyekD2HCxisRLo.', 'srikanthkasukurti@gmail.com', '2ea9269b4e0b275d109962db23c10824', 1426868943, 0, 1426868943, 1, 'Master Account', 1426868943, 1431492344, 1, 2),
-(2, 'demo', 'demouser', '$2y$10$Z56GefM9ke/Jt3EFRK2qCOodCkCdGjTPjtCJ9tWGK8UmfrTfp5RAa', 'demo@localhost.com', '312bd281cbd3f3bec2be3433967071da', 1428119642, 0, 1428119642, 1, 'Stone', 1428119642, 1431492295, 1, 1),
+INSERT IGNORE INTO `um_users` (`id`, `user_name`, `display_name`, `password`, `email`, `activation_token`, `last_activation_request`, `lost_password_request`, `lost_password_timestamp`, `active`, `title`, `sign_up_stamp`, `last_sign_in_stamp`, `enabled`, `primary_group_id`) VALUES
+(1, 'goku', 'Goku', '$2y$10$alYFtsgzj4q2zkrfoQU2.eOX2q/LiXDesu/lOdsyekD2HCxisRLo.', 'srikanthkasukurti@gmail.com', '2ea9269b4e0b275d109962db23c10824', 1426868943, 0, 1426868943, 1, 'Master Account', 1426868943, 1431619142, 1, 2),
+(2, 'demo', 'demouser', '$2y$10$Z56GefM9ke/Jt3EFRK2qCOodCkCdGjTPjtCJ9tWGK8UmfrTfp5RAa', 'demo@localhost.com', '312bd281cbd3f3bec2be3433967071da', 1428119642, 0, 1428119642, 1, 'Stone', 1428119642, 1431571719, 1, 1),
 (7, 'demo23', 'demoUser23', '$2y$10$5d2V5Zzue7/XTrDqErJAgeR9RMupdOCKyPEvdpQc8bq550/CFRd3i', 'demo23@localhost.loc', 'b2b4aa468cce977e320db0f347a12772', 1429424595, 0, 1429424595, 1, 'Potato', 1429424595, 0, 1, 1),
 (8, 'demo2', 'demouser2', '$2y$10$zSkYSNCKJuBWHdSNjs0Bteks2QFxouFXLfG20gOTtGmAFDz0K60p2', 'demo2@localhost.loc', '9e6cac099e839a89e9733694b4130344', 1429424757, 0, 1429424757, 1, 'Potato', 1429424757, 1429424767, 1, 1),
-(9, 'demoalumni', 'AlumniDemoUser', '$2y$10$OwxSC2LAahUItK0dmxxtN.qhaOXTNPg7sofHIeY.rtMSXHaUq54Sa', 'alumni@localhost.loc', 'f577cb8a54ba47f5ccb787042c9bff2c', 1429429111, 0, 1429429111, 1, 'Potato', 1429429111, 1430545274, 1, 1),
+(9, 'demoalumni', 'AlumniDemoUser', '$2y$10$OwxSC2LAahUItK0dmxxtN.qhaOXTNPg7sofHIeY.rtMSXHaUq54Sa', 'alumni@localhost.loc', 'f577cb8a54ba47f5ccb787042c9bff2c', 1429429111, 0, 1429429111, 1, 'Potato', 1429429111, 1431618677, 1, 1),
 (10, 'demoalumni2', 'alumua', '$2y$10$yXnmTTVv3nXHbSGWmAqfi.uyoqUUTpyu1wYsY6tW3Xfnms.IzpUvO', 'almu@loclhost.loc', 'a2379402ef2106636c057dd3b68d4bed', 1429429373, 0, 1429429373, 1, 'Potato', 1429429373, 0, 1, 1),
 (11, 'frankey', 'SrikanthK', '$2y$10$q/EaWsQRSz0gmQMqCyd/dukWuVGKIXXiwfKTZ4eViF4L25PK/nPxu', 'srikanth@opensnist.org', 'a152e7f048644dff88caa85890ec945d', 1429801263, 0, 1429801263, 1, 'senpai', 1429801263, 1430062917, 1, 1),
 (12, 'vinayu7', 'vinay', '$2y$10$eLN4P5I4xtu6DExrgckQP.exmHth4324wZ8GvWwrRlrj/lZaZAfee', 'uvinaykumaru@gmail.com', 'db1a9b93f43ffd16d1ed6bc70cf6f16e', 1429945404, 0, 1429945404, 1, 'Potato', 1429945404, 1429972998, 1, 1),
@@ -2977,93 +3964,45 @@ INSERT INTO `um_users` (`id`, `user_name`, `display_name`, `password`, `email`, 
 (24, 'demome', 'demoME', '$2y$10$fcbS07vQl9.KvV1p2CgEweDMM4ckgF5frwDVpTMZAoc/vT0pvx5rK', 'demome@opensnist.org', 'fad5318f592c84a942aa38023d3d09ea', 1430025793, 0, 1430025793, 1, 'Potato', 1430025793, 1430062974, 1, 1),
 (25, 'xyz', 'alumnixyz', '$2y$10$c.AVK763g0U0dG6A588N6er4r3ilqeeVN9S7ZDlGBFn6Xc58sIQTO', 'xyz@loclahost.loc', '6552c3dc1c0f7dd99688ff6d7a52b50a', 1430043215, 0, 1430043215, 1, 'Potato', 1430043215, 1430545302, 1, 1),
 (27, 'shreyah3', 'Shreya', '$2y$10$OyrRfggPDRooV6Sx40OSxufOMUhRQKx3ro5tKoBDWJotH7HHGN81O', '11311a05h3@sreenidhi.edu.in', 'e4b71395ec3fadb503b90d77e58bd58a', 1431504607, 0, 1431504607, 1, 'Potato', 1431504607, 1431504822, 1, 1),
-(28, 'saibharathc1', 'SaiBharath', '$2y$10$DkS6WiLCdjn1WuBAVggBG.xfHaKXl8Qb16WjSCtETRFq4tw./6PLi', '11311a05c1@sreenidhi.edu.in', '45a9fb441bd39e9ae7cb3f0d03941480', 1431504768, 0, 1431504768, 1, 'Potato', 1431504768, 0, 1, 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `um_user_action_permits`
---
-
-DROP TABLE IF EXISTS `um_user_action_permits`;
-CREATE TABLE IF NOT EXISTS `um_user_action_permits` (
-`id` int(10) unsigned NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `action` varchar(100) NOT NULL,
-  `permits` varchar(400) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
+(28, 'saibharathc1', 'SaiBharath', '$2y$10$DkS6WiLCdjn1WuBAVggBG.xfHaKXl8Qb16WjSCtETRFq4tw./6PLi', '11311a05c1@sreenidhi.edu.in', '45a9fb441bd39e9ae7cb3f0d03941480', 1431504768, 0, 1431504768, 1, 'Potato', 1431504768, 0, 1, 1),
+(29, 'thirupathif2', 'Thirupathi', '$2y$10$0Xzok.cKr0xt8itWHVOE5.Zz72H0r.aawqxfFSdKlBRWGU1AxwkVe', '11311a05f2@sreenidhi.edu.in', 'ef701889c3e65debde6b5ffc797a9256', 1431514945, 0, 1431514945, 1, 'Potato', 1431514945, 0, 1, 1);
 
 --
--- Table structure for table `um_user_address`
+-- Dumping data for table `um_user_address`
 --
 
-DROP TABLE IF EXISTS `um_user_address`;
-CREATE TABLE IF NOT EXISTS `um_user_address` (
-  `id` int(11) NOT NULL,
-  `address` text COLLATE latin1_general_ci NOT NULL,
-  `isCurrent` int(1) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `um_user_details`
---
-
-DROP TABLE IF EXISTS `um_user_details`;
-CREATE TABLE IF NOT EXISTS `um_user_details` (
-  `id` int(11) NOT NULL,
-  `full_name` varchar(255) COLLATE latin1_general_ci NOT NULL,
-  `roll_no` varchar(12) COLLATE latin1_general_ci NOT NULL,
-  `department` int(3) NOT NULL DEFAULT '1',
-  `section` varchar(1) COLLATE latin1_general_ci NOT NULL DEFAULT 'A',
-  `year_join` int(4) NOT NULL DEFAULT '2015',
-  `year_end` int(4) NOT NULL DEFAULT '2018',
-  `isAlumni` int(1) NOT NULL DEFAULT '0',
-  `feedback_done` int(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='User details definition';
+INSERT IGNORE INTO `um_user_address` (`id`, `address`, `isCurrent`) VALUES
+(1, 'Planet Vegeta and Planet Earth', 1),
+(2, 'planet home', 1),
+(9, 'Hyderabad ', 1);
 
 --
 -- Dumping data for table `um_user_details`
 --
 
-INSERT INTO `um_user_details` (`id`, `full_name`, `roll_no`, `department`, `section`, `year_join`, `year_end`, `isAlumni`, `feedback_done`) VALUES
-(10, 'almund', '0147852369', 2, 'a', 2000, 2004, 1, 0),
-(9, 'Alumni Anthony', '0701010101', 2, 'a', 2007, 2011, 1, 0),
+INSERT IGNORE INTO `um_user_details` (`id`, `full_name`, `roll_no`, `department`, `section`, `year_join`, `year_end`, `isAlumni`, `feedback_done`) VALUES
+(10, 'almund', '0147852369', 2, 'a', 2000, 2004, 1, 1),
+(9, 'Alumni Anthony', '0701010101', 2, 'a', 2007, 2011, 1, 1),
 (19, 'demo ECE2', '11311A0434', 7, 'a', 2011, 2015, 0, 0),
 (24, 'demo ME', '11311a05me', 4, 'a', 2011, 2015, 0, 0),
-(8, 'demodabidi', '11311A05H2', 2, 'a', 2000, 2004, 1, 0),
+(8, 'demodabidi', '11311A05H2', 2, 'a', 2000, 2004, 1, 1),
 (7, 'demoramu23', 'a123487776', 2, 'a', 2012, 2015, 0, 0),
+(29, 'Gandla Thirupathi', '11311A05F2', 2, 'C', 2011, 2015, 0, 0),
 (27, 'Gangishetty Shreya', '11311A05H3', 2, 'C', 2011, 2015, 0, 0),
 (15, 'Momu Nomu', '11311a0500', 2, 'a', 2011, 2015, 0, 0),
 (13, 'Shreya Gangishetty', '11311A05H3', 2, 'a', 2011, 2015, 0, 0),
 (14, 'Shyam Prasad', '11311a05d6', 2, 'a', 2011, 2015, 0, 0),
 (28, 'Somisetty SaiBharath', '11311A05C1', 2, 'C', 2011, 2015, 0, 0),
-(1, 'Son Goku', '1', 2, 'a', 0, 0, 1, 0),
+(1, 'Son Goku', '1', 2, 'a', 0, 0, 1, 1),
 (11, 'Srikanth Kasukurthi', '11311A05E2', 2, 'a', 2011, 2015, 0, 0),
 (12, 'Vinay Ummaneni', '11311A05F5', 2, 'a', 2011, 2015, 0, 0),
 (25, 'xyz', '1234567890', 2, 'a', 2001, 2005, 1, 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `um_user_group_matches`
---
-
-DROP TABLE IF EXISTS `um_user_group_matches`;
-CREATE TABLE IF NOT EXISTS `um_user_group_matches` (
-`id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `group_id` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `um_user_group_matches`
 --
 
-INSERT INTO `um_user_group_matches` (`id`, `user_id`, `group_id`) VALUES
+INSERT IGNORE INTO `um_user_group_matches` (`id`, `user_id`, `group_id`) VALUES
 (1, 1, 1),
 (2, 1, 2),
 (3, 2, 1),
@@ -3082,25 +4021,19 @@ INSERT INTO `um_user_group_matches` (`id`, `user_id`, `group_id`) VALUES
 (16, 25, 5),
 (17, 25, 1),
 (18, 27, 1),
-(19, 28, 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `um_user_levels`
---
-
-DROP TABLE IF EXISTS `um_user_levels`;
-CREATE TABLE IF NOT EXISTS `um_user_levels` (
-`id` int(11) NOT NULL,
-  `title` varchar(50) COLLATE latin1_general_ci NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+(19, 28, 1),
+(20, 29, 1),
+(21, 10, 5),
+(22, 9, 5),
+(23, 8, 5),
+(24, 1, 5),
+(25, 25, 5);
 
 --
 -- Dumping data for table `um_user_levels`
 --
 
-INSERT INTO `um_user_levels` (`id`, `title`) VALUES
+INSERT IGNORE INTO `um_user_levels` (`id`, `title`) VALUES
 (1, 'Potato'),
 (2, 'Stone'),
 (3, 'Rabbit'),
@@ -3112,23 +4045,11 @@ INSERT INTO `um_user_levels` (`id`, `title`) VALUES
 (9, 'BatMan'),
 (10, 'Senpai');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `um_user_subscriptions`
---
-
-DROP TABLE IF EXISTS `um_user_subscriptions`;
-CREATE TABLE IF NOT EXISTS `um_user_subscriptions` (
-  `uid` int(10) NOT NULL,
-  `fid` int(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
 --
 -- Dumping data for table `um_user_subscriptions`
 --
 
-INSERT INTO `um_user_subscriptions` (`uid`, `fid`) VALUES
+INSERT IGNORE INTO `um_user_subscriptions` (`uid`, `fid`) VALUES
 (1, 0),
 (1, 17),
 (1, 25),
@@ -3203,735 +4124,15 @@ INSERT INTO `um_user_subscriptions` (`uid`, `fid`) VALUES
 (28, 47),
 (28, 48),
 (28, 53),
-(28, 58);
-
--- --------------------------------------------------------
-
---
--- Structure for view `um_address`
---
-DROP TABLE IF EXISTS `um_address`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `um_address` AS select `um_user_address`.`id` AS `id`,`um_user_address`.`address` AS `address` from `um_user_address` where (`um_user_address`.`isCurrent` = 1);
-
--- --------------------------------------------------------
-
---
--- Structure for view `um_employement`
---
-DROP TABLE IF EXISTS `um_employement`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `um_employement` AS select `um_alumni_employment`.`id` AS `id`,`um_alumni_employment`.`role` AS `role`,`um_alumni_employment`.`employer` AS `employer` from `um_alumni_employment` where (`um_alumni_employment`.`isCurrent` = 1);
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `fb_alumni_curriculim`
---
-ALTER TABLE `fb_alumni_curriculim`
- ADD KEY `uid` (`uid`);
-
---
--- Indexes for table `fb_alumni_employability`
---
-ALTER TABLE `fb_alumni_employability`
- ADD KEY `uid` (`uid`);
-
---
--- Indexes for table `fb_alumni_impression`
---
-ALTER TABLE `fb_alumni_impression`
- ADD KEY `uid` (`uid`);
-
---
--- Indexes for table `fb_alumni_objectives`
---
-ALTER TABLE `fb_alumni_objectives`
- ADD KEY `uid` (`uid`);
-
---
--- Indexes for table `fb_alumni_outcomes`
---
-ALTER TABLE `fb_alumni_outcomes`
- ADD KEY `uid` (`uid`);
-
---
--- Indexes for table `fb_alumni_suggestion`
---
-ALTER TABLE `fb_alumni_suggestion`
- ADD KEY `uid` (`uid`);
-
---
--- Indexes for table `fb_employer_objectives`
---
-ALTER TABLE `fb_employer_objectives`
- ADD KEY `uid` (`uid`);
-
---
--- Indexes for table `fb_employer_outcomes`
---
-ALTER TABLE `fb_employer_outcomes`
- ADD KEY `uid` (`uid`);
-
---
--- Indexes for table `fb_employer_skills`
---
-ALTER TABLE `fb_employer_skills`
- ADD KEY `uid` (`uid`);
-
---
--- Indexes for table `fb_parent_college`
---
-ALTER TABLE `fb_parent_college`
- ADD KEY `uid` (`uid`);
-
---
--- Indexes for table `fb_question_answers`
---
-ALTER TABLE `fb_question_answers`
- ADD PRIMARY KEY (`id`), ADD KEY `uid` (`uid`), ADD KEY `qid` (`qid`), ADD KEY `tid` (`tid`);
-
---
--- Indexes for table `fb_question_options`
---
-ALTER TABLE `fb_question_options`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `fb_question_options_mapping`
---
-ALTER TABLE `fb_question_options_mapping`
- ADD KEY `qid` (`qid`), ADD KEY `oid` (`oid`);
-
---
--- Indexes for table `fb_question_template`
---
-ALTER TABLE `fb_question_template`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `fb_question_template_mapping`
---
-ALTER TABLE `fb_question_template_mapping`
- ADD KEY `qid` (`qid`), ADD KEY `tid` (`tid`);
-
---
--- Indexes for table `fb_question_type`
---
-ALTER TABLE `fb_question_type`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `fb_session`
---
-ALTER TABLE `fb_session`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `fb_snist_questions`
---
-ALTER TABLE `fb_snist_questions`
- ADD PRIMARY KEY (`id`), ADD KEY `type` (`type`);
-
---
--- Indexes for table `fb_user_type_template_mapping`
---
-ALTER TABLE `fb_user_type_template_mapping`
- ADD KEY `tid` (`tid`), ADD KEY `gid` (`gid`);
-
---
--- Indexes for table `fo_forums`
---
-ALTER TABLE `fo_forums`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `name` (`name`), ADD UNIQUE KEY `name_2` (`name`), ADD KEY `type` (`type`);
-
---
--- Indexes for table `fo_helpdesk_status`
---
-ALTER TABLE `fo_helpdesk_status`
- ADD UNIQUE KEY `tid` (`tid`);
-
---
--- Indexes for table `fo_mandate_subscriptions`
---
-ALTER TABLE `fo_mandate_subscriptions`
- ADD KEY `forumid` (`forumid`);
-
---
--- Indexes for table `fo_mods`
---
-ALTER TABLE `fo_mods`
- ADD KEY `fid` (`fid`), ADD KEY `uid` (`uid`);
-
---
--- Indexes for table `fo_posts`
---
-ALTER TABLE `fo_posts`
- ADD PRIMARY KEY (`id`), ADD KEY `thread_id` (`thread_id`), ADD KEY `added_by` (`added_by`);
-
---
--- Indexes for table `fo_posts_banned`
---
-ALTER TABLE `fo_posts_banned`
- ADD UNIQUE KEY `id` (`id`);
-
---
--- Indexes for table `fo_post_likes`
---
-ALTER TABLE `fo_post_likes`
- ADD KEY `pid` (`pid`), ADD KEY `uid` (`uid`);
-
---
--- Indexes for table `fo_threads`
---
-ALTER TABLE `fo_threads`
- ADD PRIMARY KEY (`id`), ADD KEY `forum_id` (`forum_id`), ADD KEY `added_by` (`added_by`);
-
---
--- Indexes for table `fo_thread_stats`
---
-ALTER TABLE `fo_thread_stats`
- ADD KEY `tid` (`tid`);
-
---
--- Indexes for table `fo_type`
---
-ALTER TABLE `fo_type`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `uf_invites`
---
-ALTER TABLE `uf_invites`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `uf_user_invites`
---
-ALTER TABLE `uf_user_invites`
- ADD UNIQUE KEY `userId` (`userId`);
-
---
--- Indexes for table `um_alumni_employment`
---
-ALTER TABLE `um_alumni_employment`
- ADD KEY `id` (`id`);
-
---
--- Indexes for table `um_batches`
---
-ALTER TABLE `um_batches`
- ADD PRIMARY KEY (`id`), ADD KEY `deptid` (`deptid`);
-
---
--- Indexes for table `um_configuration`
---
-ALTER TABLE `um_configuration`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `um_department`
---
-ALTER TABLE `um_department`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `um_filelist`
---
-ALTER TABLE `um_filelist`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `path` (`path`);
-
---
--- Indexes for table `um_groups`
---
-ALTER TABLE `um_groups`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `um_group_action_permits`
---
-ALTER TABLE `um_group_action_permits`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `um_group_page_matches`
---
-ALTER TABLE `um_group_page_matches`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `um_nav`
---
-ALTER TABLE `um_nav`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `um_nav_group_matches`
---
-ALTER TABLE `um_nav_group_matches`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `um_other_auth`
---
-ALTER TABLE `um_other_auth`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `um_pages`
---
-ALTER TABLE `um_pages`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `um_plugin_configuration`
---
-ALTER TABLE `um_plugin_configuration`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `um_plugin_pm`
---
-ALTER TABLE `um_plugin_pm`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `um_users`
---
-ALTER TABLE `um_users`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `um_user_action_permits`
---
-ALTER TABLE `um_user_action_permits`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `um_user_address`
---
-ALTER TABLE `um_user_address`
- ADD KEY `id` (`id`);
-
---
--- Indexes for table `um_user_details`
---
-ALTER TABLE `um_user_details`
- ADD UNIQUE KEY `full_name` (`full_name`), ADD KEY `id` (`id`), ADD KEY `department` (`department`);
-
---
--- Indexes for table `um_user_group_matches`
---
-ALTER TABLE `um_user_group_matches`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `um_user_levels`
---
-ALTER TABLE `um_user_levels`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `um_user_subscriptions`
---
-ALTER TABLE `um_user_subscriptions`
- ADD UNIQUE KEY `uid_2` (`uid`,`fid`), ADD UNIQUE KEY `uid_3` (`uid`,`fid`), ADD KEY `uid` (`uid`), ADD KEY `fid` (`fid`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `fb_question_answers`
---
-ALTER TABLE `fb_question_answers`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `fb_question_options`
---
-ALTER TABLE `fb_question_options`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
---
--- AUTO_INCREMENT for table `fb_question_template`
---
-ALTER TABLE `fb_question_template`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
---
--- AUTO_INCREMENT for table `fb_question_type`
---
-ALTER TABLE `fb_question_type`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
---
--- AUTO_INCREMENT for table `fb_session`
---
-ALTER TABLE `fb_session`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `fb_snist_questions`
---
-ALTER TABLE `fb_snist_questions`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=78;
---
--- AUTO_INCREMENT for table `fo_forums`
---
-ALTER TABLE `fo_forums`
-MODIFY `id` int(10) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=59;
---
--- AUTO_INCREMENT for table `fo_posts`
---
-ALTER TABLE `fo_posts`
-MODIFY `id` int(10) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=155;
---
--- AUTO_INCREMENT for table `fo_threads`
---
-ALTER TABLE `fo_threads`
-MODIFY `id` int(10) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=49;
---
--- AUTO_INCREMENT for table `fo_type`
---
-ALTER TABLE `fo_type`
-MODIFY `id` int(5) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
---
--- AUTO_INCREMENT for table `uf_invites`
---
-ALTER TABLE `uf_invites`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
---
--- AUTO_INCREMENT for table `um_batches`
---
-ALTER TABLE `um_batches`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=721;
---
--- AUTO_INCREMENT for table `um_configuration`
---
-ALTER TABLE `um_configuration`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=14;
---
--- AUTO_INCREMENT for table `um_department`
---
-ALTER TABLE `um_department`
-MODIFY `id` int(2) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=10;
---
--- AUTO_INCREMENT for table `um_filelist`
---
-ALTER TABLE `um_filelist`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT for table `um_groups`
---
-ALTER TABLE `um_groups`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
---
--- AUTO_INCREMENT for table `um_group_action_permits`
---
-ALTER TABLE `um_group_action_permits`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=24;
---
--- AUTO_INCREMENT for table `um_group_page_matches`
---
-ALTER TABLE `um_group_page_matches`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=36;
---
--- AUTO_INCREMENT for table `um_nav`
---
-ALTER TABLE `um_nav`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=17;
---
--- AUTO_INCREMENT for table `um_nav_group_matches`
---
-ALTER TABLE `um_nav_group_matches`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=19;
---
--- AUTO_INCREMENT for table `um_other_auth`
---
-ALTER TABLE `um_other_auth`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `um_pages`
---
-ALTER TABLE `um_pages`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=28;
---
--- AUTO_INCREMENT for table `um_plugin_configuration`
---
-ALTER TABLE `um_plugin_configuration`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `um_plugin_pm`
---
-ALTER TABLE `um_plugin_pm`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT for table `um_users`
---
-ALTER TABLE `um_users`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=29;
---
--- AUTO_INCREMENT for table `um_user_action_permits`
---
-ALTER TABLE `um_user_action_permits`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `um_user_group_matches`
---
-ALTER TABLE `um_user_group_matches`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=20;
---
--- AUTO_INCREMENT for table `um_user_levels`
---
-ALTER TABLE `um_user_levels`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `fb_alumni_curriculim`
---
-ALTER TABLE `fb_alumni_curriculim`
-ADD CONSTRAINT `fb_alumni_curriculim_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`),
-ADD CONSTRAINT `fb_alumni_curriculim_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
-
---
--- Constraints for table `fb_alumni_employability`
---
-ALTER TABLE `fb_alumni_employability`
-ADD CONSTRAINT `fb_alumni_employability_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`),
-ADD CONSTRAINT `fb_alumni_employability_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
-
---
--- Constraints for table `fb_alumni_impression`
---
-ALTER TABLE `fb_alumni_impression`
-ADD CONSTRAINT `fb_alumni_impression_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`),
-ADD CONSTRAINT `fb_alumni_impression_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
-
---
--- Constraints for table `fb_alumni_objectives`
---
-ALTER TABLE `fb_alumni_objectives`
-ADD CONSTRAINT `fb_alumni_objectives_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
-
---
--- Constraints for table `fb_alumni_outcomes`
---
-ALTER TABLE `fb_alumni_outcomes`
-ADD CONSTRAINT `fb_alumni_outcomes_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`),
-ADD CONSTRAINT `fb_alumni_outcomes_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
-
---
--- Constraints for table `fb_alumni_suggestion`
---
-ALTER TABLE `fb_alumni_suggestion`
-ADD CONSTRAINT `fb_alumni_suggestion_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
-
---
--- Constraints for table `fb_employer_objectives`
---
-ALTER TABLE `fb_employer_objectives`
-ADD CONSTRAINT `fb_employer_objectives_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
-
---
--- Constraints for table `fb_employer_outcomes`
---
-ALTER TABLE `fb_employer_outcomes`
-ADD CONSTRAINT `fb_employer_outcomes_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`),
-ADD CONSTRAINT `fb_employer_outcomes_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
-
---
--- Constraints for table `fb_employer_skills`
---
-ALTER TABLE `fb_employer_skills`
-ADD CONSTRAINT `fb_employer_skills_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
-
---
--- Constraints for table `fb_parent_college`
---
-ALTER TABLE `fb_parent_college`
-ADD CONSTRAINT `fb_parent_college_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
-
---
--- Constraints for table `fb_question_answers`
---
-ALTER TABLE `fb_question_answers`
-ADD CONSTRAINT `fb_question_answers_ibfk_2` FOREIGN KEY (`qid`) REFERENCES `fb_snist_questions` (`id`),
-ADD CONSTRAINT `fb_question_answers_ibfk_3` FOREIGN KEY (`tid`) REFERENCES `fb_question_template` (`id`),
-ADD CONSTRAINT `fb_question_answers_ibfk_4` FOREIGN KEY (`uid`) REFERENCES `fb_session` (`id`);
-
---
--- Constraints for table `fb_question_options_mapping`
---
-ALTER TABLE `fb_question_options_mapping`
-ADD CONSTRAINT `fb_question_options_mapping_ibfk_1` FOREIGN KEY (`qid`) REFERENCES `fb_snist_questions` (`id`),
-ADD CONSTRAINT `fb_question_options_mapping_ibfk_2` FOREIGN KEY (`oid`) REFERENCES `fb_question_options` (`id`);
-
---
--- Constraints for table `fb_question_template_mapping`
---
-ALTER TABLE `fb_question_template_mapping`
-ADD CONSTRAINT `fb_question_template_mapping_ibfk_1` FOREIGN KEY (`qid`) REFERENCES `fb_snist_questions` (`id`),
-ADD CONSTRAINT `fb_question_template_mapping_ibfk_2` FOREIGN KEY (`tid`) REFERENCES `fb_question_template` (`id`);
-
---
--- Constraints for table `fb_snist_questions`
---
-ALTER TABLE `fb_snist_questions`
-ADD CONSTRAINT `fb_snist_questions_ibfk_1` FOREIGN KEY (`type`) REFERENCES `fb_question_type` (`id`);
-
---
--- Constraints for table `fb_user_type_template_mapping`
---
-ALTER TABLE `fb_user_type_template_mapping`
-ADD CONSTRAINT `fb_user_type_template_mapping_ibfk_1` FOREIGN KEY (`tid`) REFERENCES `fb_question_template` (`id`),
-ADD CONSTRAINT `fb_user_type_template_mapping_ibfk_2` FOREIGN KEY (`tid`) REFERENCES `fb_question_template` (`id`),
-ADD CONSTRAINT `fb_user_type_template_mapping_ibfk_3` FOREIGN KEY (`tid`) REFERENCES `fb_question_template` (`id`),
-ADD CONSTRAINT `fb_user_type_template_mapping_ibfk_4` FOREIGN KEY (`gid`) REFERENCES `um_groups` (`id`);
-
---
--- Constraints for table `fo_forums`
---
-ALTER TABLE `fo_forums`
-ADD CONSTRAINT `fo_forums_ibfk_1` FOREIGN KEY (`type`) REFERENCES `fo_type` (`id`);
-
---
--- Constraints for table `fo_mandate_subscriptions`
---
-ALTER TABLE `fo_mandate_subscriptions`
-ADD CONSTRAINT `fo_mandate_subscriptions_ibfk_1` FOREIGN KEY (`forumid`) REFERENCES `fo_forums` (`id`);
-
---
--- Constraints for table `fo_mods`
---
-ALTER TABLE `fo_mods`
-ADD CONSTRAINT `fo_mods_ibfk_1` FOREIGN KEY (`fid`) REFERENCES `fo_forums` (`id`),
-ADD CONSTRAINT `fo_mods_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
-
---
--- Constraints for table `fo_posts`
---
-ALTER TABLE `fo_posts`
-ADD CONSTRAINT `fo_posts_ibfk_1` FOREIGN KEY (`thread_id`) REFERENCES `fo_threads` (`id`),
-ADD CONSTRAINT `fo_posts_ibfk_2` FOREIGN KEY (`added_by`) REFERENCES `um_users` (`id`);
-
---
--- Constraints for table `fo_posts_banned`
---
-ALTER TABLE `fo_posts_banned`
-ADD CONSTRAINT `fo_posts_banned_ibfk_1` FOREIGN KEY (`id`) REFERENCES `fo_posts` (`id`);
-
---
--- Constraints for table `fo_post_likes`
---
-ALTER TABLE `fo_post_likes`
-ADD CONSTRAINT `fo_post_likes_ibfk_1` FOREIGN KEY (`pid`) REFERENCES `fo_posts` (`id`),
-ADD CONSTRAINT `fo_post_likes_ibfk_2` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
-
---
--- Constraints for table `fo_threads`
---
-ALTER TABLE `fo_threads`
-ADD CONSTRAINT `fo_threads_ibfk_1` FOREIGN KEY (`forum_id`) REFERENCES `fo_forums` (`id`),
-ADD CONSTRAINT `fo_threads_ibfk_2` FOREIGN KEY (`added_by`) REFERENCES `um_users` (`id`);
-
---
--- Constraints for table `fo_thread_stats`
---
-ALTER TABLE `fo_thread_stats`
-ADD CONSTRAINT `fo_thread_stats_ibfk_1` FOREIGN KEY (`tid`) REFERENCES `fo_threads` (`id`);
-
---
--- Constraints for table `um_alumni_employment`
---
-ALTER TABLE `um_alumni_employment`
-ADD CONSTRAINT `um_alumni_employment_ibfk_1` FOREIGN KEY (`id`) REFERENCES `um_users` (`id`);
-
---
--- Constraints for table `um_batches`
---
-ALTER TABLE `um_batches`
-ADD CONSTRAINT `um_batches_ibfk_1` FOREIGN KEY (`deptid`) REFERENCES `um_department` (`id`);
-
---
--- Constraints for table `um_user_address`
---
-ALTER TABLE `um_user_address`
-ADD CONSTRAINT `um_user_address_ibfk_1` FOREIGN KEY (`id`) REFERENCES `um_users` (`id`);
-
---
--- Constraints for table `um_user_details`
---
-ALTER TABLE `um_user_details`
-ADD CONSTRAINT `um_user_details_ibfk_1` FOREIGN KEY (`id`) REFERENCES `um_users` (`id`),
-ADD CONSTRAINT `um_user_details_ibfk_2` FOREIGN KEY (`department`) REFERENCES `um_department` (`id`);
-
---
--- Constraints for table `um_user_subscriptions`
---
-ALTER TABLE `um_user_subscriptions`
-ADD CONSTRAINT `um_user_subscriptions_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `um_users` (`id`);
---
--- Table structure for table `fo_post_images`
---
-
-DROP TABLE IF EXISTS `fo_post_images`;
-CREATE TABLE IF NOT EXISTS `fo_post_images` (
-`id` int(11) NOT NULL,
-  `image` longblob NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `um_images`
---
-
-DROP TABLE IF EXISTS `um_images`;
-CREATE TABLE IF NOT EXISTS `um_images` (
-  `id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE latin1_general_ci NOT NULL,
-  `image` longblob NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `fo_post_images`
---
-ALTER TABLE `fo_post_images`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `um_images`
---
-ALTER TABLE `um_images`
- ADD UNIQUE KEY `id` (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `fo_post_images`
---
-ALTER TABLE `fo_post_images`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `um_images`
---
-ALTER TABLE `um_images`
-ADD CONSTRAINT `um_images_ibfk_1` FOREIGN KEY (`id`) REFERENCES `um_users` (`id`);
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+(28, 58),
+(29, 0),
+(29, 36),
+(29, 40),
+(29, 46),
+(29, 47),
+(29, 48),
+(29, 53),
+(29, 58);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

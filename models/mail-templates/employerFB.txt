@@ -1,0 +1,15 @@
+Hello #email
+
+We are from Sreenidhi Institute of Science and Technology and this is our feedback divison SNISTAF. We are glad to hear our student #name has been part of your organization. We would like you to provide feedback, so that we can improve further and assist industry's needs.
+
+Please click below link to start feedback..
+
+#feedbackurl
+
+You can reach to us by mail: helpline@opensnist.org for futher assistance
+
+Thanks
+Director
+Sreenidhi Institute of Science and Technology
+Yamnampet-Ghatkesar
+Hyderabad

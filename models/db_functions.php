@@ -4174,7 +4174,7 @@ function isFeedbackDone($userid){
 	*/
 	try{	$db=pdoConnect();
 	$sqlVars=array();
-	$query="SELECT feedback_done from um_user_details where id=:userid";
+	$query="SELECT done from fb_session where id=:userid";
 	$stmt=$db->prepare($query);
 	$sqlVars[':userid']=$userid;
 	if(!$stmt->execute($sqlVars)){
@@ -4182,7 +4182,7 @@ function isFeedbackDone($userid){
 	}
 	$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
 
-	return $ansArr['feedback_done'];
+	return $ansArr['done'];
 	}
 	catch (PDOException $e) {
 		addAlert("danger", "Oops, looks like our database encountered an error.");
@@ -4541,7 +4541,7 @@ try{
 			return false;
 	}
 
-
+return true;
 }
  catch (PDOException $e) {
 addAlert("danger", "Oops, looks like our database encountered an error.");
@@ -4832,5 +4832,187 @@ try {
 	addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
 	return false;
 }
+}
+function feedbackSession($user_id,$userRealm,$type){
+try {
+	if($userRealm==0)
+	$status=1;
+	else if($userRealm==1 && $type==6)
+	$status=7;
+	else
+	 $status=10;
+	error_log("type is ".$type);
+		//use prefixes when modules changed, for now omitting
+		//global $forum_db_table_prefix;
+		$db = pdoConnect();
+		$sqlVars = array();
+		//error_log($rollno);
+		$query = "INSERT IGNORE INTO fb_session(userId,userType,status,nonUMUser) VALUES(:id,:type,:status,:realm)";
+		$stmt = $db->prepare($query);
+		$sqlVars[':id'] =$user_id;
+		$sqlVars[':type']=$type;
+		$sqlVars[':status']=$status;
+		$sqlVars[':realm']=$userRealm;
+		if (!$stmt->execute($sqlVars)){
+				// Error
+				return false;
+		}
+		$stmt=null;
+		$query2="SELECT id,status from fb_session where userId=:id ";
+		$stmt2=$db->prepare($query2);
+		$sqlVars2=array();
+		$sqlVars2[':id']=$user_id;
+		if (!$stmt2->execute($sqlVars2)){
+				// Error
+				return false;
+		}
+		$ansArr=$stmt2->fetch(PDO::FETCH_ASSOC);
+		return $ansArr;
+} catch (PDOException $e) {
+	addAlert("danger", "Oops, looks like our database encountered an error.");
+	error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+	return false;
+} catch (ErrorException $e) {
+	addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+	return false;
+}
+}
+function getOtherUserAuthId($email,$authKey){
+try {
+		//use prefixes when modules changed, for now omitting
+		//global $forum_db_table_prefix;
+		$db = pdoConnect();
+		$sqlVars = array();
+
+		//error_log($rollno);
+		$query = "SELECT * from um_auth where email=:email and auth_key=:authkey;";
+		$stmt = $db->prepare($query);
+		$sqlVars[':email'] =$email;
+		$sqlVars[':authkey']=$authKey;
+		if (!$stmt->execute($sqlVars)){
+				// Error
+				return false;
+		}
+		//$stmt=null;
+		$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+		return $ansArr;
+} catch (PDOException $e) {
+	addAlert("danger", "Oops, looks like our database encountered an error.");
+	error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+	return false;
+} catch (ErrorException $e) {
+	addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+	return false;
+}
+}
+function loadTemplates($sessionid,$tid){
+try {
+		//use prefixes when modules changed, for now omitting
+		//global $forum_db_table_prefix;
+		$db = pdoConnect();
+		$sqlVars = array();
+
+		//error_log($rollno);
+		$query = "SELECT tid from fb_user_type_template_mapping where gid=(select userType from fb_session where id=:id)";
+		$stmt = $db->prepare($query);
+		$sqlVars[':id'] =$sessionid;
+		if (!$stmt->execute($sqlVars)){
+				// Error
+				return false;
+		}
+		//$stmt=null;
+		$ansArr=$stmt->fetchall(PDO::FETCH_NUM);
+		$key=0;
+		//return $ansArr;
+		foreach($ansArr as $value){
+			if(intval($value[0])==intval($tid)){ //lossless comparison
+				$key=key($ansArr);
+				break;
+			}
+
+			}
+		//$key=array_search($tid,$ansArr);
+		//error_log("key is ".$key);
+		if($key&&($key!=6 || $key!=9 ||$key!=10)){
+			//$key=$key+1;
+		$nextTemplate=$ansArr[$key];
+		$query2="UPDATE fb_session set status=:stat where id=:id;";
+		$sqlVars2=array();
+		$sqlVars2[':id']=$sessionid;
+		$sqlVars2[':stat']=$nextTemplate[0];
+		//error_log("next template is ".$nextTemplate);
+		$stmt2=$db->prepare($query2);
+		if (!$stmt2->execute($sqlVars2)){
+				// Error
+				return false;
+		}
+		}
+		else{
+			$query2="CALL updateFBDone(:id)";
+			$stmt2=$db->prepare($query2);
+			$sqlVars2=array();
+			$sqlVars2[':id']=$sessionid;
+			if (!$stmt2->execute($sqlVars2)){
+					// Error
+					return false;
+			}
+		}
+		return true;
+		//return $ansArr;
+} catch (PDOException $e) {
+	addAlert("danger", "Oops, looks like our database encountered an error.");
+	error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+	return false;
+} catch (ErrorException $e) {
+	addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+	return false;
+}
+}
+function insertOtherUM($userid,$emailid,$authToken,$group){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="INSERT INTO um_other_auth VALUES(null,:uid,:email,:token,:group,1)";
+	$stmt=$db->prepare($query);
+	$sqlVars[':uid']=$userid;
+	$sqlVars[':email']=$emailid;
+	$sqlVars[':token']=$authToken;
+	$sqlVars[':group']=$group;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	//$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+
+	return true;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
+function getFeedbackTitle($tid){
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$query="SELECT question_template from fb_question_template where id=:id limit 1";
+	$stmt=$db->prepare($query);
+	$sqlVars[':id']=$tid;
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
+
+	return $ansArr['question_template'];
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
 }
 ?>
