@@ -37,7 +37,7 @@ $ajax = checkRequestMode("get");
 if (!securePage(__FILE__)){
     apiReturnError($ajax);
 }
-
+$user_id=$loggedInUser->user_id;
 setReferralPage(getAbsoluteDocumentPath(__FILE__));
 
 ?>
@@ -81,37 +81,15 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
               <div class="panel-body">
                 <div class="list-group">
                   <a href="#" class="list-group-item">
-                    <span class="badge">just now</span>
-                    <i class="fa fa-calendar"></i> Calendar updated
+                    <span class="badge"><?php echo getForumPosts($user_id); ?></span>
+                    <i class="fa fa-calendar"></i> Forum Posts happened
                   </a>
+                  
                   <a href="#" class="list-group-item">
-                    <span class="badge">4 minutes ago</span>
-                    <i class="fa fa-comment"></i> Commented on a post
+                    <span class="badge">2 months toGo </span>
+                    <i class="fa fa-user"></i> Coming Soon
                   </a>
-                  <a href="#" class="list-group-item">
-                    <span class="badge">23 minutes ago</span>
-                    <i class="fa fa-truck"></i> Order 392 shipped
-                  </a>
-                  <a href="#" class="list-group-item">
-                    <span class="badge">46 minutes ago</span>
-                    <i class="fa fa-money"></i> Invoice 653 has been paid
-                  </a>
-                  <a href="#" class="list-group-item">
-                    <span class="badge">1 hour ago</span>
-                    <i class="fa fa-user"></i> A new user has been added
-                  </a>
-                  <a href="#" class="list-group-item">
-                    <span class="badge">2 hours ago</span>
-                    <i class="fa fa-check"></i> Completed task: "pick up dry cleaning"
-                  </a>
-                  <a href="#" class="list-group-item">
-                    <span class="badge">yesterday</span>
-                    <i class="fa fa-globe"></i> Saved the world
-                  </a>
-                  <a href="#" class="list-group-item">
-                    <span class="badge">two days ago</span>
-                    <i class="fa fa-check"></i> Completed task: "fix error on sales page"
-                  </a>
+
                 </div>
                 <div class="text-right">
                   <a href="#">View All Activity <i class="fa fa-arrow-circle-right"></i></a>

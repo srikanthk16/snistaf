@@ -80,7 +80,7 @@ $results=array_slice($resultarray,$offset*10,10,true);
 
 
         <img src="../account/image.php?id=<?php echo $row['added_by']; ?>" width="60px" height="60px" alt="DP" class="img-responsive">
-                <figcaption><?php echo getDisplayNameById($row['added_by']); ?>
+                <figcaption><a href="../account/Profile.php?id=<?php echo $row['added_by'] ?>" ><?php echo getDisplayNameById($row['added_by']); ?></a>
 								</br><?php echo getTitleById($row['added_by']); ?></figcaption>
 
       </td>

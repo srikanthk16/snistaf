@@ -32,16 +32,13 @@ if(!isUserLoggedIn()) {
 	addAlert("warning", "Login to continue!");
 	apiReturnError($ajax, SITE_ROOT."login.php");
 }
-/*if (!securePage(__FILE__)){
-    apiReturnError($ajax);
-}
-*/
+
 setReferralPage(getAbsoluteDocumentPath(__FILE__));
 $user_id=$loggedInUser->user_id;
 //print $user_id;
 $validator = new Validator();
 $uid = $validator->requiredGetVar('uid');
-$fid = $validator->optionalGetVar('fid');
+$fid = $validator->requiredGetVar('fid');
 //print $name;
 if(!addSubscription($uid,$fid)){
   print "unknown error";
