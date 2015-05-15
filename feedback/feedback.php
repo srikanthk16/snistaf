@@ -32,7 +32,7 @@ require_once("../models/config.php");
 setReferralPage(getAbsoluteDocumentPath(__FILE__));
 if(!isUserLoggedIn()) {
   $email=$_GET['email'];
-  $authKey=$_GET['key'];
+  $authKey=$_GET['authKey'];
   $auth=getOtherUserAuthId($email,$authKey);
   if($auth['group']=='0')
   $type=7;
@@ -61,6 +61,8 @@ if(intval(isFeedbackDone($fbsession['id']))==1){
   echo '<script>alert("feedback is noted");window.location.replace("../index.php");</script>';
 }
 ?>
+<body>
+  <div class="row">
 <div class="well well-sm custom-well-small">
 <fieldset>
             <legend>Rank-Guidance for feedback: <br>
@@ -181,6 +183,6 @@ Please give your opinion as stated below for all the items given here under . </
         e.preventDefault();
         });
   });
-</script>
+</script></div>
 </body>
 </html>

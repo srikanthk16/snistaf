@@ -4308,15 +4308,25 @@ function getDepartmentName($id){
 }
 function getAlumniFB(){
 	try{	$db=pdoConnect();
+		$arr=array();
+		$tid=1;
+		while($tid<=10){
 	$sqlVars=array();
-	$query="select avg(r.a+r.b+r.c+r.d)/4 as a,avg(s.a+s.b+s.c+s.d+s.e+s.f+s.g+s.h+s.i+s.j+s.k+s.l+s.m)/13 as b,avg(t.a+t.b+t.c+t.d+t.e+t.f+t.g+t.h+t.i+t.j+t.k+t.l+t.m+t.n+t.o+t.p+t.q+t.r+t.s+t.t+t.u)/21 as c,avg(u.a+u.b+u.c+u.d+u.e+u.f+u.g+u.h+u.i+u.j+u.k)/11 as d,avg(v.a+v.b+v.c+v.d+v.e)/5 as e from fb_alumni_objectives r,fb_alumni_outcomes s,fb_alumni_curriculim t,fb_alumni_impression u,fb_alumni_employability v";
+	$sqlVars[':tid']=$tid;
+	$query="CALL feedbackBasic(:tid);";
 	$stmt=$db->prepare($query);
 	if(!$stmt->execute($sqlVars)){
 		return false;
 	}
-	$ansArr=$stmt->fetch(PDO::FETCH_ASSOC);
-
-	return $ansArr;
+	$ansArr=$stmt->fetchall();
+	$stmt=null;
+	//return $ansArr;
+	$arr[$tid-1]['x']=getFeedbackTitle($tid);
+	$arr[$tid-1]['y']=$ansArr[0]['count'];
+	//$arr[getFeedbackTitle($tid)]=$ansArr[0]['count'];
+	$tid+=1;
+}
+	return $arr;
 	}
 	catch (PDOException $e) {
 		addAlert("danger", "Oops, looks like our database encountered an error.");
@@ -4930,10 +4940,10 @@ try {
 				break;
 			}
 
-			}
+		}
 		//$key=array_search($tid,$ansArr);
 		//error_log("key is ".$key);
-		if($key&&($key!=6 || $key!=9 ||$key!=10)){
+		if($key&&($key!=5 || $key!=9 ||$key!=10)){
 			//$key=$key+1;
 		$nextTemplate=$ansArr[$key];
 		$query2="UPDATE fb_session set status=:stat where id=:id;";

@@ -1169,7 +1169,7 @@ function inviteFB($userid,$empEmail,$parentEmail){
   $display_name=getDisplayNameById($userid);
   //Define more if you want to build larger structures
   $hooks = array(
-      "searchStrs" => array("#email","#feedbackurl","#name#"),
+      "searchStrs" => array("#email","#feedbackurl","#name"),
       "subjectStrs" => array($empEmail,$empUrl,$display_name)
   );
 
@@ -1182,7 +1182,7 @@ function inviteFB($userid,$empEmail,$parentEmail){
   } else {
       //Send the mail. Specify users email here and subject.
       //SendMail can have a third paremeter for message if you do not wish to build a template.
-      if(!$mailSender->sendMail($empEmail, "Please activate your account")) {
+      if(!$mailSender->sendMail($empEmail, "Feedback for SNISTAA")) {
           addAlert("danger", lang("MAIL_ERROR"));
           return false;
       }
@@ -1198,7 +1198,7 @@ if(!$mailSender->newTemplateMsg("parentFB.txt",$hooks2)) {
 } else {
     //Send the mail. Specify users email here and subject.
     //SendMail can have a third paremeter for message if you do not wish to build a template.
-    if(!$mailSender->sendMail($parentEmail, "Please activate your account")) {
+    if(!$mailSender->sendMail($parentEmail, "Feedback for SNISTAA")) {
         addAlert("danger", lang("MAIL_ERROR"));
         return false;
     }

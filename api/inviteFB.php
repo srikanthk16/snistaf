@@ -44,7 +44,6 @@ $user_id=$loggedInUser->user_id;
 $validator = new Validator();
 $eemail= $validator->requiredGetVar('eemail');
 $pemail= $validator->optionalGetVar('pemail');
-$type=$validator->optionalGetVar('type');
 if(!inviteFB($user_id,$eemail,$pemail)){
 	apiReturnError($ajax,getReferralPage());
 }
