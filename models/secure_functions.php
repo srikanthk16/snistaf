@@ -1159,5 +1159,51 @@ function loadPresetPermitOptions($fields){
 
     return fetchPresetPermitOptions($fields);
 }
+function inviteFB($userid,$empEmail,$parentEmail){
+  $mailSender = new userCakeMail();
+  $authToken=generateActivationToken();
+  $empUrl=SITE_ROOT."feedback/feedback.php?email=".$empEmail."&authKey=".$authToken;
+  $parentUrl=SITE_ROOT."feedback/feedback.php?email=".$parentEmail."&authKey=".$authToken;
+  if(!insertOtherUM($userid,$empEmail,$authToken,1)) return false;
+  if(!insertOtherUM($userid,$parentEmail,$authToken,0)) return false;
+  $display_name=getDisplayNameById($userid);
+  //Define more if you want to build larger structures
+  $hooks = array(
+      "searchStrs" => array("#email","#feedbackurl","#name"),
+      "subjectStrs" => array($empEmail,$empUrl,$display_name)
+  );
 
+  /* Build the template - Optional, you can just use the sendMail function
+  Instead to pass a message. */
+  // If there is a mail failure, fatal error
+  if(!$mailSender->newTemplateMsg("employerFB.txt",$hooks)) {
+      addAlert("danger", lang("MAIL_ERROR"));
+      return false;
+  } else {
+      //Send the mail. Specify users email here and subject.
+      //SendMail can have a third paremeter for message if you do not wish to build a template.
+      if(!$mailSender->sendMail($empEmail, "Feedback for SNISTAA")) {
+          addAlert("danger", lang("MAIL_ERROR"));
+          return false;
+      }
+
+}
+$hooks2 = array(
+    "searchStrs" => array("#email","#feedbackurl","#name#"),
+    "subjectStrs" => array($parentEmail,$parentUrl,$display_name)
+);
+if(!$mailSender->newTemplateMsg("parentFB.txt",$hooks2)) {
+    addAlert("danger", lang("MAIL_ERROR"));
+    return false;
+} else {
+    //Send the mail. Specify users email here and subject.
+    //SendMail can have a third paremeter for message if you do not wish to build a template.
+    if(!$mailSender->sendMail($parentEmail, "Feedback for SNISTAA")) {
+        addAlert("danger", lang("MAIL_ERROR"));
+        return false;
+    }
+
+}
+return true;
+}
 ?>

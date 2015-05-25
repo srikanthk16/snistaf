@@ -56,6 +56,14 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
   $title=getTitleById($uid);
   $noOfThreads=getThreadCountById($uid);
   $noOfPosts=getPostCountById($uid);
+	$details=fetchUserDetails($uid);
+	$department=getDepartmentName($details[0]['department']);
+	$rollno=$details[0]['roll_no'];
+	$section=$details[0]['section'];
+	$yearJoined=$details[0]['year_join'];
+	$yearEnd=$details[0]['year_end'];
+
+	//print_r($details);
 //print_r($resultarray);
   ?>
 <?php /*	<div class="inline">
@@ -89,8 +97,11 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 					</div>
 				</div>
 </div>
-
-
+<?php echo "Department: ".$department."-".$section;?>
+</br>
+<?php echo "Roll NO: ".$rollno; ?>
+</br>
+<?php echo "Batch : ".$yearJoined."-".$yearEnd; ?>
 	</div></div>
 </body>
 </html>

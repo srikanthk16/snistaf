@@ -19,7 +19,7 @@ if(isUserLoggedIn()) {
 <!DOCTYPE html>
 <html lang="en">
   <?php
-	echo renderTemplate("head.html", array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Welcome to UserFrosting"));
+	echo renderTemplate("head.html", array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Welcome to SNISTAF"));
   ?>
 
   <body>
