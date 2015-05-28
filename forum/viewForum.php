@@ -202,7 +202,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 </button>
 <ul class="pager">
 <li>	<a href="?id=<?php echo $fid;?>&page=<?php echo $offset==0?0:$offset-=1;?>" class="btn btn-info" role="button"><span class="fa fa-angle-left" aria-hidden="true" ></span></a>
-</li><li>	<a href="?id=<?php echo $fid;?>&page=<?php echo $offset*10<$arr_length?$offset:$offset+=1;?>" ><span class="fa fa-angle-right" aria-hidden="true"></span></a>
+</li><li>	<a href="?id=<?php echo $fid;?>&page=<?php echo ($offset+1)*10<$arr_length?$offset:$offset+=1;?>" ><span class="fa fa-angle-right" aria-hidden="true"></span></a>
 </li></ul></div>
 
 	</div></div>

@@ -32,12 +32,12 @@ function pmsWidget(widget_id, options) {
 
 	var limit = 100;
 	if (options['limit'])
-		limit = options['limit'];	
+		limit = options['limit'];
 
 	var show_new_msg_button = 'true';
 	if (options['show_new_msg_button'])
 		show_new_msg_button = options['show_new_msg_button'];
-		
+
 	// Default columns to display:
 	var columns = {
 		msg_title: 'Message Title',
@@ -59,7 +59,7 @@ function pmsWidget(widget_id, options) {
         action_deleted = options['action_deleted'];
 
 	console.debug(options);
-	
+
 	// Load the current user's info to get the CSRF token
 	var current_user = loadCurrentUser();
 	csrf_token = current_user['csrf_token'];
@@ -67,7 +67,7 @@ function pmsWidget(widget_id, options) {
 	var html = "<input type='hidden' name='csrf_token' value='" + csrf_token + "' />" +
 	"<div class='panel panel-primary'><div class='panel-heading'><h3 class='panel-title'>" + title  + " ~ " + title_page + "</h3></div>" +
     "<div class='panel-body'>";
-	
+
 	// Load the data and generate the rows.
 	var url = "api/load_private_messages.php";
 	$.getJSON( url, {
@@ -90,7 +90,7 @@ function pmsWidget(widget_id, options) {
             }
 
         if (Object.keys(data).length > 0) {
-			html+= "<div class='table-responsive'><table class='table table-bordered table-hover table-striped tablesorter'>" + 
+			html+= "<div class='table-responsive'><table class='table table-bordered table-hover table-striped tablesorter'>" +
 			"<thead><tr>";
 			jQuery.each(columns, function(name, header) {
 				html += "<th>" + header + " <i class='fa fa-sort'></th>";
@@ -156,14 +156,14 @@ function pmsWidget(widget_id, options) {
 							"' data-name='" + record['title'] + "' class='deleteMessage'><i class='fa fa-trash-o'></i> Delete message</a></li>";
 						formattedRowData['menu'] += "</ul>";
 						row += template(formattedRowData);
-					}				
+					}
 				});
 
 				// Add the row to the table
 				row += "</tr>";
 				$('#' + widget_id + ' .table > tbody:last').append(row);
 			});
-			
+
 			// Initialize the tablesorter
 			$('#' + widget_id + ' .table').tablesorter({
 				debug: false,
@@ -171,7 +171,7 @@ function pmsWidget(widget_id, options) {
 				headers: {
 						0: {sorter: 'metatext'},
 						1: {sorter: 'metadate'}
-					}    
+					}
 			});
 		}
 
@@ -190,7 +190,7 @@ function pmsWidget(widget_id, options) {
             var btn = $(this);
             var msg_id = btn.data('id');
 			deleteMsgDialog('delete-msg-dialog', msg_id, action_id, action_deleted);
-        });  		
+        });
 		return false;
 	});
 }

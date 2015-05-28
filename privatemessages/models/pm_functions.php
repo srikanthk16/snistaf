@@ -28,7 +28,7 @@ function loadPMS($limit = NULL, $user_id, $send_rec_id, $deleted){
         time_sent, time_read, receiver_read, sender_deleted,
         receiver_deleted, parent_id
         from {$db_table_prefix}plugin_pm
-        WHERE $send_rec_id = :user_id AND $deleted != '1' AND parent_id = NULL";
+        WHERE $send_rec_id = :user_id AND $deleted != '1' AND parent_id IS NULL";
 
         $stmt = $db->prepare($query);
 

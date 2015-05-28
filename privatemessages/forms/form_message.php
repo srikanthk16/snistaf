@@ -14,14 +14,14 @@
 
 require_once("../../models/config.php");
 require_once("../models/pm_functions.php");
-
+/*
 if (!securePage(__FILE__)) {
     // Forward to index page
     addAlert("danger", "Whoops, looks like you don't have permission to view that page.");
     echo json_encode(array("errors" => 1, "successes" => 0));
     exit();
 }
-
+*/
 $validator = new Validator();
 
 $box_id = $validator->requiredGetVar('box_id');

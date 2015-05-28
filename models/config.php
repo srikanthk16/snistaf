@@ -105,6 +105,11 @@ defined("SITE_ROOT")
 defined("ACCOUNT_ROOT")
     or define("ACCOUNT_ROOT", SITE_ROOT . "account/");
 
+defined("FORUM_ROOT")
+    or define("FORUM_ROOT", SITE_ROOT . "forum/");
+defined("FEEDBACK_ROOT")
+    or define("FEEDBACK_ROOT", SITE_ROOT . "feedback/");
+
 defined("LOCAL_ROOT")
 	or define ("LOCAL_ROOT", realpath(dirname(__FILE__)."/.."));
 
@@ -131,7 +136,7 @@ defined("LOG_AUTH_FAILURES")
 	or define("LOG_AUTH_FAILURES", false);
 
 defined("SESSION_NAME")
-    or define("SESSION_NAME", "UserFrosting");
+    or define("SESSION_NAME", "SnistaaUMS");
 
 defined("SITE_TITLE")
     or define("SITE_TITLE", $websiteName);

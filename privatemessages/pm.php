@@ -15,12 +15,12 @@
 require_once("../models/config.php");
 require_once("models/pm_functions.php");
 
-if (!securePage(__FILE__)){
+/*if (!securePage(__FILE__)){
     // Forward to index page
     addAlert("danger", "Whoops, looks like you don't have permission to view that page.");
     header("Location: 404.php");
     exit();
-}
+}*/
 $pvalue = $plugin_settings['$pmsystem']['value'];
 if ($pvalue != 1){
     // Forward to index page
@@ -49,10 +49,9 @@ $table_delete = $validate->optionalGetVar('a_d'); //receiver_id or sender_id dep
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-
-    <title>UserFrosting Admin - Private Messages</title>
-
-    <?php require_once("../account/includes.php");  ?>
+    <?php
+    echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "UserFrosting Admin - Private Messages"));
+    ?>
 
     <!-- Page Specific Plugins -->
     <link rel="stylesheet" href="../css/bootstrap-switch.min.css" type="text/css" />
@@ -61,19 +60,20 @@ $table_delete = $validate->optionalGetVar('a_d'); //receiver_id or sender_id dep
     <script src="../js/handlebars-v1.2.0.js"></script>
     <script src="../js/bootstrap-switch.min.js"></script>
     <script src="../js/typeahead.js"></script>
-    <script src="../js/jquery.tablesorter.js"></script>
-    <script src="../js/tables.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.21.5/js/jquery.tablesorter.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/tablesort/3.0.2/tablesort.min.js"></script>
     <script src="js/widget-privatemessages.js"></script>
 </head>
 
 <body>
 
 <div id="wrapper">
-
     <!-- Sidebar -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    </nav>
+    <?php
+    echo renderMenu("pms");
+    ?>
 
+<div class="container">
     <div id="page-wrapper">
         <div class="row">
             <div id='display-alerts' class="col-lg-12">
@@ -89,13 +89,11 @@ $table_delete = $validate->optionalGetVar('a_d'); //receiver_id or sender_id dep
     </div><!-- /#page-wrapper -->
 
 </div><!-- /#wrapper -->
-
+</div>
 <script>
     $(document).ready(function() {
         // Load the header
-        $('.navbar').load('../account/header.php', function() {
             $('.navitem-pms').addClass('active');
-        });
 
         alertWidget('display-alerts');
 

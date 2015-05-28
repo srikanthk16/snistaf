@@ -172,7 +172,6 @@ class ChromePhp
         $args = func_get_args();
         return self::_log(self::WARN, $args);
     }
-
     /**
      * logs an error to the console
      *
@@ -188,6 +187,7 @@ class ChromePhp
     /**
      * sends a group log
      *
+
      * @param string value
      */
     public static function group()

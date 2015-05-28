@@ -34,6 +34,19 @@ setReferralPage(getAbsoluteDocumentPath(__FILE__));
 echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" => SITE_TITLE, "#PAGE_TITLE#" => "Analytics"));
 ?>
 <body>
+  <div id="wrapper">
+    <?php echo renderMenu("Forum");
+    ?>
+    <div id="pagewrapper" padding-left="60px" >
+      <div class="row">
+          <div id='display-alerts' class="col-lg-12">
+
+          </div>
+        </div>
+          <div class="row" >
+            <div class="col-lg-12">
+  </br></br>
+
   <script>
 function pie(){
   var form = $(this);
@@ -57,7 +70,8 @@ function pie(){
   });
 }
 function lineGraph(){
-  var form = $(this);
+  alert("soon..");
+  /*var form = $(this);
   var url = '../api/loadAlumniFBBasic.php';
   var serializedData = form.serialize();
   serializedData += '&ajaxMode=true';
@@ -72,10 +86,18 @@ function lineGraph(){
       alertWidget('display-alerts');
       alert(" Fill details or enter correct details");
     } else {
-      lineChart(resultJSON);//reload page to get new form
+      //alert(JSON.stringify(resultJSON));
+      lineChart(resultJSON);
+      Morris.Line({
+      element: 'line-chart',
+      data: resultJSON,
+      xkey: 'x',
+      ykeys: 'y',
+      labels: ['Feedback Forms']
+    });
     }
     }
-  });
+  });*/
 }
 
 
@@ -151,9 +173,6 @@ function lineGraph(){
 function type(d) {
     d.letter = +d.letter; // coerce to number
     return d;
-  }
-function lineChart(data){
-  alert("coming soon");
 }
 function textMode(){
   var form = $(this);
@@ -236,19 +255,10 @@ var svg = d3.select("body").append("svg")
     });
 }
   </script>
-  <div id="wrapper">
-    <?php echo renderMenu("Forum");
-    ?>
 
-  <div id="pagewrapper" padding-left="60px" >
-    <div class="row">
-        <div id='display-alerts' class="col-lg-12">
 
-        </div>
-      </div>
-        <div class="row" >
-          <div class="col-lg-12">
-</br></br>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 <div class="btn-group">
   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
     Chart Style <span class="caret"></span>
@@ -261,8 +271,14 @@ var svg = d3.select("body").append("svg")
     <li><a onclick="textMode()">Text Mode</a></li>
   </ul>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+  <div id="chart" width="1000" height="500"></div>
+  <div id="line-chart"></div>
+  <div id="graph" class="aGraph" style="position:absolute;top:0px;left:0; float:left;"></div>
+
+  <span id="text"></span>
   <style>
+  .morris-hover{position:absolute;z-index:1000}.morris-hover.morris-default-style{border-radius:10px;padding:6px;color:#666;background:rgba(255,255,255,0.8);border:solid 2px rgba(230,230,230,0.8);font-family:sans-serif;font-size:12px;text-align:center}.morris-hover.morris-default-style .morris-hover-row-label{font-weight:bold;margin:0.25em 0}
+.morris-hover.morris-default-style .morris-hover-point{white-space:nowrap;margin:0.1em 0}
   #chart rect{
     fill: #4aaeea;
   }
@@ -300,9 +316,7 @@ var svg = d3.select("body").append("svg")
 
 
   </style>
-  <div id="chart" width="1000" height="500"></div>
-  <div id="graph" class="aGraph" style="position:absolute;top:0px;left:0; float:left;"></div>
-  <span id="text"></span>
+
 </div></div>
 </body>
 </html>

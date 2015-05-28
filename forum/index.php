@@ -8,10 +8,9 @@ if(!isUserLoggedIn()) {
 	apiReturnError($ajax, SITE_ROOT."login.php");
 }
 $user_id=$loggedInUser->user_id;
-
-if(doneLanding($user_id)!='1'){
-  header("Location: landing.php");
+if(doneLanding($user_id)=='1'){
+  header("Location: subscriptions.php");
 }
 else
-header("Location: subscriptions.php");
+header("Location: landing.php");
 ?>

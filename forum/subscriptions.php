@@ -124,7 +124,7 @@ echo renderAccountPageHeader(array("#SITE_ROOT#" => SITE_ROOT, "#SITE_TITLE#" =>
 </table>
 <ul class="pager">
 <li><a href="?page=<?php echo $offset==0?0:$offset-=1;?>" ><span  aria-hidden="true" class="fa fa-angle-left" ></span></a>
-</li><li ><a href="?page=<?php echo $offset*10<$arr_length?$offset:$offset+=1;?>" ><span aria-hidden="true" class="fa fa-angle-right"></span></a>
+</li><li ><a href="?page=<?php echo ($offset+1)*10<$arr_length?$offset+1:$offset;?>" ><span aria-hidden="true" class="fa fa-angle-right"></span></a>
 </li></ul>
 	</div>
 </div>

@@ -4365,6 +4365,30 @@ function getDepartmentName($id){
 		return false;
 	}
 }
+function getPollFB($template)
+
+{
+	try{	$db=pdoConnect();
+	$sqlVars=array();
+	$sqlVars[':tid']=$template;
+	$query="CALL pollBasic(:tid);";
+	$stmt=$db->prepare($query);
+	if(!$stmt->execute($sqlVars)){
+		return false;
+	}
+	$ansArr=$stmt->fetchall(PDO::FETCH_ASSOC);
+	$stmt=null;
+	return $ansArr;
+	}
+	catch (PDOException $e) {
+		addAlert("danger", "Oops, looks like our database encountered an error.");
+		error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+		return false;
+	} catch (ErrorException $e) {
+		addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+		return false;
+	}
+}
 function getAlumniFB()
 
 {
@@ -4692,6 +4716,7 @@ function loadFeedbackQuestions($templateid){
 	}
 
 }
+
 function updateThreadTimeStamp($tid)
 /*
 Updates Thread Time Stamp
@@ -4807,7 +4832,7 @@ function loadFeedbackAnswers($questionid){
 			$db = pdoConnect();
 			$sqlVars = array();
 			//error_log($userid);
-			$query = "select options from fb_question_options where id in (SELECT oid from fb_question_options_mapping where qid=:qid) and status=1
+			$query = "select id,options from fb_question_options where id in (SELECT oid from fb_question_options_mapping where qid=:qid) and status=1
 					";
 			$stmt = $db->prepare($query);
 			$sqlVars[':qid'] =intval($questionid);
